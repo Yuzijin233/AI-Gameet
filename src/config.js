@@ -603,4 +603,11 @@ export const DEFAULT_SETTINGS = {
   useTextures: false, // 牌面默认用 emoji + HTML 渲染；放入自己的 PNG 美术后再打开
   shuffle: true, // 每局重新洗牌；关掉则每局发同一副牌（复盘 / 教学用）
   nickname: '',
+  /**
+   * ★ 玩家自己的 DeepSeek API Key：**存在本机存档里**（localStorage + save/ddz_save.json），
+   *   两者都不会进版本库（见 .gitignore 的 save/*）。
+   *   优先级：存档里填了就用存档的，没填才回落到上面 CONFIG.apiKey（源码默认，仓库里是空的）。
+   *   这样"仓库干净"和"本机不用每次重贴"两件事就不打架了。
+   */
+  apiKey: '',
 };

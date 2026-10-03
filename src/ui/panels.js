@@ -506,7 +506,7 @@ export function openSettings(app) {
       </div>
     </div>
     <div class="set-row" style="flex-direction:column;align-items:stretch;gap:8px">
-      <div class="set-label">DeepSeek API Key<small>写在 src/config.js，这里可以临时覆盖</small></div>
+      <div class="set-label">DeepSeek API Key<small>存在本机存档里（不会进版本库），填一次以后都记得</small></div>
       <div class="key-now">当前：<b id="key-mask">${maskKey(CONFIG.apiKey)}</b><small>（中间用 ** 藏住了）</small></div>
       <div class="set-control" style="width:100%">
         <input type="password" id="set-key" value="${CONFIG.apiKey}" placeholder="粘贴新的 Key 覆盖（sk-…）" style="flex:1;min-width:0" />
@@ -569,11 +569,26 @@ export function openSettings(app) {
     el.querySelector('#btn-toggle-key').textContent = show ? '🙈 隐藏' : '👁 显示';
   });
   const refreshKeyMask = () => { keyMask.textContent = maskKey(CONFIG.apiKey); };
-  el.querySelector('#btn-test-key').addEventListener('click', async () => {
+  /**
+   * ★ 把 Key 落进**存档**（用户拍板）：存 localStorage + save/ddz_save.json，
+   *   这两个地方都被 .gitignore 排除（见 save/*），所以
+   *   "仓库里不出现 Key" 和 "本机填一次就够" 可以同时成立。
+   *   读到 CONFIG 的优先级见 app.js 的 applySettings：存档有就用存档，没有才用源码默认值。
+   */
+  const saveKey = (silent = false) => {
     const key = keyInput.value.trim();
-    const status = el.querySelector('#key-status');
-    CONFIG.apiKey = key;
+    if (key === app.save.settings.apiKey) { CONFIG.apiKey = key || CONFIG.apiKey; return; }
+    CONFIG.apiKey = key || CONFIG.apiKey;
+    app.save.settings.apiKey = key;
+    app.persist('settings');
     refreshKeyMask();
+    if (!silent) toast(key ? '已保存 Key（存在本机存档里）' : '已清空存档里的 Key', key ? 'good' : 'bad');
+  };
+  keyInput.addEventListener('change', () => saveKey());
+  el.querySelector('#btn-test-key').addEventListener('click', async () => {
+    const status = el.querySelector('#key-status');
+    // 点"测试连通"就等于确认要用这个 Key：先落进存档，不然一刷新又没了
+    saveKey(true);
     status.className = 'key-status';
     status.textContent = '正在测试连通性…';
     const res = await app.chat.testConnection();

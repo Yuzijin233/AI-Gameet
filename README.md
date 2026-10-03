@@ -18,8 +18,10 @@
 
 > **AI 说话需要填一次 Key**：进入游戏后 **⚙️ 设置 → API Key**，把 `sk-` 开头的那串填进去
 > （[platform.deepseek.com](https://platform.deepseek.com) 申请）。
+> **填一次就够了**：Key 存在**本机存档**里（浏览器 localStorage + `save/ddz_save.json`），
+> 刷新和重开都还在；这两个位置都不会进版本库。
 > **不填也能玩**：所有 AI 会退回本地台词库，游戏功能一个不少，只是它不会"现场发挥"了。
-> 安装包里**没有内置任何 Key**。
+> 仓库和安装包里**都没有内置任何 Key**（`src/config.js` 的默认值是空的）。
 
 ---
 
@@ -632,7 +634,8 @@ AI 每次说话都会看到**最近 5 步**：斗地主是最近 5 手出牌（�
 ```js
 model: 'deepseek-flash',   // 默认模型
 thinking: false,           // 关闭思考模式（开启会先输出思维链，拖慢出牌节奏）
-apiKey: 'sk-...',          // 当前写死；后续可换成代理
+apiKey: '',                // 仓库里留空（Key 属个人凭据，不入库）；
+                           // 自己用时在「设置」里填，会存进本机存档 save/ddz_save.json
 useProxy: false,           // 浏览器直连被 CORS 拦时改 true，走本地 /api/chat 代理
 ```
 
@@ -752,7 +755,8 @@ node tools\test-green.mjs          :: 打包 → PowerShell 解压 → 起服务
 | `start.bat` `serve.ps1` `README.md` | 启动器（纯 ASCII + CRLF）、本地服务（纯 ASCII）、**写给玩家看的中文说明** |
 | `save/README.md` | 存档目录，**包里不带任何存档**：每台机器全新开局 |
 
-另外：`src/config.js` 的 **apiKey 在打包产物里清空**（工作区原文件不动）；
+另外：`src/config.js` 的 **apiKey 默认就是空的**，打包脚本还会再清一遍（工作区原文件不动）；
+玩家的 Key 只存在**本机存档**里，不进仓库、也不进安装包。
 不做加密 —— 浏览器必须拿到明文才能跑，加密只是"看着麻烦"，绿色版干脆不装
 （真想抄的人 DevTools 里照样看得见，这一点没打算骗自己）。
 

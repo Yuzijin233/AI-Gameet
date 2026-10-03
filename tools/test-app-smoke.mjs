@@ -402,10 +402,36 @@ console.log('-- 3.6) API Key：默认值 + 中间打码显示');
     '输入框默认是密码型（不整串亮出来）');
   ok(/id="btn-toggle-key"/.test(panelsSrc), '有「👁 显示 / 🙈 隐藏」开关');
   ok(/id="key-mask">\$\{maskKey\(CONFIG\.apiKey\)\}</.test(panelsSrc), '面板上直接显示打码后的 Key');
-  ok(/CONFIG\.apiKey = key;/.test(panelsSrc), '测试连通时用的仍是**完整** Key（打码只影响显示）');
+  ok(/const key = keyInput\.value\.trim\(\);[\s\S]{0,200}?CONFIG\.apiKey = key/.test(panelsSrc),
+    '测试连通 / 保存时送出去的是**完整** Key（打码只影响显示）');
   // 没填 Key 时要给一句提醒，不能静默（AI 会用本地语气兜底）
   ok(/if \(!CONFIG\.apiKey\) \{[\s\S]{0,200}还没填 DeepSeek API Key/.test(readFileSync(join(root, 'src/ui/app.js'), 'utf8')),
     '★ 没填 Key 时提示怎么填（不是静默降级）');
+
+  /**
+   * ★ 用户拍板：Key 存**本机存档**（localStorage + save/ddz_save.json，都被 .gitignore 排除），
+   *   这样"仓库里不带 Key"和"本机填一次就够"能同时成立。
+   *   这里真跑一遍 applySettings，确认存档里的 Key 会被读回 CONFIG（以前没同步，刷新即丢）。
+   */
+  const { DEFAULT_SETTINGS } = await import(mod('src/config.js'));
+  ok(DEFAULT_SETTINGS.apiKey === '', '★ 默认设置里 Key 是空的（仓库不带 Key）');
+  const keepKey = CONFIG.apiKey;
+  app.save.settings.apiKey = 'sk-abcdefghijklmnopqrstuvwx';
+  app.applySettings();
+  ok(CONFIG.apiKey === 'sk-abcdefghijklmnopqrstuvwx',
+    '★ 存档里的 Key 被 applySettings 读回 CONFIG（刷新不丢）');
+  // 存档里没有 → 回落到源码默认值（本机开发在 config.js 里填 Key 的情况）
+  app.save.settings.apiKey = '';
+  CONFIG.apiKey = 'sk-source-default-0000000000';
+  app.applySettings();
+  ok(CONFIG.apiKey === 'sk-source-default-0000000000', '存档里没填时回落到源码默认值');
+  CONFIG.apiKey = keepKey; // 还原，别影响后面的用例
+  // 面板要真的把它写进存档（不然只是内存里改了一下）
+  ok(/app\.save\.settings\.apiKey = key;[\s\S]{0,80}app\.persist\('settings'\)/.test(panelsSrc),
+    '★ 设置面板把 Key 写进存档并落盘');
+  ok(/keyInput\.addEventListener\('change', \(\) => saveKey\(\)\)/.test(panelsSrc),
+    '★ 粘完 Key 离开输入框就自动保存（不用记得点按钮）');
+  ok(/saveKey\(true\)/.test(panelsSrc), '点"测试连通"也会顺手存下来');
 }
 
 /* ===================================================================== */

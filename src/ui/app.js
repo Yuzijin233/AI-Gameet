@@ -1426,6 +1426,13 @@ class App {
     audio.setVolumes({ bgm: s.bgmVolume, sfx: s.sfxVolume });
     CONFIG.model = s.model || DEFAULT_SETTINGS.model;
     CONFIG.thinking = !!s.thinking;
+    /**
+     * ★ API Key：**存档优先、源码默认兜底**。
+     *   存档里填过就用存档那份（存在 localStorage + save/ddz_save.json，都不进仓库）；
+     *   没填才回落到 src/config.js 里的 CONFIG.apiKey（公开仓库里是空串）。
+     *   以前这里没同步，所以设置面板里粘的 Key 一刷新就没了。
+     */
+    CONFIG.apiKey = s.apiKey || CONFIG.apiKey;
     if (this.particles) this.particles.setSpeed(s.animSpeed === 'off' ? 0 : 1);
     // 风格（整体配色）：'light' 才会打标记，深色（默认）就是不加 data-theme
     this.applyTheme();
