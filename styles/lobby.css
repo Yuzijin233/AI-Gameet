@@ -1,0 +1,250 @@
+/* 游戏大厅 */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding-bottom: 14px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-right { flex-direction: row; }
+.brand-right .brand-text { text-align: right; }
+.brand-logo { width: 52px; height: 52px; border-radius: 50%; box-shadow: var(--glow-pink); }
+.brand-text h1 {
+  margin: 0; font-size: 22px; letter-spacing: 3px;
+  background: linear-gradient(92deg, #fff, var(--gold) 60%, var(--pink));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.brand-text p { margin: 2px 0 0; font-size: 12px; color: var(--ink-faint); letter-spacing: 1px; }
+
+.user-chip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 14px 8px 8px; border-radius: 99px;
+  background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(10px);
+}
+.user-avatar { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.45); }
+.user-meta { display: flex; flex-direction: column; line-height: 1.35; min-width: 96px; }
+.user-name { font-size: 15px; font-weight: 700; }
+.user-beans { font-size: 13px; color: var(--gold); font-weight: 700; }
+
+/* 左上角称号入口：点它打开称号面板（底部导航已去掉"称号"） */
+.title-entry {
+  display: inline-flex; align-items: center; gap: 3px; align-self: flex-start;
+  margin: 2px 0 1px; padding: 0; font-family: inherit; cursor: pointer;
+  background: none; border: none; color: var(--ink-faint);
+  transition: transform var(--t-fast) ease, filter var(--t-fast) ease;
+}
+.title-entry:hover { transform: translateY(-1px); filter: brightness(1.18); }
+.title-entry:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 99px; }
+.title-entry-empty {
+  display: inline-flex; align-items: center; height: 19px; padding: 0 9px;
+  border-radius: 99px; font-size: 11px; font-weight: 700; color: var(--ink-faint);
+  background: rgba(255, 255, 255, 0.07); border: 1px dashed var(--glass-line);
+}
+.title-entry-empty[hidden] { display: none; }
+.title-entry-go { font-size: 14px; font-weight: 900; opacity: 0.75; }
+
+.lobby-main {
+  flex: 1; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 20px;
+  overflow: auto; padding: 4px 2px 12px;
+}
+.block {
+  padding: 18px 20px 20px; border-radius: var(--radius-panel);
+  background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-1); align-self: start;
+}
+.block-title {
+  margin: 0 0 14px; font-size: 15px; letter-spacing: 2px; color: var(--ink-soft);
+  display: flex; align-items: center; gap: 8px;
+}
+.block-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: var(--glow-pink); }
+
+/* ---------------- 场次卡片 ---------------- */
+.room-list { display: flex; flex-direction: column; gap: 12px; }
+.room-card {
+  position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center;
+  gap: 12px; padding: 15px 18px; border-radius: 16px; cursor: pointer;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--glass-line); overflow: hidden;
+  transition: transform var(--t-fast) ease, box-shadow var(--t-base) ease, border-color var(--t-base) ease;
+}
+.room-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--tone, var(--pink)); box-shadow: 0 0 16px var(--tone, var(--pink));
+}
+.room-card:hover { transform: translateX(4px); border-color: var(--tone, var(--pink)); box-shadow: var(--shadow-1); }
+.room-card.is-locked { opacity: 0.6; cursor: not-allowed; }
+.room-card.is-locked:hover { transform: none; }
+.room-name { font-size: 17px; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.room-desc { font-size: 12px; color: var(--ink-faint); margin-top: 3px; }
+.room-stats { display: flex; gap: 10px; margin-top: 9px; flex-wrap: wrap; }
+.room-stat {
+  font-size: 11.5px; color: var(--ink-soft); background: rgba(0, 0, 0, 0.22);
+  padding: 3px 9px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.room-stat b { color: #fff; }
+.room-go {
+  border: none; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 13px;
+  padding: 10px 18px; border-radius: 12px; color: #3a1030;
+  background: linear-gradient(180deg, #fff, var(--tone, var(--pink)));
+  box-shadow: var(--shadow-1);
+}
+.room-go:disabled { filter: saturate(0.35); cursor: not-allowed; }
+.room-warn { font-size: 11.5px; color: #ffc9c9; margin-top: 6px; }
+/* 房间模式下的一句提示（五子棋：难度跟着邀请的好友走）——不是警告，用金色 */
+.room-note { font-size: 11.5px; color: var(--gold); margin: -4px 0 2px; }
+
+/* ---------------- 游戏列表 / 模式 ---------------- */
+.game-list { display: flex; gap: 10px; }
+.game-card {
+  flex: 1; padding: 14px 8px; border-radius: 16px; cursor: pointer; font-family: inherit;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line); color: var(--ink);
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  transition: transform var(--t-fast) ease, background var(--t-base) ease;
+}
+.game-card.is-active { background: linear-gradient(180deg, rgba(255, 123, 172, 0.32), rgba(255, 123, 172, 0.1)); border-color: var(--pink); box-shadow: var(--glow-pink); }
+.game-card:disabled { opacity: 0.45; cursor: not-allowed; }
+.game-emoji { font-size: 24px; }
+.game-name { font-size: 14px; font-weight: 700; }
+.game-tag { font-size: 11px; color: var(--gold); }
+.game-tag.locked { color: var(--ink-faint); }
+
+.mode-switch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.mode-opt { cursor: pointer; }
+.mode-opt input { position: absolute; opacity: 0; pointer-events: none; }
+.mode-face {
+  display: flex; flex-direction: column; gap: 3px; padding: 12px 14px;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-line); transition: all var(--t-base) ease;
+}
+.mode-face b { font-size: 13.5px; }
+.mode-face small { font-size: 11px; color: var(--ink-faint); line-height: 1.45; }
+.mode-opt input:checked + .mode-face {
+  background: linear-gradient(180deg, rgba(111, 214, 255, 0.28), rgba(111, 214, 255, 0.08));
+  border-color: var(--blue); box-shadow: 0 0 16px rgba(111, 214, 255, 0.35);
+}
+
+/* ---------------- 救济金 ---------------- */
+.relief-row {
+  margin-top: 14px; display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; padding: 12px 14px; border-radius: 14px;
+  background: rgba(255, 209, 102, 0.1); border: 1px dashed rgba(255, 209, 102, 0.5);
+  font-size: 12.5px; color: #ffe9b8;
+}
+.relief-row.is-done { background: rgba(255, 255, 255, 0.05); border-color: var(--glass-line); color: var(--ink-faint); }
+
+/* 洗牌 / 不洗牌开关（只要两个 chip，不加标签和提示文案） */
+.deal-row { margin-top: 12px; }
+.deal-row[hidden] { display: none; }
+
+/* ---------------- 底部导航 ---------------- */
+.bottom-nav {
+  display: flex; justify-content: center; gap: 14px; padding-top: 12px;
+}
+.nav-btn {
+  position: relative; display: flex; align-items: center; gap: 9px;
+  padding: 12px 26px; border-radius: 99px; cursor: pointer; font-family: inherit;
+  font-size: 14px; font-weight: 700; color: var(--ink);
+  background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(10px);
+  transition: transform var(--t-fast) ease, box-shadow var(--t-base) ease;
+}
+.nav-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-1); }
+.nav-ico { width: 26px; height: 26px; background-size: contain; background-repeat: no-repeat; background-position: center; }
+.dot {
+  position: absolute; top: 8px; right: 14px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--red); box-shadow: 0 0 10px var(--red);
+}
+/* ★ 好友未读：不是红点，而是**红圈里一个数字**（数字 = 未读消息总数，正常字体不斜体） */
+.dot.is-num {
+  width: auto; height: 18px; min-width: 18px; top: 4px; right: 6px;
+  padding: 0 5px; border-radius: 99px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; font-style: normal; font-family: var(--font);
+  color: #fff; letter-spacing: 0; box-shadow: 0 0 10px rgba(224, 52, 75, 0.65);
+  background: linear-gradient(180deg, #ff8fb8, #e0344b);
+}
+/* 没有未读时**什么都不显示**（display:inline-flex 会盖掉 [hidden]，必须显式写一条） */
+.dot.is-num[hidden] { display: none; }
+.dot[hidden] { display: none; }
+
+
+/* ================= 匹配界面（AI 模式：三个座位，头像 + 昵称） =================
+ * 只有"填满"这一种状态变化，没有 @keyframes / transform / 灰度过渡，
+ * 所以看起来是安静地一个个就位，而不是在放动画。 */
+.match-box { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.match-seats { display: flex; align-items: flex-start; gap: 30px; }
+.match-seat {
+  width: 104px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.match-seat-face {
+  width: 84px; height: 84px; border-radius: 50%; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.32); border: 2px dashed rgba(255, 255, 255, 0.22);
+  color: var(--ink-faint); font-size: 26px; font-weight: 700;
+}
+.match-seat-face img { width: 100%; height: 100%; object-fit: cover; }
+/* 玩家自己：金色实线，一眼看出"我已经坐下了" */
+.match-seat.is-me .match-seat-face { border-style: solid; border-color: var(--gold); }
+/* 匹配到的对手：粉紫实线（头像一填上就亮起来） */
+.match-seat.is-in .match-seat-face { border-style: solid; border-color: var(--pink); background: rgba(255, 123, 172, 0.12); }
+.match-seat-name {
+  font-size: 12.5px; font-weight: 700; color: var(--ink-soft); text-align: center;
+  max-width: 104px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.match-seat.is-me .match-seat-name, .match-seat.is-in .match-seat-name { color: var(--ink); }
+.match-tip { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 2px; color: var(--ink); }
+.match-skip { margin: 0; font-size: 12px; color: var(--ink-faint); }
+
+/* ================= AI 邀请玩家打牌（画面上部） ================= */
+.invite-layer {
+  position: fixed; left: 50%; top: 14px; transform: translateX(-50%);
+  z-index: 70;
+  pointer-events: none; /* 只有卡片本身可点，别挡住大厅 */
+}
+.invite-layer[hidden] { display: none; }
+.invite-card {
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px 10px 10px;
+  min-width: 320px; max-width: min(520px, 92vw);
+  border-radius: 16px; border: 1px solid var(--gold);
+  background: linear-gradient(160deg, rgba(70, 40, 112, 0.97), rgba(28, 16, 54, 0.97));
+  box-shadow: var(--shadow-2), var(--glow-gold);
+  animation: invite-in var(--t-base) cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes invite-in {
+  from { opacity: 0; transform: translateY(-18px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.invite-avatar {
+  flex: none; width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--gold);
+}
+.invite-body { min-width: 0; flex: 1; }
+.invite-line { font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.45; }
+.invite-line b { color: var(--gold); }
+.invite-sub { margin-top: 2px; font-size: 11px; color: var(--ink-faint); }
+.invite-sub span { color: var(--gold); font-weight: 800; }
+.invite-btn {
+  flex: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  /*
+   * ★ 用户拍板：勾和叉就用**正常字体的 √ 和 ×**（U+221A / U+00D7）——
+   *   这两个字符每个中文字体里都有，任何系统下都长得一样；
+   *   别用 ✓ ✗ 那两个装饰符号（会落到系统符号字体上，渲染得又粗又怪），
+   *   也别用 CSS 画线（用户觉得更难看）。
+   */
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", var(--font, sans-serif);
+  font-size: 19px; font-weight: 700; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; border: 1px solid transparent;
+  transition: transform var(--t-fast) ease, box-shadow var(--t-base) ease;
+}
+.invite-btn:hover { transform: translateY(-2px) scale(1.06); }
+.invite-btn.ok { color: #08240f; background: linear-gradient(180deg, #7df0a8, #23a55a); box-shadow: 0 4px 14px rgba(35, 165, 90, 0.4); }
+.invite-btn.no { color: #3a1030; background: linear-gradient(180deg, #ffd9a0, var(--pink)); box-shadow: 0 4px 14px rgba(255, 123, 172, 0.35); }
+/* 底下的 √ 稍微抬一点，视觉上和 × 一样居中 */
+.invite-btn.ok { padding-bottom: 2px; }
+/* 浅色主题下卡片跟着变浅（牌桌场景不受影响） */
+:root[data-theme="light"] .invite-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.99), rgba(243, 244, 253, 0.99));
+  border-color: var(--gold-deep);
+}
+:root[data-theme="light"] .invite-btn.no { color: #3a1030; }
+/* 品牌标志：深色 / 浅色两套 SVG。默认深色，浅色版默认藏起来（theme-light.css 里再翻过来） */
+.logo-light { display: none; }

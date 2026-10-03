@@ -1,0 +1,397 @@
+/* 好友面板 + 房间模式 */
+.friends-drawer { width: min(780px, 94vw); display: flex; flex-direction: column; }
+.friends-head-actions { display: flex; align-items: center; gap: 8px; }
+.friends-body {
+  /* 左栏 260px：8 个汉字的名字 + 性别标 + 恋人标也放得下（用户要求别 5 个字就省略） */
+  display: grid; grid-template-columns: 260px 1fr; gap: 14px;
+  min-height: 380px; flex: 1; min-width: 0;
+}
+/*
+ * 关键：`hidden` 属性靠 UA 样式表的 `[hidden] { display: none }` 生效，
+ * 而那条规则的特异性低于上面的 `.friends-body { display: grid }` ——
+ * 不显式写这一行，切到「群聊」时好友界面**不会真的藏起来**，
+ * 两个界面就会一上一下摞在面板里。
+ */
+.friends-body[hidden] { display: none; }
+
+/* 左：好友清单（上面一条搜索框，下面滚动的好友列表 —— 真聊天软件左栏的样子） */
+.friend-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+.friend-search {
+  display: flex; align-items: center; gap: 6px; flex: none;
+  padding: 0 10px; border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid transparent;
+}
+.friend-search .fs-ico { font-size: 12px; opacity: 0.6; line-height: 1; }
+.friend-search input {
+  flex: 1; min-width: 0; width: auto; padding: 8px 0; border: none; background: transparent;
+}
+.friend-search input:focus { box-shadow: none; }
+.friend-list {
+  display: flex; flex-direction: column; gap: 6px; overflow: auto;
+  max-height: 54vh; padding-right: 4px; border-right: 1px dashed rgba(255, 255, 255, 0.12);
+}
+.friend-item {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+  border-radius: 12px; cursor: pointer; border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  transition: background var(--t-fast) ease, border-color var(--t-fast) ease;
+}
+.friend-item:hover { background: rgba(255, 255, 255, 0.12); }
+.friend-item.is-active { background: rgba(255, 123, 172, 0.22); border-color: var(--pink); }
+.friend-avatar { width: 38px; height: 38px; border-radius: 50%; flex: none; object-fit: cover; }
+.friend-meta { min-width: 0; flex: 1; }
+/*
+ * ★ 用户报的 bug：名字一超过 5 个字就被截成"…"，连性别小标都不见了。
+ *   根因：名字、性别标、恋人标挤在同一个 `text-overflow: ellipsis` 的盒子里 ——
+ *   名字一长，后面两个标直接被一起裁掉。
+ *   现在：名字单独一个可省略的 `.fn-text`（flex: 0 1 auto），两个标 `flex: none` 永远在；
+ *   左栏也从 220px 加宽到 260px，8 个汉字也放得下。
+ */
+.friend-name { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.friend-name .fn-text {
+  flex: 0 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.friend-name .gender-tag,
+.friend-name .lover-badge { flex: none; }
+/* 行尾那一列：最后一条消息的时间 + 未读红点（真聊天软件的会话行都这么排） */
+.friend-side {
+  flex: none; margin-left: auto; display: flex; flex-direction: column;
+  align-items: flex-end; justify-content: center; gap: 5px;
+}
+.friend-time { font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+/* ★ 聊天窗口标题下那一行：一个在线小绿点 + 关系档（正在输入时换成会呼吸的小点） */
+.friend-head .online-dot {
+  display: inline-block; width: 6px; height: 6px; margin-right: 5px;
+  border-radius: 50%; background: var(--green); vertical-align: middle;
+}
+.friend-head .online-dot.is-typing { background: var(--pink); animation: pulse 1.1s ease-in-out infinite; }
+.friend-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.friend-sub { font-size: 11px; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.unread-badge {
+  flex: none; min-width: 20px; height: 20px; padding: 0 6px; margin-left: auto;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 99px; font-size: 11px; font-weight: 800; color: #fff;
+  font-style: normal; /* 数字不斜体 */
+  background: linear-gradient(180deg, #ff8fb8, #e0344b); box-shadow: 0 0 10px rgba(224, 52, 75, 0.6);
+}
+
+/* 右：聊天窗口 */
+.friend-main { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; position: relative; }
+.friend-head {
+  display: flex; align-items: center; gap: 10px; padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+.friend-head .friend-avatar { width: 44px; height: 44px; }
+.friend-log { flex: 1; max-height: 46vh; }
+.typing-bubble { opacity: 0.65; }
+.friend-input-wrap { position: relative; }
+.friend-input-wrap .emoji-pop { width: 214px; }
+.friend-input-wrap .pop-item.emoji { min-width: 34px; padding: 4px 0; font-size: 18px; }
+
+/* 添加好友 / 邀请好友的选择列表 */
+.friend-picker {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+  max-height: 48vh; overflow: auto; margin-top: 8px;
+}
+.picker-item {
+  display: flex; align-items: center; gap: 9px; padding: 9px 11px;
+  border-radius: 12px; cursor: pointer; border: 1px solid var(--glass-line);
+  background: rgba(255, 255, 255, 0.06);
+  transition: background var(--t-fast) ease, transform var(--t-fast) ease;
+}
+.picker-item:hover { background: rgba(255, 255, 255, 0.13); transform: translateY(-1px); }
+.picker-item.is-added { opacity: 0.5; cursor: not-allowed; }
+.picker-item.is-added:hover { transform: none; }
+.picker-add { font-size: 11.5px; font-weight: 700; color: var(--gold); flex: none; }
+
+/* 房间模式 */
+.room-body { display: grid; grid-template-columns: 236px 1fr; gap: 14px; margin-top: 12px; align-items: start; }
+.room-side { min-width: 0; }
+
+/* 左侧常驻好友列表：点一下入座，再点一下移出 */
+.room-friends {
+  border: 1px solid var(--glass-line); border-radius: 16px; overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+.room-friends-head {
+  padding: 9px 12px; font-size: 12px; color: var(--ink-soft);
+  border-bottom: 1px solid var(--glass-line);
+}
+.room-friends-list { max-height: 268px; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.room-friend {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 9px;
+  border-radius: 12px; font-family: inherit; color: var(--ink); text-align: left; cursor: pointer;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid transparent;
+  transition: border-color var(--t-fast) ease, background var(--t-fast) ease;
+}
+.room-friend:hover { border-color: var(--gold); }
+.room-friend.is-in { border-color: var(--pink); background: rgba(255, 123, 172, 0.18); }
+.room-friend.is-full { opacity: 0.45; cursor: not-allowed; }
+.room-friend .friend-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex: none; }
+.rf-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rf-name { font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.rf-name .title-badge { height: 16px; font-size: 10px; padding: 0 7px; flex: none; }
+.rf-sub {
+  font-size: 11px; color: var(--ink-faint);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rf-act { font-size: 11.5px; font-weight: 700; color: var(--gold); flex: none; }
+
+.room-seats { display: flex; flex-direction: column; gap: 10px; margin-top: 0; }
+.room-seat {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px;
+  border-radius: 16px; text-align: left;
+  background: rgba(255, 255, 255, 0.05); border: 1px dashed var(--glass-line);
+}
+.room-seat.is-filled { border-style: solid; border-color: var(--pink); background: rgba(255, 123, 172, 0.12); }
+.room-seat.is-me { border-color: var(--gold); background: rgba(255, 209, 102, 0.12); }
+.room-seat img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex: none; }
+.room-seat-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+/* 第二行：称号 + 关系 · 身家（挤在一行，身家压缩成"1.2万"这种，不占地方） */
+.seat-row { display: flex; align-items: center; gap: 7px; min-height: 19px; min-width: 0; }
+.seat-meta {
+  font-size: 11px; color: var(--ink-faint); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.seat-title-none { font-size: 11px; color: var(--ink-faint); flex: none; }
+.room-empty {
+  width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; flex: none;
+  justify-content: center; font-size: 12px; color: var(--ink-faint);
+  background: rgba(0, 0, 0, 0.25); border: 1px dashed rgba(255, 255, 255, 0.25);
+}
+.room-actions { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.room-actions .act-btn.go:disabled { background: linear-gradient(180deg, rgba(58, 36, 110, 0.8), rgba(28, 16, 54, 0.8)); color: rgba(255, 255, 255, 0.5); }
+
+/* 房间弹幕：只在"房间/等人"界面里飘，牌桌上不再有弹幕 */
+.room-danmaku {
+  position: relative; height: 152px; margin: 10px 0 4px; overflow: hidden;
+  border-radius: 16px; border: 1px solid var(--glass-line);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(124, 77, 255, 0.22), transparent 70%),
+    rgba(10, 6, 24, 0.55);
+}
+.room-dm-tip {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 12.5px; color: var(--ink-faint); text-align: center; padding: 0 24px; line-height: 1.7;
+}
+.room-dm-tip[hidden] { display: none; }
+.room-danmaku .danmaku-layer { top: 8px; height: 136px; }
+.room-chat-row { display: flex; gap: 8px; margin-top: 12px; }
+.room-chat-row input {
+  flex: 1; min-width: 0; height: 40px; padding: 0 14px; border-radius: 12px;
+  background: rgba(0, 0, 0, 0.28); border: 1px solid var(--glass-line); color: var(--ink);
+}
+.room-chat-row input:focus { outline: none; border-color: var(--gold); }
+.room-chat-row .btn { flex: none; }
+
+/* ---------------- 好友列表上的性别小标（♂ 蓝 / ♀ 粉） ---------------- */
+.gender-tag {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 5px; width: 15px; height: 15px; border-radius: 50%;
+  font-size: 11px; font-weight: 900; line-height: 1; vertical-align: middle;
+  border: 1px solid transparent;
+}
+.gender-tag.is-m { color: #8fd6ff; background: rgba(111, 214, 255, 0.16); border-color: rgba(111, 214, 255, 0.45); }
+.gender-tag.is-f { color: #ff9ec4; background: rgba(255, 158, 196, 0.16); border-color: rgba(255, 158, 196, 0.45); }
+
+/* =====================================================================
+ * 群聊（PRD §2.20）—— 好友面板里的第二个标签
+ * ===================================================================== */
+/* 面板标签条 */
+.panel-tabs { display: flex; gap: 6px; margin: -4px 0 12px; padding: 4px; border-radius: 99px;
+  background: rgba(0, 0, 0, 0.28); border: 1px solid var(--glass-line); align-self: flex-start; }
+.panel-tab {
+  position: relative; padding: 7px 22px; border-radius: 99px; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 800; letter-spacing: 1px; color: var(--ink-soft);
+  background: transparent; border: none;
+}
+.panel-tab.is-active { color: #2a1030; background: linear-gradient(180deg, #ffe6a8, #ffb03a); }
+.panel-tab .dot { top: 4px; right: 8px; }
+
+.groups-body { display: grid; grid-template-columns: 208px 1fr; gap: 14px; min-height: 380px; flex: 1; min-width: 0; }
+.groups-body[hidden] { display: none; }
+
+/* 左：群列表 */
+.group-list {
+  display: flex; flex-direction: column; gap: 6px; overflow: auto; max-height: 54vh;
+  padding-right: 4px; border-right: 1px dashed rgba(255, 255, 255, 0.12);
+}
+.gc-new { margin-bottom: 4px; }
+.group-item {
+  position: relative; display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 10px;
+  border-radius: 12px; cursor: pointer; font-family: inherit; color: var(--ink); text-align: left;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid transparent;
+}
+.group-item:hover { background: rgba(255, 255, 255, 0.12); }
+.group-item.is-active { background: rgba(255, 123, 172, 0.2); border-color: var(--pink); }
+.gi-emoji { flex: none; width: 30px; height: 30px; border-radius: 9px; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.28); }
+.gi-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.gi-name { font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gi-sub { font-size: 10.5px; color: var(--ink-faint); }
+
+/* 右：群窗口 */
+.group-main { display: flex; flex-direction: column; gap: 9px; min-width: 0; min-height: 0; }
+.gc-head { display: flex; align-items: center; gap: 10px; padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12); }
+.gc-head-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.gc-title { font-family: inherit; font-size: 15px; font-weight: 900; letter-spacing: 1px; color: var(--ink);
+  background: none; border: none; cursor: pointer; padding: 2px 4px; border-radius: 8px; max-width: 240px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc-title:hover { background: rgba(255, 255, 255, 0.1); }
+.gc-count { font-size: 11.5px; color: var(--ink-faint); flex: none; }
+.gc-head-right { margin-left: auto; display: flex; gap: 6px; flex: none; }
+
+.gc-members { display: flex; gap: 8px; flex-wrap: wrap; }
+.gc-member { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 46px; }
+.gc-member img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--glass-line); }
+.gc-member.is-me img { border-color: var(--gold); }
+.gc-member i { font-style: normal; font-size: 10px; color: var(--ink-faint); max-width: 46px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc-kick {
+  position: absolute; top: -4px; right: 2px; width: 15px; height: 15px; border-radius: 50%; padding: 0;
+  font-size: 9px; line-height: 1; cursor: pointer; color: #fff; border: none;
+  background: rgba(255, 92, 92, 0.85); opacity: 0; transition: opacity var(--t-fast) ease;
+}
+.gc-member:hover .gc-kick { opacity: 1; }
+/* 点成员头像 = 快捷 @他（数据属性 data-at 由 ui/groups.js 加上） */
+.gc-member[data-at] { cursor: pointer; border-radius: 12px; padding: 3px 2px; transition: background var(--t-fast) ease; }
+.gc-member[data-at]:hover { background: rgba(255, 255, 255, 0.12); }
+.gc-member[data-at]:hover img { border-color: var(--gold); }
+.gc-member[data-at]:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.gc-log { flex: 1; max-height: 44vh; }
+.gc-msg { position: relative; display: flex; gap: 8px; align-items: flex-start; }
+.gc-msg.is-me { flex-direction: row-reverse; }
+.gc-avatar { flex: none; width: 30px; height: 30px; border-radius: 50%; object-fit: cover; margin-top: 16px; }
+.gc-body { min-width: 0; max-width: 78%; display: flex; flex-direction: column; gap: 3px; }
+.gc-msg.is-me .gc-body { align-items: flex-end; }
+.gc-who { font-size: 10.5px; color: var(--ink-faint); display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; }
+.gc-time { color: rgba(255, 255, 255, 0.32); }
+.gc-bubble {
+  padding: 7px 11px; border-radius: 12px; font-size: 12.5px; line-height: 1.5;
+  background: rgba(255, 255, 255, 0.12); color: var(--ink); word-break: break-word;
+  overflow-wrap: anywhere; white-space: normal;
+}
+.gc-msg.is-me .gc-bubble { background: linear-gradient(180deg, #ffd9a0, var(--pink)); color: #3a1030; }
+.gc-msg.is-ai { cursor: pointer; }
+.gc-msg.is-ai:hover .gc-bubble { background: rgba(255, 255, 255, 0.19); }
+.gc-reply-hint {
+  position: absolute; right: 2px; top: 16px; font-size: 10px; color: var(--gold);
+  opacity: 0; transition: opacity var(--t-fast) ease; pointer-events: none;
+}
+.gc-msg.is-ai:hover .gc-reply-hint { opacity: 1; }
+/* ★ 系统行（拍一拍那类）：居中一行小灰字，不带头像也不带气泡（和私聊 .chat-sys 同一口径） */
+.gc-msg.is-sys { display: block; }
+.gc-sys {
+  align-self: center; width: fit-content; max-width: 92%; margin: 2px auto; padding: 2px 10px;
+  border-radius: 99px; font-size: 11.5px; line-height: 1.6; color: var(--ink-faint);
+  background: rgba(0, 0, 0, 0.22); text-align: center; word-break: break-word;
+}
+.gc-quote {
+  font-size: 10.5px; color: var(--ink-faint); padding: 3px 8px; border-left: 2px solid var(--gold);
+  background: rgba(0, 0, 0, 0.22); border-radius: 6px; max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gc-replying {
+  margin-bottom: 6px; padding: 6px 10px; border-radius: 10px; font-size: 11.5px; color: var(--ink-soft);
+  background: rgba(0, 0, 0, 0.26); border-left: 2px solid var(--gold);
+  display: flex; align-items: center; gap: 6px;
+}
+/* 回复条只占一行：名字与引用正文都不许换行（正文已按 20 个字截断，这里再兜一层） */
+.gc-replying-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc-replying b { color: var(--gold); white-space: nowrap; }
+.gc-cancel-reply { margin-left: auto; background: none; border: none; color: var(--pink);
+  cursor: pointer; font-family: inherit; font-size: 11px; flex: none; }
+
+/* 建群 / 改名 / 邀请 的小浮层 */
+.gc-overlay {
+  position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  background: rgba(8, 3, 20, 0.66);
+}
+.gc-dialog {
+  width: min(340px, 88%); padding: 18px 20px; border-radius: 16px;
+  background: linear-gradient(168deg, rgba(70, 40, 112, 0.98), rgba(28, 16, 54, 0.98));
+  border: 1px solid var(--glass-line); box-shadow: var(--shadow-2);
+}
+.gc-dialog-title { margin: 0 0 12px; font-size: 15px; font-weight: 800; letter-spacing: 2px; }
+.gc-dialog input[type="text"] {
+  width: 100%; height: 38px; padding: 0 12px; border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28); border: 1px solid var(--glass-line); color: var(--ink);
+}
+.gc-dialog input[type="text"]:focus { outline: none; border-color: var(--gold); }
+.gc-hint { margin: 10px 0 6px; font-size: 11.5px; color: var(--ink-faint); }
+.gc-picker { display: flex; flex-direction: column; gap: 4px; max-height: 210px; overflow: auto; }
+.gc-pick { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 10px;
+  cursor: pointer; font-size: 12.5px; background: rgba(255, 255, 255, 0.05); }
+.gc-pick:hover { background: rgba(255, 255, 255, 0.12); }
+.gc-pick input { flex: none; }
+.gc-pick img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+.gc-dialog-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+
+/* 好友面板要能容纳这个绝对定位的浮层 */
+.friends-drawer { position: relative; }
+
+/* ---------------- 恋人（全局唯一） ---------------- */
+.lover-badge { margin-left: 5px; font-size: 12px; vertical-align: middle; }
+.lover-hint {
+  margin: 0 0 8px; padding: 6px 11px; border-radius: 10px; font-size: 11.5px;
+  color: #ffd0e2; background: rgba(255, 92, 138, 0.14); border: 1px solid rgba(255, 92, 138, 0.35);
+}
+.lover-hint.is-lover { color: #ffd0e2; background: rgba(255, 92, 138, 0.2); }
+
+/* =====================================================================
+ * 赠礼（用户拍板：商城「礼物」类 + 好友界面赠送，每天每位好友最多 3 次）
+ * ===================================================================== */
+/* 好友头部那个「🎁 赠送礼物」展开的小面板
+ * ★ 用户报的 bug：点开后聊天记录会整体下移。
+ *   根因：这个面板在文档流里（夹在头部和聊天记录之间），一展开就把下面的内容顶下去。
+ *   现在改成**浮在聊天区上方**的下拉层（绝对定位），聊天记录一动不动。
+ * ★ 既然浮在聊天上方，底色就必须是**实心**的（原来那层 8% 的金色透明会让聊天文字透出来）。
+ */
+.gift-pop {
+  position: absolute; left: 12px; right: 12px; top: 56px; z-index: 30;
+  max-height: 46vh; overflow: auto;
+  margin: 0; padding: 10px 12px; border-radius: 14px;
+  background: linear-gradient(168deg, rgba(70, 40, 112, 0.99), rgba(28, 16, 54, 0.99));
+  border: 1px solid rgba(255, 209, 102, 0.45);
+  box-shadow: var(--shadow-2);
+  animation: float-in var(--t-fast) ease both;
+}
+:root[data-theme="light"] .gift-pop {
+  background: var(--lt-surface);
+  border-color: var(--lt-line);
+  box-shadow: 0 10px 30px rgba(16, 24, 40, 0.18);
+}
+.gift-pop[hidden] { display: none; }
+.gift-pop-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12.5px; }
+.gift-pop-left { color: var(--ink-soft); font-size: 11.5px; }
+.gift-pop-left b { color: var(--gold); }
+.gift-pop-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.gift-opt {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px;
+  border: 1px solid var(--glass-line); background: var(--glass); color: var(--ink);
+  font-family: inherit; cursor: pointer; text-align: left;
+  transition: transform var(--t-fast) ease, border-color var(--t-fast) ease;
+}
+.gift-opt:hover:not(:disabled) { border-color: var(--gold); transform: translateY(-1px); }
+.gift-opt:disabled { opacity: 0.45; cursor: not-allowed; }
+.gift-emoji { font-size: 20px; flex: none; }
+.gift-name { font-size: 12.5px; font-weight: 700; }
+.gift-aff { font-size: 11px; color: var(--gold); font-weight: 700; margin-left: auto; flex: none; }
+.gift-stock { font-size: 11px; color: var(--ink-faint); flex: none; }
+.gift-pop-tip { margin-top: 8px; font-size: 11px; color: var(--ink-faint); line-height: 1.5; }
+
+/* 聊天里的**礼物卡**：赠礼消息一眼就能认出来（金边 + 礼物名 + 送/收） */
+.chat-msg.is-gift {
+  border: 1px solid rgba(255, 209, 102, 0.65);
+  background: rgba(255, 209, 102, 0.14);
+}
+.chat-gift { display: block; margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--gold); }
+
+/* 恋人保护（用户拍板：恋人不能直接删好友）：删除按钮变暗，点一下会提示"先分手" */
+.mini-btn.is-locked { opacity: 0.55; }
+.friend-name .lover-badge { filter: drop-shadow(0 0 6px rgba(255, 92, 138, 0.9)); }

@@ -1,0 +1,115 @@
+/* =====================================================================
+ * 五子棋 —— 棋盘 / 落子 / 对手信息 / 底部发言区
+ *
+ * 棋盘用"三条绝对定位的图层"叠出来（用户报过"线有粗有细、棋子没落在交叉点上"）：
+ *   .gmk-lines  横竖各 15 条 1px 的实线（用 div 画，保证每条都是 1px）
+ *   .gmk-cells  225 个透明点击区（**必须能接收点击**）
+ *   .gmk-stones 棋子层（pointer-events: none）
+ * 三个图层用的是**同一套坐标公式**：外圈留半格 PAD，交叉点间距 STEP。
+ *   PAD  = 100/15/2      = 3.3333%（棋盘宽度的百分比）
+ *   STEP = (100-2*PAD)/14 = 6.6667%
+ *  第 i 条线 / 第 i 列交叉点都在 PAD + i*STEP 处。
+ * ===================================================================== */
+#screen-gomoku { padding: 12px 18px 10px; overflow: hidden; }
+.gmk-stage {
+  flex: 1 1 auto; min-height: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  padding: 4px 6px 0;
+}
+.gmk-board-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; min-width: 0; max-height: 100%;
+}
+
+/**
+ * 棋盘尺寸要**同时**受宽高限制，否则在小窗口里会顶出屏幕、
+ * 把下面的「认输 / 返回大厅」和输入框挤到看不见的地方（用户报的"按钮跑到上面去了"）。
+ */
+.gmk-board {
+  --side: min(52vh, 70vw, 460px);
+  position: relative;
+  width: var(--side); height: var(--side);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.16), transparent 62%),
+    linear-gradient(160deg, #ecc48c, #dcaa68 55%, #cb9450);
+  border: 2px solid rgba(88, 56, 22, 0.6);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34), inset 0 0 34px rgba(120, 74, 30, 0.22);
+  touch-action: manipulation;
+}
+
+/* 1) 网格线：每条都是 1px 的实线（横 15 条 + 竖 15 条） */
+.gmk-lines { position: absolute; inset: 0; pointer-events: none; }
+.gmk-line { position: absolute; background: rgba(72, 44, 16, 0.72); }
+.gmk-line.is-h { height: 1px; transform: translateY(-0.5px); }
+.gmk-line.is-v { width: 1px; transform: translateX(-0.5px); }
+/* 星位（天元 + 四个角星） */
+.gmk-star {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(72, 44, 16, 0.85); transform: translate(-50%, -50%);
+}
+
+/* 2) 点击区：每格一个透明按钮（**没有 pointer-events:none**，否则点不动） */
+.gmk-cells { position: absolute; inset: 0; }
+.gmk-cell {
+  position: absolute; width: 6.4%; aspect-ratio: 1 / 1; padding: 0;
+  transform: translate(-50%, -50%); border: none; background: transparent;
+  border-radius: 50%; cursor: pointer;
+}
+.gmk-cell:hover:not(:disabled) { background: rgba(255, 255, 255, 0.3); }
+.gmk-cell:disabled { cursor: default; }
+
+/* 3) 棋子层 */
+.gmk-stones { position: absolute; inset: 0; pointer-events: none; }
+.gmk-stone {
+  position: absolute; width: 5.6%; aspect-ratio: 1 / 1; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: gmk-drop 130ms ease-out both;
+}
+.gmk-stone.is-black {
+  background: radial-gradient(circle at 34% 30%, #6d6d6d, #1c1c1c 62%, #000);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+.gmk-stone.is-white {
+  background: radial-gradient(circle at 34% 30%, #fff, #eef1f6 58%, #c2c8d3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.gmk-stone.is-last { outline: 2px solid var(--gold); outline-offset: 1px; }
+.gmk-stone.is-win { box-shadow: 0 0 0 2px #ff5c8a, 0 0 12px rgba(255, 92, 138, 0.95); }
+@keyframes gmk-drop {
+  from { transform: translate(-50%, -72%) scale(0.55); opacity: 0.25; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+.gmk-tip { font-size: 12.5px; color: var(--ink-soft); min-height: 18px; text-align: center; }
+
+/* 两侧：对手 / 自己（头像沿用全局 .seat-avatar 的尺寸，不再自己改 img 大小） */
+.gmk-side {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  width: 104px; position: relative;
+}
+.gmk-side .seat-avatar { width: 62px; height: 62px; }
+.gmk-side .seat-name { font-size: 13px; font-weight: 800; text-align: center; }
+.gmk-color { font-size: 11px; color: var(--ink-soft); }
+/* 气泡朝**外侧**：AI 的气泡在它头像左边，玩家的在玩家头像右边（用户要求） */
+.gmk-side .bubble { position: absolute; top: -2px; max-width: 170px; font-size: 12.5px; }
+.gmk-side-ai .bubble { right: calc(100% - 20px); }
+.gmk-side-me .bubble { left: calc(100% - 20px); top: 14px; }
+
+@media (max-width: 760px) {
+  .gmk-stage { flex-direction: column; gap: 4px; }
+  .gmk-side { flex-direction: row; width: auto; gap: 8px; }
+  .gmk-side .bubble { display: none; }
+  .gmk-board { --side: min(46vh, 92vw, 420px); }
+}
+
+/* 底部：按钮 + 发言区（输入框缩短、整体居中 —— 用户要求） */
+.gmk-actions {
+  flex: 0 0 auto; display: flex; gap: 10px; justify-content: center; align-items: center;
+  padding: 6px 12px 2px;
+}
+.gmk-chat {
+  flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: min(420px, 86vw); margin: 0 auto; padding: 6px 0 8px; position: relative;
+}
+.gmk-chat .quick-input { flex: 1; min-width: 0; }

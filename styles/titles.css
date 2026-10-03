@@ -1,0 +1,40 @@
+/* 称号徽章 + 称号面板 */
+/* 注意：文字是**深紫色**（配浅色徽章底），所以徽章**必须自带底色** ——
+   默认给一层灰蓝渐变兜底，免得哪个界面忘了画底色，变成深色字压深色底看不见
+   （排行榜就踩过这个坑：称号全是深色的，看不清）。 */
+.title-badge {
+  display: inline-flex; align-items: center; height: 19px; padding: 0 9px;
+  border-radius: 99px; font-size: 11px; font-weight: 800; color: #241033;
+  background: linear-gradient(92deg, #e6ecf5, #aab4c4);
+  letter-spacing: 0.5px; white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.title-badge[hidden] { display: none; }
+.title-badge.large { height: 24px; font-size: 13px; padding: 0 12px; }
+
+.title-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.title-card {
+  position: relative; padding: 12px 14px; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line);
+  transition: all var(--t-base) ease;
+}
+.title-card.is-locked { opacity: 0.62; }
+.title-card.is-equipped { border-color: var(--gold); box-shadow: var(--glow-gold); background: rgba(255, 209, 102, 0.12); }
+.title-card .tc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.title-card .tc-desc { font-size: 11.5px; color: var(--ink-faint); line-height: 1.5; }
+.title-card .tc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
+.title-card .tc-price { font-size: 12.5px; color: var(--gold); font-weight: 700; }
+.title-card .tc-state { font-size: 11.5px; color: var(--ink-faint); }
+.title-card .tc-btn {
+  font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer;
+  padding: 6px 12px; border-radius: 9px; color: #241033; border: none;
+  background: linear-gradient(180deg, #fff, var(--gold));
+}
+.title-card .tc-btn.ghost { background: rgba(255, 255, 255, 0.14); color: #fff; border: 1px solid var(--glass-line); }
+.title-card .tc-btn:disabled { filter: saturate(0.3) brightness(0.85); cursor: not-allowed; }
+.title-section { margin: 4px 0 10px; font-size: 12.5px; color: var(--ink-soft); letter-spacing: 1px; }
+.title-current {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin-bottom: 14px;
+  border-radius: 14px; background: rgba(255, 209, 102, 0.1); border: 1px dashed rgba(255, 209, 102, 0.45);
+  font-size: 13px;
+}
