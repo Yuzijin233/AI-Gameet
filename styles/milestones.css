@@ -1,0 +1,138 @@
+/* =====================================================================
+ * 里程碑面板（用户拍板）
+ * ---------------------------------------------------------------------
+ * 结构：标签（上） / 一行 2 个的列表（中，固定高度 + 滚轮滚动） / 进度条（下，固定）
+ * 语言：沿用项目现有的抽屉 + 卡片 + 标签那套；**不需要任何新贴图**
+ *   · 完成的里程碑 = 金边卡片 + 右上角分值
+ *   · 未完成 = 灰掉，条件显示 ？？？
+ *   · 进度条 4 个节点：可领（金色发光，可点）/ 已领（打勾） / 未达成（灰）
+ * ===================================================================== */
+
+.ms-drawer { display: flex; flex-direction: column; height: min(76vh, 640px); }
+.ms-drawer .drawer-body {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 0;
+}
+
+/* ---------------- 上面：标签 ---------------- */
+.ms-tabs {
+  flex: none; display: flex; flex-wrap: wrap; gap: 8px;
+}
+.ms-tab {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 15px; border-radius: 999px; cursor: pointer; font-family: inherit;
+  font-size: 13.5px; font-weight: 700; color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line);
+  transition: background var(--t-fast) ease, color var(--t-fast) ease, border-color var(--t-fast) ease;
+}
+.ms-tab:hover { background: rgba(255, 255, 255, 0.12); }
+.ms-tab.is-active { color: var(--gold); border-color: var(--gold); background: rgba(255, 209, 102, 0.14); }
+.ms-tab-count { font-size: 11.5px; font-weight: 800; opacity: .75; font-variant-numeric: tabular-nums; }
+
+/* ---------------- 中间：一行 2 个 + 固定高度滚动 ---------------- */
+.ms-list {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content; gap: 10px; align-content: start;
+  padding: 2px 6px 4px 2px;
+}
+.ms-item {
+  padding: 12px 14px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-line);
+  opacity: .62; /* 未达成：灰掉 */
+}
+.ms-item.is-done {
+  opacity: 1; border-color: rgba(255, 209, 102, 0.45);
+  background: linear-gradient(145deg, rgba(255, 209, 102, 0.13), rgba(255, 255, 255, 0.05));
+}
+.ms-item-head { display: flex; align-items: baseline; gap: 8px; }
+.ms-item-head b { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+.ms-item.is-done .ms-item-head b { color: var(--gold); }
+.ms-points {
+  margin-left: auto; flex: none; font-size: 12px; font-weight: 900;
+  padding: 1px 8px; border-radius: 99px;
+  color: var(--ink-soft); background: rgba(0, 0, 0, 0.22);
+}
+.ms-item.is-done .ms-points { color: #3a1030; background: linear-gradient(92deg, #ffe6a8, #ffb03a); }
+.ms-cond { margin-top: 6px; font-size: 12.5px; line-height: 1.6; color: var(--ink-faint); }
+.ms-item.is-done .ms-cond { color: var(--ink-soft); }
+.ms-when { margin-top: 5px; font-size: 11.5px; color: var(--ink-faint); }
+
+/* ---------------- 下面：进度条 + 四档 ---------------- */
+.ms-foot { flex: none; padding-top: 12px; border-top: 1px solid var(--glass-line); }
+.ms-progress-head {
+  display: flex; align-items: baseline; gap: 10px;
+  font-size: 13px; color: var(--ink-soft); margin-bottom: 20px;
+}
+.ms-progress-head b { font-size: 17px; font-weight: 900; color: var(--gold); }
+.ms-progress-hint { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--gold); }
+.ms-track {
+  position: relative; height: 6px; border-radius: 99px; margin: 0 26px 34px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.ms-track-fill {
+  position: absolute; inset: 0 auto 0 0; border-radius: 99px;
+  background: linear-gradient(90deg, #ffd166, #ff9ec4);
+  transition: width var(--t-base) ease;
+}
+.ms-node {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 0; background: none; border: none; font-family: inherit; cursor: pointer;
+}
+.ms-node:disabled { cursor: default; }
+.ms-node-dot {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  font-size: 11px; font-weight: 900; color: var(--ink-faint);
+  background: rgba(0, 0, 0, 0.4); border: 2px solid var(--glass-line);
+}
+.ms-node-label {
+  font-size: 11px; color: var(--ink-faint); white-space: nowrap;
+  transform: translateY(2px);
+}
+.ms-node.is-claimed .ms-node-dot { color: #fff; background: var(--green); border-color: transparent; }
+.ms-node.is-ready .ms-node-dot {
+  color: #3a1030; background: linear-gradient(180deg, #ffe6a8, #ffb03a); border-color: #fff3c4;
+  animation: ms-ready 1.6s ease-in-out infinite;
+}
+.ms-node.is-ready .ms-node-label { color: var(--gold); font-weight: 800; }
+@keyframes ms-ready {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.55); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 209, 102, 0); }
+}
+.ms-tiers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ms-tier {
+  padding: 8px 10px; border-radius: 10px; text-align: center;
+  background: rgba(255, 255, 255, 0.05); border: 1px dashed var(--glass-line);
+}
+.ms-tier b { display: block; font-size: 13px; font-weight: 900; color: var(--ink-soft); }
+.ms-tier span { display: block; margin-top: 3px; font-size: 11px; line-height: 1.5; color: var(--ink-faint); }
+.ms-tier.is-ready { border-style: solid; border-color: var(--gold); background: rgba(255, 209, 102, 0.12); }
+.ms-tier.is-ready b { color: var(--gold); }
+.ms-tier.is-claimed { border-style: solid; border-color: transparent; background: rgba(75, 181, 136, 0.14); }
+.ms-tier.is-claimed b { color: var(--green); }
+
+/* =====================================================================
+ * 鎏金 / 午后会客厅 这两套是**浅色底**，上面那套"深色底 + 白字"的取值要反过来。
+ * 用同样的语义色（--gold / --ink / --ink-soft / --ink-faint / --green），只换透明度方向。
+ * ===================================================================== */
+:root[data-theme="gilded"] .ms-tab,
+:root[data-theme="social"] .ms-tab { background: #f2efe4; border-color: #ddd5b8; }
+:root[data-theme="gilded"] .ms-tab:hover,
+:root[data-theme="social"] .ms-tab:hover { background: #eae5d4; }
+:root[data-theme="gilded"] .ms-tab.is-active,
+:root[data-theme="social"] .ms-tab.is-active { background: #f1eacb; border-color: #c5b379; }
+:root[data-theme="gilded"] .ms-item,
+:root[data-theme="social"] .ms-item { background: #f8f7f0; border-color: #e4ddc2; }
+:root[data-theme="gilded"] .ms-item.is-done,
+:root[data-theme="social"] .ms-item.is-done { background: linear-gradient(145deg, #fdf4da, #f6f1e0); border-color: #cdb478; }
+:root[data-theme="gilded"] .ms-points,
+:root[data-theme="social"] .ms-points { color: #7d7458; background: #eae4cd; }
+:root[data-theme="gilded"] .ms-track,
+:root[data-theme="social"] .ms-track { background: #ddd8c4; }
+:root[data-theme="gilded"] .ms-node-dot,
+:root[data-theme="social"] .ms-node-dot { color: #8a8168; background: #f6f4ea; border-color: #d8cfae; }
+:root[data-theme="gilded"] .ms-tier,
+:root[data-theme="social"] .ms-tier { background: #f8f7f0; }
+:root[data-theme="gilded"] .ms-node.is-ready .ms-node-dot,
+:root[data-theme="social"] .ms-node.is-ready .ms-node-dot { color: #42320f; }
+:root[data-theme="gilded"] .ms-node.is-claimed .ms-node-dot { color: #fffef6; }

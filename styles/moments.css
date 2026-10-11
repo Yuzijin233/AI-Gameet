@@ -1,0 +1,93 @@
+/* =====================================================================
+ * 友圈 —— 社交面板里的第三个标签（"朋友圈"那种）
+ *   说说：左侧头像，右侧上面名称、下面内容
+ *   评论：只有名称、没有头像，一行一条 `某某：XXXXXXXX`
+ * ===================================================================== */
+.moments-body { display: block; min-height: 380px; flex: 1; min-width: 0; overflow: hidden; }
+.moments-body[hidden] { display: none; }
+
+.moments-wrap { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.moments-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-bottom: 8px; border-bottom: 1px dashed rgba(255, 255, 255, 0.14);
+}
+.moments-title { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--ink-soft); }
+
+/* 说说列表 */
+.moments-list { display: flex; flex-direction: column; gap: 12px; overflow: auto; max-height: 56vh; padding-right: 4px; }
+
+.moment {
+  position: relative;
+  display: flex; gap: 11px; padding: 12px; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-line);
+}
+/* 右上角的删除：只删这一条说说（hover 才明显，免得误点） */
+.moment-del {
+  position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; padding: 0;
+  border-radius: 50%; cursor: pointer; font-family: inherit; font-size: 11px; line-height: 1;
+  color: var(--ink-soft); background: transparent; border: none; opacity: 0.55;
+}
+.moment-del:hover { color: #fff; background: rgba(255, 92, 92, 0.85); opacity: 1; }
+.moment-avatar {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+}
+.moment-main { flex: 1; min-width: 0; }
+.moment-name { font-size: 13px; font-weight: 800; color: var(--gold); letter-spacing: 0.5px; }
+.moment-text {
+  margin-top: 4px; font-size: 14px; line-height: 1.6; color: var(--ink);
+  word-break: break-word; white-space: pre-wrap;
+}
+.moment-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.mm-time { font-size: 11px; color: var(--ink-soft); }
+.mm-btn {
+  font-family: inherit; font-size: 12px; padding: 2px 6px; border-radius: 8px; cursor: pointer;
+  color: var(--ink-soft); background: transparent; border: none;
+}
+.mm-btn:hover { color: #fff; background: var(--glass-strong); }
+.mm-btn.is-on { color: var(--pink); }
+
+/* 评论：**没有头像**，一行一条 */
+.moment-comments {
+  margin-top: 8px; padding: 8px 10px; border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22); display: flex; flex-direction: column; gap: 4px;
+}
+.mc-row { display: flex; align-items: baseline; gap: 8px; font-size: 12.5px; line-height: 1.6; }
+.mc-text { flex: 1; min-width: 0; color: var(--ink); word-break: break-word; white-space: pre-wrap; }
+/* 评论里的名字：蓝色、可点 → 跳到和这个人的私聊 */
+.mc-name {
+  font-family: inherit; font-size: 12.5px; font-weight: 800; padding: 0;
+  color: #6FD6FF; background: transparent; border: none; cursor: pointer;
+}
+.mc-name:hover { text-decoration: underline; }
+.mc-name.is-me { color: #9fd0ff; cursor: default; }
+.mc-quote { color: var(--ink-soft); }
+.mc-reply {
+  flex: 0 0 auto; font-family: inherit; font-size: 11px; padding: 1px 6px; border-radius: 8px;
+  cursor: pointer; color: var(--ink-soft); background: transparent; border: none;
+}
+.mc-reply:hover { color: #fff; background: var(--glass-strong); }
+
+/* 评论输入行：普通多行框 —— 一行写满了自然折到下一行，**不要滚动条箭头** */
+.moment-input-row { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end; }
+.moment-input {
+  flex: 1; min-width: 0; padding: 7px 11px; border-radius: 14px; font-family: inherit; font-size: 13px;
+  line-height: 1.5; color: var(--ink); background: var(--glass); border: 1px solid var(--glass-line);
+  resize: none; overflow: hidden; max-height: none; box-sizing: border-box;
+}
+.moment-input:focus { outline: none; border-color: var(--gold); }
+
+/* 发布浮层里的多行输入 */
+.gc-dialog textarea {
+  width: 100%; box-sizing: border-box; resize: vertical; min-height: 96px; padding: 10px 12px;
+  border-radius: 12px; font-family: inherit; font-size: 14px; line-height: 1.6;
+  color: var(--ink); background: var(--glass); border: 1px solid var(--glass-line);
+}
+.gc-dialog textarea:focus { outline: none; border-color: var(--gold); }
+
+/* 弹窗里的一行说明（建群那边也在用，别删） */
+.gc-hint { margin-top: 8px; font-size: 11.5px; line-height: 1.6; color: var(--ink-soft); }
+
+/* 面板里的确认弹窗（删除说说）：只有标题 + 一行说明 + 两个按钮 */
+.ask-dialog { width: min(320px, 86vw); text-align: center; }
+.ask-text { margin: 0 0 4px; font-size: 12.5px; line-height: 1.7; color: var(--ink-soft); }

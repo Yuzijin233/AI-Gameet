@@ -1,0 +1,81 @@
+/* =====================================================================
+ * 新手引导（用户拍板）
+ * ---------------------------------------------------------------------
+ * 交互方式：**用遮罩压暗其他部分、把要讲的那一块挖出来**（spotlight）。
+ *
+ * 遮罩是**四个色块**（上 / 下 / 左 / 右）拼出来的一个矩形空洞：
+ *   · 洞里（left..right, top..bottom）没有任何覆盖层 → 玩家能直接点目标
+ *   · 四块都 `pointer-events: auto` → 洞外一律点不动（不会误触其他按钮）
+ *   · **点四块里的任意一块 = "跳过这一步 / 停止引导"**（见 onboard.js 的绑事件），
+ *     所以玩家永远不会被卡住
+ *
+ * 高亮圈（.ob-ring）只画一圈描边，本身不吃点击。
+ * ===================================================================== */
+
+.ob-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 300; /* 必须比面板 / 收银台 / 抽奖弹窗都高 */
+  display: none;
+}
+.ob-layer.is-open { display: block; }
+
+.ob-shade {
+  position: absolute;
+  background: rgba(8, 12, 10, 0.62);
+  cursor: pointer;
+}
+.ob-ring {
+  position: absolute;
+  border: 2px solid rgba(255, 209, 102, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.22), 0 0 26px rgba(255, 209, 102, 0.45);
+  pointer-events: none;
+  animation: ob-pulse 1.8s ease-in-out infinite;
+  transition: left .18s ease, top .18s ease, width .18s ease, height .18s ease;
+}
+@keyframes ob-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .62; }
+}
+
+.ob-bubble {
+  position: absolute;
+  max-width: min(330px, 84vw);
+  padding: 15px 17px 13px;
+  border-radius: 14px;
+  background: #fffdf6;
+  border: 1px solid #d8c9a2;
+  box-shadow: 0 18px 44px rgba(10, 24, 18, 0.34);
+  color: #35493c;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.ob-title { font-size: 15.5px; font-weight: 800; letter-spacing: .4px; margin-bottom: 6px; color: #2b4a38; }
+.ob-text { color: #4a5c4e; }
+.ob-foot {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 12px; padding-top: 10px; border-top: 1px dashed #e0d7bb;
+}
+.ob-step { font-size: 12px; color: #95917f; margin-right: auto; font-variant-numeric: tabular-nums; }
+.ob-btn {
+  padding: 6px 13px; border-radius: 999px; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 700; color: #5a5647; background: #f2efe4; border: 1px solid #e0dac6;
+}
+.ob-btn:hover { background: #eae5d4; }
+.ob-btn.primary {
+  color: #fffdf4; border-color: transparent;
+  background: linear-gradient(180deg, #4d8a6d, #35674e);
+}
+.ob-bubble.is-below .ob-arrow { top: -7px; }
+.ob-arrow {
+  position: absolute; left: 50%; width: 12px; height: 12px;
+  background: #fffdf6; border-left: 1px solid #d8c9a2; border-top: 1px solid #d8c9a2;
+  transform: translateX(-50%) rotate(45deg);
+}
+.ob-foot-right { margin-left: auto; }
+
+/* 引导跟随的窗口缩放 / 滚动 */
+@media (prefers-reduced-motion: reduce) {
+  .ob-ring { animation: none; }
+}

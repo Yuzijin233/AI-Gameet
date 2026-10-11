@@ -1,0 +1,39 @@
+# =====================================================================
+#  AI-Gameet · .gitignore
+#  原则：**只提交源码**。打包产物、个人存档、开发临时文件一律不进库。
+# =====================================================================
+
+# ---------- 打包产物（tools/pack-green.mjs 生成，用户拍板不上传） ----------
+AI-Gameet_绿色版_*.zip
+AI-Gameet_绿色版_*/
+/game.js
+dist/
+build/
+
+# ---------- 本机存档：进度、AI 记忆属于个人数据 ----------
+# 只保留 save/README.md（说明这个目录是干嘛的），其余一概忽略
+save/*
+!save/README.md
+
+# ---------- 开发 / 验证临时文件 ----------
+.dsh-tmp/
+叫地主_浅色对比.png
+smoke-crash.txt
+node_modules/
+*.log
+
+# ---------- 外部开发工具的痕迹（不属于游戏本身） ----------
+# .rainbot 是本地开发助手的工作目录：里面有代码索引库（几 MB）和一批截图，
+#   rainbot.jsonc 是它的配置 —— 都和"能不能跑起来"无关，所以不进库。
+.rainbot/
+rainbot.jsonc
+
+# ---------- 敏感文件：自己的 API Key 只放本地，别提交 ----------
+# 想在本地固定一个默认 Key，请在 src/config.js 的 apiKey 里填，
+# 然后用 git update-index --skip-worktree src/config.js 让 git 忽略这处本地改动。
+src/config.local.js
+
+# ---------- 系统杂物 ----------
+Thumbs.db
+Desktop.ini
+.DS_Store

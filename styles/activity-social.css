@@ -1,0 +1,222 @@
+/* 新主题专用福利美术。装饰默认隐藏，原主题保持原样。 */
+.campaign-kicker, .campaign-art, .campaign-spotlight { display: none; }
+:root[data-theme="social"] .act-drawer { position: relative; }
+:root[data-theme="social"] .act-nav { border-color: #d2d9cb; border-right-style: solid; }
+:root[data-theme="social"] .act-nav-item { background: transparent; border-radius: 11px; }
+:root[data-theme="social"] .act-nav-item:hover { background: #e7ecdf; }
+:root[data-theme="social"] .act-nav-item.is-active {
+  color: #295841; background: #dde8d6; border-color: #c0d3b5; box-shadow: inset 3px 0 #508060;
+}
+:root[data-theme="social"] .act-nav-item.is-gold.is-active { background: #eee3c8; border-color: #dac697; box-shadow: inset 3px 0 #b38b45; }
+:root[data-theme="social"] .act-nav-item.is-fire.is-active { background: #efdfd0; border-color: #dec0a4; box-shadow: inset 3px 0 #b87650; }
+:root[data-theme="social"] .ani-emoji { background: #e7eadc; border: 1px solid #d8dfca; filter: saturate(.65); }
+:root[data-theme="social"] .ani-badge { color: #748365; }
+:root[data-theme="social"] .act-nav-item.is-active .ani-badge { color: #60814c; }
+:root[data-theme="social"] .act-main {
+  --campaign-deep: #315e4b; --campaign-mid: #65836a; --ribbon-art: #427c65;
+  --campaign-line: #b8c7a7;
+}
+:root[data-theme="social"] .act-main[data-campaign="first"],
+:root[data-theme="social"] .act-main[data-campaign="wheel"] {
+  --campaign-deep: #51462d; --campaign-mid: #8c784d; --ribbon-art: #82614c; --campaign-line: #d8c090;
+}
+:root[data-theme="social"] .act-main[data-campaign="pack"],
+:root[data-theme="social"] .act-main[data-campaign="discount"] {
+  --campaign-deep: #774c37; --campaign-mid: #b17f5c; --ribbon-art: #a35c42; --campaign-line: #d4b591;
+}
+:root[data-theme="social"] .act-main[data-campaign="tiers"] {
+  --campaign-deep: #4d4f68; --campaign-mid: #858298; --ribbon-art: #7e718e; --campaign-line: #c4bfd0;
+}
+
+/* 右栏 hero 是完整的活动海报：深色画面焦点 + 金色实物奖励 + 真实数值。 */
+:root[data-theme="social"] .act-detail-head {
+  isolation: isolate; overflow: hidden; min-height: 206px; padding: 25px 24px;
+  align-items: flex-start; border: 1px solid var(--campaign-line); border-radius: 16px;
+  background: radial-gradient(ellipse at 100% 0, #f6dfab30, transparent 65%),
+    linear-gradient(120deg, var(--campaign-deep), var(--campaign-mid));
+  box-shadow: inset 0 1px #ffffff26, 0 8px 16px #2e493515; color: #f9eccd;
+}
+:root[data-theme="social"] .act-detail-head::before {
+  content: ''; position: absolute; inset: 7px; border: 1px solid #f7eac622; border-radius: 11px; pointer-events: none; z-index: -1;
+}
+:root[data-theme="social"] .act-detail-head::after {
+  content: ''; position: absolute; width: 230px; height: 230px; right: -100px; top: -100px;
+  border: 36px solid #fcf0b90b; border-radius: 50%; z-index: -1; pointer-events: none;
+}
+:root[data-theme="social"] .adh-emoji { display: none; }
+:root[data-theme="social"] .adh-text { position: relative; z-index: 2; width: 65%; }
+:root[data-theme="social"] .campaign-kicker {
+  display: block; font: 600 9px/1.6 system-ui, sans-serif; letter-spacing: 2px; color: #ecdfba; margin-bottom: 10px;
+}
+:root[data-theme="social"] .act-title {
+  background: none; color: #fff7df; filter: none; transform: none;
+  font-size: 25px; letter-spacing: 1px; line-height: 1.25; font-weight: 800; text-shadow: 0 2px 2px #23362820;
+}
+:root[data-theme="social"] .act-detail-head .act-sub { color: #e1e3cb; font-size: 11px; line-height: 1.8; margin-top: 8px; }
+:root[data-theme="social"] .act-detail-head .act-sub b { color: #f9d99b !important; }
+:root[data-theme="social"] .campaign-spotlight {
+  display: block; margin-top: 17px; color: #ffe3a2; font-size: 27px; font-weight: 800;
+  letter-spacing: -.5px; line-height: 1.2; font-variant-numeric: tabular-nums;
+}
+:root[data-theme="social"] .campaign-spotlight small {
+  display: block; color: #e1dfc7; font-size: 10px; font-weight: 400; margin-top: 7px; letter-spacing: .5px;
+}
+:root[data-theme="social"] .campaign-art {
+  display: block; position: absolute; right: -6px; bottom: 4px; width: 45%; max-height: 196px;
+  pointer-events: none; filter: drop-shadow(0 8px 6px #182e3120); z-index: 1;
+}
+:root[data-theme="social"] .act-ribbon {
+  color: #755027; background: #f5d895; padding: 5px 13px; font-size: 10px; letter-spacing: .5px;
+  transform: none; border-radius: 0 14px 0 9px; z-index: 3; box-shadow: 0 2px 8px #49371420;
+}
+:root[data-theme="social"] .act-ribbon.is-fire { color: #7c3d23; background: #f1c998; }
+
+/* 奖励不再是一排小标签：是有材质、有稀有度色带、有数量的展示卡。 */
+:root[data-theme="social"] .act-panel {
+  padding: 14px; border: 1px solid #dce0ce; border-radius: 14px; background: #faf9f0;
+}
+:root[data-theme="social"] .act-gift-title { color: #3b5b3b; background: none; filter: none; transform: none; font-size: 17px; letter-spacing: .5px; }
+/* =====================================================================
+ * ★ 活动中心的奖励：图标与字都放大（用户拍板："所有活动奖励的字体和图标都要放大一些"）
+ *   —— 图标 29 → 38px、小号 23 → 30px、奖励文字 12 → 14px（小号 11 → 12.5px）、
+ *      格子也跟着高一点，免得大字挤在一起。
+ * ===================================================================== */
+:root[data-theme="social"] .act-rewards { gap: 9px; margin-top: 13px; }
+:root[data-theme="social"] .act-reward {
+  position: relative; overflow: hidden; flex: 1 1 96px; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+  min-height: 104px; padding: 15px 9px 12px; border-radius: 10px;
+  color: #536047; background: linear-gradient(145deg, #fffff8, #e9ecdc);
+  border: 1px solid #d4ddc3; box-shadow: inset 0 1px #fff, 0 3px 6px #3a482008;
+  text-align: center; line-height: 1.5; font-weight: 600; font-size: 14px;
+}
+:root[data-theme="social"] .act-reward::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #a4b68b;
+}
+:root[data-theme="social"] .act-reward > i {
+  font-size: 38px; line-height: 1.15; filter: drop-shadow(0 3px 2px #6c62252b); font-style: normal;
+}
+/* ★ 用户拍板：奖励图标换成商城那套图（改名卡 / 道具 / 礼物 / 装扮 / 开心豆）——
+   `has-art` 是"这一格用的是图"的标记，尺寸按图标定，不吃 emoji 那档字号 */
+:root[data-theme="social"] .act-reward.has-art > .asset-art { width: 42px; height: 42px; filter: drop-shadow(0 3px 2px #6c62252b); }
+:root[data-theme="social"] .act-reward.has-art > .bean-mark { width: 42px; height: 42px; filter: drop-shadow(0 3px 2px #6c62252b); }
+/* 签到那九天：图标夹在文字中间，做成行内小图 */
+:root[data-theme="social"] .act-reward.is-bean { font-size: 13px; }
+:root[data-theme="social"] .act-reward.is-bean .bean-mark { width: 19px; height: 19px; vertical-align: -3px; }
+:root[data-theme="social"] .act-reward[data-reward-kind="beans"] {
+  background: linear-gradient(145deg, #fff8df, #f0e3bb); border-color: #dcc58d; color: #85602b;
+}
+:root[data-theme="social"] .act-reward[data-reward-kind="beans"]::after { background: #c8a461; }
+:root[data-theme="social"] :is(.act-reward[data-reward-kind="frame"], .act-reward[data-reward-kind="title"], .act-reward[data-reward-kind="cardBack"]) {
+  background: linear-gradient(145deg, #f5effa, #e5daee); border-color: #cbb8d6; color: #745a81;
+}
+:root[data-theme="social"] :is(.act-reward[data-reward-kind="frame"], .act-reward[data-reward-kind="title"], .act-reward[data-reward-kind="cardBack"])::after { background: #a188b2; }
+:root[data-theme="social"] .act-rewards.small .act-reward { min-height: 84px; padding: 11px 6px; font-size: 12.5px; flex-basis: 74px; }
+:root[data-theme="social"] .act-rewards.small .act-reward > i { font-size: 30px; }
+:root[data-theme="social"] .act-rewards.small .act-reward.has-art > .asset-art { width: 34px; height: 34px; }
+/* 转盘格子里的小图标 / 抽奖结果页的大图标 */
+:root[data-theme="social"] .wheel-label .asset-art { width: 30px; height: 30px; }
+:root[data-theme="social"] .wheel-label .bean-mark { width: 30px; height: 30px; }
+:root[data-theme="social"] .wr-emoji.has-art .asset-art { width: 96px; height: 96px; }
+:root[data-theme="social"] .wr-emoji.has-art .bean-mark { width: 96px; height: 96px; }
+:root[data-theme="social"] .act-note { font-size: 11px; line-height: 1.8; color: #778369; margin-top: 12px; }
+:root[data-theme="social"] [data-cd] {
+  color: #8d6a32; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .5px;
+}
+:root[data-theme="social"] .act-detail-head [data-cd] { color: #ffe2a3; }
+:root[data-theme="social"] .act-action { margin-top: 15px; padding-bottom: 3px; }
+:root[data-theme="social"] .act-main .act-btn.go {
+  background: linear-gradient(180deg, #f7e4b4, #e4bf70); border: 1px solid #cbaa60;
+  color: #61441d; box-shadow: inset 0 1px #fff8da, 0 3px 0 #be9e57, 0 6px 12px #a47c3426;
+  border-radius: 10px; letter-spacing: 1px;
+}
+:root[data-theme="social"] .act-main .act-btn.go:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ffedc0, #eec779); color: #61441d; transform: translateY(-1px);
+  box-shadow: inset 0 1px #fff8da, 0 3px 0 #be9e57, 0 7px 18px #a47c3433;
+}
+:root[data-theme="social"] .act-main .act-btn.go:active:not(:disabled) { transform: translateY(2px); box-shadow: inset 0 1px #fff8da; }
+:root[data-theme="social"] .act-main .act-btn.go:disabled {
+  background: #e4e7d9; color: #748167; border-color: #d0d7c1; box-shadow: none; opacity: 1; cursor: not-allowed;
+}
+:root[data-theme="social"] .act-action .act-btn.big { min-width: 210px; }
+:root[data-theme="social"] .act-subtabs { border-radius: 10px; }
+:root[data-theme="social"] .act-subtab { border-radius: 7px; }
+:root[data-theme="social"] .act-subtab.is-active { background: #fafbf1; color: #396344; box-shadow: 0 1px 4px #314f2c15; }
+:root[data-theme="social"] .act-subtab.is-active i { color: #8e7540; }
+
+/* 签到日历、限时双礼包、累计档位沿用原有排列。 */
+:root[data-theme="social"] [data-campaign="signin"] .act-reward { flex-basis: 70px; font-size: 14px; color: #80612e; }
+:root[data-theme="social"] [data-campaign="signin"] .act-reward > i { font-size: 10px; color: #809071; filter: none; }
+:root[data-theme="social"] .act-reward.is-today { background: linear-gradient(145deg, #fff3cb, #ead198); border-color: #bea05c; box-shadow: 0 3px 9px #99702d19; }
+:root[data-theme="social"] .act-pack { background: linear-gradient(160deg, #fffaf0, #f0e6d2); border: 1px solid #d7c29c; padding: 14px 12px; position: relative; }
+:root[data-theme="social"] .ap-name { color: #76542d; }
+:root[data-theme="social"] .ap-emoji { font-size: 24px; }
+:root[data-theme="social"] .act-pack .act-deal { padding: 8px 0; border-bottom: 1px dashed #d9c9a3; }
+:root[data-theme="social"] .act-pack .act-btn { margin-top: auto; }
+:root[data-theme="social"] .act-pack .act-rewards { margin-bottom: 14px; }
+:root[data-theme="social"] .act-now { color: #8d622b; font-size: 24px; }
+:root[data-theme="social"] .act-off { color: #a26b43; background: #efdfc7; border-radius: 5px; padding: 3px 7px; }
+:root[data-theme="social"] .act-tier { background: linear-gradient(140deg, #f7f4fa, #eae6ef); border-color: #d1c9dc; padding: 12px; }
+:root[data-theme="social"] .act-tier.is-ready { background: #f8eccc; border-color: #c5a261; box-shadow: 0 3px 10px #98733216; }
+:root[data-theme="social"] .at-yuan { color: #776083; }
+:root[data-theme="social"] .act-tier.is-ready .at-yuan { color: #99732d; }
+:root[data-theme="social"] .act-tier.is-done { opacity: .76; }
+
+/* 转盘：不修改分区/指针角度，保留 4200ms 旋转逻辑。 */
+:root[data-theme="social"] .act-panel.is-wheel {
+  background: radial-gradient(ellipse at 50% 40%, #f9e6b8, #f2eddd 70%); border-color: #dbcfad;
+}
+:root[data-theme="social"] .wheel { border-color: #bc974f; box-shadow: 0 0 0 5px #f4e3b6, 0 0 0 6px #c3a263, 0 10px 25px #785b3033; }
+:root[data-theme="social"] .wheel-face {
+  --wheel-jackpot: #e5b865; --wheel-even: #f7ecd0; --wheel-odd: #ddc394;
+}
+:root[data-theme="social"] .wheel-label { color: #66512f; }
+:root[data-theme="social"] .wheel-label.is-limited { color: #766080; }
+:root[data-theme="social"] .wheel-label.is-jackpot { color: #945125; text-shadow: none; }
+:root[data-theme="social"] .wheel-go { color: #594421; border-color: #fff2c9; background: radial-gradient(circle at 30% 25%, #fff3cc, #d7ac59); box-shadow: 0 3px 12px #785b3040; }
+:root[data-theme="social"] .wheel-ptr { border-top-color: #9a7437; filter: drop-shadow(0 2px 2px #785b3033); }
+/* ★ 用户拍板：转盘格子的图标再大一点（豆子 / 道具 / 改名卡 / 装扮都是图）
+   —— 尺寸统一在下面那组"格子图标"里给，避免同一个选择器写两遍 */
+/* ★ 用户拍板：左边活动列表的字与图标放大（桌面页那边原来钉在 15px，这里统一抬一档） */
+:root[data-theme="social"] .act-nav-item { padding: 13px 12px; gap: 11px; }
+:root[data-theme="social"] .ani-emoji { width: 42px; height: 42px; border-radius: 11px; font-size: 22px; }
+:root[data-theme="social"] .ani-name { font-size: 17px; }
+:root[data-theme="social"] .ani-badge { font-size: 13.5px; }
+/* ★ 用户拍板：转盘下面那行说明里的豆子小图也要变大（原来是 1.25em 的行内小图） */
+:root[data-theme="social"] .wheel-foot { font-size: 13.5px; }
+:root[data-theme="social"] .wheel-foot .bean-mark { width: 22px; height: 22px; vertical-align: -4px; }
+:root[data-theme="social"] .wheel-tip { font-size: 13px; }
+:root[data-theme="social"] .wr-card {
+  background: radial-gradient(ellipse at 50% 25%, #fff5d4, transparent 65%), #f7f1df;
+  border: 1px solid #d8c085; box-shadow: 0 20px 80px #293d2540;
+}
+:root[data-theme="social"] .wr-title { color: #9b7632; }
+:root[data-theme="social"] .wr-text { color: #805d23; }
+:root[data-theme="social"] .wr-card.is-big { box-shadow: 0 0 70px #f7d27866, 0 20px 80px #293d2540; }
+
+/* 领取成功仅为视觉反馈，不自行发奖；真实到账后才创建此层。 */
+:root[data-theme="social"] .claim-result {
+  position: absolute; inset: 0; z-index: 75; display: flex; align-items: center; justify-content: center;
+  background: #233c2c99; backdrop-filter: blur(6px); border-radius: inherit; padding: 20px;
+}
+:root[data-theme="social"] .claim-card {
+  width: min(390px, 100%); position: relative; overflow: hidden; text-align: center; padding: 28px 24px;
+  color: #4c5134; border: 1px solid #dec180; border-radius: 20px;
+  background: radial-gradient(ellipse at 50% 0, #fff0bd, transparent 70%), #f9f5e7;
+  box-shadow: 0 0 65px #f2d18426, 0 20px 55px #10291840;
+  animation: claim-arrive 360ms cubic-bezier(.2,.8,.2,1) both;
+}
+:root[data-theme="social"] .claim-card .campaign-art { position: relative; width: 180px; height: 134px; right: auto; bottom: auto; margin: -10px auto 6px; }
+:root[data-theme="social"] .claim-card h3 { margin: 0 0 8px; font-size: 23px; color: #866325; letter-spacing: 3px; }
+:root[data-theme="social"] .claim-card p { font-size: 12px; color: #817c60; }
+:root[data-theme="social"] .claim-rewards { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px 0; }
+:root[data-theme="social"] .claim-rewards span { color: #8b6329; background: #f1e2bb; border: 1px solid #dbc38b; padding: 10px 14px; border-radius: 10px; font-size: 15px; font-weight: 700; }
+@keyframes claim-arrive { from { opacity: 0; transform: translateY(12px) scale(.94); } to { opacity: 1; transform: none; } }
+@media (max-width: 650px) {
+  :root[data-theme="social"] .campaign-art { opacity: .22; width: 60%; }
+  :root[data-theme="social"] .adh-text { width: 100%; }
+  :root[data-theme="social"] .act-title { font-size: 22px; }
+  :root[data-theme="social"] .campaign-spotlight { font-size: 23px; }
+  :root[data-theme="social"] .act-detail-head { padding: 22px 16px; }
+  :root[data-theme="social"] .claim-card .campaign-art { opacity: 1; }
+}

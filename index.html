@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN" data-tex="1" data-theme="social">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gameet · 聊得来，玩得到一起</title>
+  <meta name="description" content="AI-Gameet · 社交-桌游平台：斗地主 / 小猫钓鱼 / 五子棋，AI 人设对手会聊天、会记人、会怼人。" />
+  <link rel="icon" type="image/svg+xml" href="assets/ui/logo-social.svg" />
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/lobby.css" />
+  <link rel="stylesheet" href="styles/table.css" />
+  <link rel="stylesheet" href="styles/panels.css" />
+  <link rel="stylesheet" href="styles/titles.css" />
+  <link rel="stylesheet" href="styles/friends.css" />
+  <link rel="stylesheet" href="styles/danmaku.css" />
+  <link rel="stylesheet" href="styles/fishing.css" />
+  <link rel="stylesheet" href="styles/gomoku.css" />
+  <link rel="stylesheet" href="styles/activity.css" />
+  <link rel="stylesheet" href="styles/moments.css" />
+  <!-- ★ 里程碑面板（左侧导航里的「里程碑」） -->
+  <link rel="stylesheet" href="styles/milestones.css" />
+    <link rel="stylesheet" href="styles/theme-light.css" />
+    <link rel="stylesheet" href="styles/theme-social.css" />
+    <!-- ★ 「鎏金」：里程碑 200 分奖励的风格（午后会客厅的金色版本） -->
+    <link rel="stylesheet" href="styles/theme-gilded.css" />
+    <link rel="stylesheet" href="styles/table-social.css" />
+    <link rel="stylesheet" href="styles/activity-social.css" />
+  <link rel="stylesheet" href="styles/home-social.css" />
+  <!-- ★ 新手引导的遮罩与气泡（放在最后，保证盖在面板之上） -->
+  <link rel="stylesheet" href="styles/onboard.css" />
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- ======================= 加载页 ======================= -->
+  <section id="screen-loading" class="screen is-active">
+    <div class="loading-box">
+      <img class="loading-logo logo-dark" src="assets/ui/logo-dark.svg" alt="AI-Gameet" />
+      <img class="loading-logo logo-light" src="assets/ui/logo-light.svg" alt="" />
+      <img class="loading-logo logo-social" src="assets/ui/logo-social.svg" alt="Gameet" />
+      <h1 class="loading-title"><span class="classic-copy">AI-Gameet</span><span class="social-copy">Gameet</span></h1>
+      <p class="loading-sub"><span class="classic-copy">社交-桌游平台 · 会怼人的 AI 对手</span><span class="social-copy">聊得来，玩得到一起</span></p>
+      <div class="progress"><div class="progress-bar" id="loading-bar"></div></div>
+      <p class="loading-tip" id="loading-tip">正在洗牌…</p>
+    </div>
+  </section>
+
+  <!-- ======================= AI 邀请玩家打牌（画面上部） ======================= -->
+  <div id="invite-layer" class="invite-layer" hidden></div>
+
+  <!-- ======================= 首次进入：设置性别 + 姓名 ======================= -->
+  <section id="screen-setup" class="screen">
+    <div class="setup-box" id="setup-box"></div>
+  </section>
+
+  <!-- ======================= 匹配中（AI 模式的过场） ======================= -->
+  <section id="screen-matching" class="screen">
+    <div class="match-box">
+      <div class="match-seats" id="match-seats"></div>
+      <p class="match-tip" id="match-tip">正在匹配…</p>
+      <p class="match-skip">点一下跳过</p>
+    </div>
+  </section>
+
+  <!-- ======================= 游戏大厅 ======================= -->
+  <section id="screen-lobby" class="screen">
+    <aside class="social-sidebar" aria-label="桌面导航">
+      <button class="social-account" type="button" data-proxy="btn-lobby-avatar" data-page-key="profile" title="我的主页 · 头像、装扮与主题">
+        <span class="social-account-face" data-player-frame><img id="social-lobby-avatar" alt="我的头像" /></span>
+        <span><b id="social-lobby-name">玩家</b><span class="title-badge" id="social-lobby-title" hidden></span><small>我的主页 <i aria-hidden="true">›</i></small></span>
+      </button>
+      <button class="social-wallet" type="button" data-proxy="nav-shop"><img class="bean-mark" src="assets/ui/bean-social.svg" alt="" /><span>开心豆</span><b id="social-lobby-beans">0</b><i aria-hidden="true">＋</i></button>
+      <nav class="social-side-nav">
+        <button class="is-active" type="button" data-social-home data-page-key="home" aria-current="page"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#home" /></svg><span>相聚</span></button>
+        <button type="button" data-proxy="nav-friends" data-page-key="social"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#chat" /></svg><span>社交</span><em id="social-friend-dot" hidden></em></button>
+        <button type="button" data-proxy="nav-rank" data-page-key="rank"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#rank" /></svg><span>排行榜</span></button>
+        <button type="button" data-proxy="nav-shop" data-page-key="shop"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#shop" /></svg><span>商城</span></button>
+        <button type="button" data-proxy="nav-activity" data-page-key="activity"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#gift" /></svg><span>活动中心</span><em id="social-act-dot" hidden></em></button>
+        <button type="button" data-proxy="nav-milestones" data-page-key="milestones"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#milestone" /></svg><span>里程碑</span><em id="social-ms-dot" hidden></em></button>
+      </nav>
+      <div class="social-side-bottom">
+        <button type="button" data-proxy="btn-mail" data-page-key="mail"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#mail" /></svg><span>邮箱</span><em id="social-mail-dot" hidden></em></button>
+        <button type="button" data-proxy="btn-lobby-settings" data-page-key="settings"><svg aria-hidden="true"><use href="assets/ui/icons-social.svg#settings" /></svg><span>设置</span></button>
+        <div class="social-side-brand"><img src="assets/ui/logo-social.svg" alt="" /><b>Gameet</b></div>
+      </div>
+    </aside>
+    <div class="social-lobby-head">
+      <h2 id="desktop-page-title">相聚</h2>
+      <span class="social-header-brand">Gameet</span>
+    </div>
+    <header class="topbar">
+      <div class="user-chip">
+        <button class="user-avatar-btn" id="btn-lobby-avatar" type="button" title="点一下改头像 / 头像框" data-player-frame>
+          <img class="user-avatar" id="lobby-avatar" alt="我的头像" />
+        </button>
+        <div class="user-meta">
+          <span class="user-name" id="lobby-name">玩家</span>
+          <button class="title-entry" id="btn-lobby-titles" type="button" title="我的称号">
+            <span class="title-badge" id="lobby-title" hidden></span>
+            <span class="title-entry-empty" id="lobby-title-empty">未佩戴称号</span>
+            <span class="title-entry-go">›</span>
+          </button>
+          <span class="user-beans" id="lobby-beans">💰 0</span>
+        </div>
+        <button class="mini-btn" id="btn-edit-name" title="修改昵称">改名</button>
+        <button class="mini-btn" id="btn-lobby-settings" title="设置">⚙️ 设置</button>
+      </div>
+      <div class="brand brand-right">
+        <div class="brand-text">
+          <h1><span class="classic-copy">AI-Gameet</span><span class="social-copy">Gameet</span></h1>
+          <p><span class="classic-copy">社交-桌游平台</span><span class="social-copy">聊得来，玩得到一起</span></p>
+        </div>
+        <img class="brand-logo logo-dark" src="assets/ui/logo-dark.svg" alt="" />
+        <img class="brand-logo logo-light" src="assets/ui/logo-light.svg" alt="" />
+        <img class="brand-logo logo-social" src="assets/ui/logo-social.svg" alt="" />
+      </div>
+    </header>
+
+    <main class="lobby-main">
+      <section class="social-home-hero">
+        <div class="social-hero-copy">
+          <h1>来，玩一局。</h1>
+          <p>斗地主、小猫钓鱼，还是五子棋？</p>
+          <div class="social-hero-actions"><button type="button" data-social-invite>邀请好友</button><button type="button" data-social-discover>认识新朋友 ↗</button></div>
+        </div>
+        <svg class="social-hero-art" viewBox="0 0 420 190" aria-hidden="true">
+          <ellipse cx="214" cy="161" rx="159" ry="12" fill="#afa2b4" opacity=".16"/>
+          <g transform="translate(58 27) rotate(-13 47 61)"><rect width="94" height="126" rx="13" fill="#faf9f1" stroke="#c9cdbf"/><path d="M47 31c-12 17-27 23-27 38 0 16 18 18 27 5 9 13 27 11 27-5 0-15-15-21-27-38m-3 40-7 24h21l-7-24" fill="#4e745b"/></g>
+          <g transform="translate(185 40) rotate(8 61 44)"><path d="M16 0h91a16 16 0 0 1 16 16v48a16 16 0 0 1-16 16H56L31 102V80H16A16 16 0 0 1 0 64V16A16 16 0 0 1 16 0Z" fill="#a999b9"/><circle cx="39" cy="38" r="5" fill="#f9f6ec"/><circle cx="79" cy="38" r="5" fill="#f9f6ec"/><path d="M45 54q14 12 28 0" stroke="#f9f6ec" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+          <circle cx="321" cy="137" r="26" fill="#365441"/><circle cx="356" cy="133" r="24" fill="#f9f5e9" stroke="#cac5b6"/>
+          <path d="m161 21 3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="#bea26a"/>
+        </svg>
+      </section>
+      <section class="block">
+        <h2 class="block-title"><span class="block-dot"></span><span class="classic-copy">玩法与模式</span><span class="social-copy">选择游戏</span></h2>
+        <div class="game-list">
+          <button class="game-card is-active" type="button" id="game-ddz">
+            <span class="game-emoji">🃏</span>
+            <span class="game-name">斗地主</span>
+            <span class="game-tag">可玩</span>
+            <span class="social-game-desc">三人对局 · 经典牌局</span>
+          </button>
+          <button class="game-card" type="button" id="game-fishing">
+            <span class="game-emoji">🐱</span>
+            <span class="game-name">小猫钓鱼</span>
+            <span class="game-tag">休闲</span>
+            <span class="social-game-desc">双人对局 · 轻松翻牌</span>
+          </button>
+          <button class="game-card" type="button" id="game-gomoku">
+            <span class="game-emoji">⚫</span>
+            <span class="game-name">五子棋</span>
+            <span class="game-tag">休闲</span>
+            <span class="social-game-desc">双人对局 · 连五获胜</span>
+          </button>
+        </div>
+
+        <div class="mode-switch" id="mode-switch">
+          <label class="mode-opt">
+            <input type="radio" name="play-mode" value="ai" checked />
+            <span class="mode-face">
+              <b><span class="classic-copy">AI 模式</span><span class="social-copy">遇见牌友</span></b>
+              <small><span class="classic-copy">人设对手 · 会说话会怼人</span><span class="social-copy">AI 角色 · 边玩边聊</span></small>
+            </span>
+          </label>
+          <label class="mode-opt">
+            <input type="radio" name="play-mode" value="bot" />
+            <span class="mode-face">
+              <b><span class="classic-copy">机器模式</span><span class="social-copy">独自练习</span></b>
+              <small><span class="classic-copy">纯规则引擎 · 安静快速</span><span class="social-copy">安静一局 · 随时开玩</span></small>
+            </span>
+          </label>
+          <label class="mode-opt">
+            <input type="radio" name="play-mode" value="room" />
+            <span class="mode-face">
+              <b><span class="classic-copy">房间模式</span><span class="social-copy">好友组局</span></b>
+              <small>邀请好友 · 人满开局</small>
+            </span>
+          </label>
+        </div>
+
+        <!-- 洗牌 / 不洗牌（不洗牌 = 原序新牌只切几次、不彻底洗乱） -->
+        <div class="deal-row" id="deal-row">
+          <div class="chip-group" id="deal-switch">
+            <button class="chip is-active" data-shuffle="1" type="button">洗牌</button>
+            <button class="chip" data-shuffle="0" type="button">不洗牌</button>
+          </div>
+        </div>
+
+        <div class="relief-row" id="relief-row"></div>
+      </section>
+
+      <section class="block">
+        <h2 class="block-title"><span class="block-dot"></span><span id="room-block-title">选择场次</span></h2>
+        <div class="room-list" id="room-list"></div>
+      </section>
+    </main>
+    <section id="desktop-page-host" aria-labelledby="desktop-page-title" hidden></section>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn" id="nav-friends" type="button"><span class="nav-ico">👥</span>社交<i class="dot is-num" id="friend-dot" hidden>0</i></button>
+      <button class="nav-btn" id="nav-rank" type="button"><span class="nav-ico">🏆</span>排行榜</button>
+      <button class="nav-btn" id="nav-shop" type="button"><span class="nav-ico ico-shop"></span>商城</button>
+      <button class="nav-btn" id="nav-activity" type="button"><span class="nav-ico">🎪</span>活动<i class="dot" id="act-dot" hidden></i></button>
+      <button class="nav-btn" id="nav-milestones" type="button"><span class="nav-ico">🎖️</span>里程碑<i class="dot" id="ms-dot" hidden></i></button>
+    </nav>
+
+    <!-- 邮箱：右下角一个 📧 就够（活动奖励发到这里） -->
+    <button class="mail-fab" id="btn-mail" type="button" title="邮箱">
+      📧<i class="dot" id="mail-dot" hidden></i>
+    </button>
+  </section>
+
+  <!-- ======================= 牌桌 ======================= -->
+  <section id="screen-table" class="screen">
+    <header class="table-top">
+      <div class="tt-left">
+        <span class="pill" id="room-pill">场次</span>
+        <span class="pill ghost" id="round-pill">第 1 局</span>
+      </div>
+      <div class="tt-center">
+        <span class="multi-label">本局倍数</span>
+        <span class="multi-value" id="multi-value">1</span>
+        <div class="multi-factors" id="multi-factors"></div>
+      </div>
+      <div class="tt-right">
+        <span class="pill ghost" id="beans-pill">0 豆</span>
+        <button class="icon-btn ico-settings" id="btn-table-settings" title="设置" type="button"></button>
+        <button class="icon-btn ico-quit" id="btn-quit" title="退出对局" type="button">✕</button>
+      </div>
+    </header>
+
+    <div class="table-stage">
+      <div class="felt"></div>
+      <div class="seat seat-left" id="seat-2"></div>
+      <div class="seat seat-right" id="seat-1"></div>
+
+      <div class="bottom-area" id="bottom-area">
+        <div class="bottom-label">底牌</div>
+        <div class="bottom-cards" id="bottom-cards"></div>
+      </div>
+
+      <div class="play-zone">
+        <div class="play-slot slot-2" id="play-2"></div>
+        <div class="play-slot slot-1" id="play-1"></div>
+        <div class="play-slot slot-0" id="play-0"></div>
+      </div>
+
+      <div class="status-bar" id="status-bar">正在发牌…</div>
+      <div class="effect-layer" id="effect-layer"></div>
+    </div>
+
+    <div class="table-bottom">
+      <!-- 操作行：只在轮到你出牌时出现，且位于手牌上方 -->
+      <div class="action-row" id="action-row" hidden>
+        <button class="act-btn" id="btn-pass" type="button">不出</button>
+        <button class="act-btn" id="btn-hint" type="button">提示</button>
+        <button class="act-btn go" id="btn-play" type="button" disabled>出牌</button>
+        <button class="act-btn" id="btn-reset" type="button">重选</button>
+      </div>
+
+      <div class="bottom-row">
+        <div class="me" id="me">
+          <div class="me-avatar-wrap" data-player-frame>
+            <img class="me-avatar" id="me-avatar" alt="" />
+            <span class="me-count" id="me-count">17</span>
+            <span class="badge-landlord" id="me-landlord" hidden>地主</span>
+          </div>
+          <div class="me-meta">
+            <span class="me-name" id="me-name">你</span>
+            <span class="title-badge" id="me-title" hidden></span>
+            <span class="me-beans" id="me-beans">💰 0</span>
+          </div>
+          <div class="bubble bubble-self" id="bubble-0" hidden></div>
+        </div>
+
+        <div class="hand-area" id="hand-area"></div>
+
+        <div class="chat-quick">
+          <input class="quick-input" id="quick-input" type="text" maxlength="30" placeholder="说点什么…（回车发送）" />
+          <button class="icon-btn" id="btn-emoji" title="表情 / 道具" type="button">😀</button>
+          <button class="icon-btn ico-mic mic-btn" id="btn-mic" title="点一下开始语音输入（可以连续说话）" type="button"></button>
+          <div class="emoji-pop" id="emoji-pop" hidden>
+            <div class="pop-row">
+              <button class="pop-item tool" id="tool-btn-flower" data-tool="flower" type="button">🌸 鲜花<b id="tool-left-flower">0</b></button>
+              <button class="pop-item tool" id="tool-btn-tomato" data-tool="tomato" type="button">🍅 番茄<b id="tool-left-tomato">0</b></button>
+              <button class="pop-item tool" id="tool-btn-egg" data-tool="egg" type="button">🥚 鸡蛋<b id="tool-left-egg">0</b></button>
+              <button class="pop-item tool" id="tool-btn-cappuccino" data-tool="cappuccino" type="button">☕ 卡布奇诺<b id="tool-left-cappuccino">0</b></button>
+            </div>
+            <div class="pop-row" id="emoji-list">
+              <button class="pop-item emoji" data-emoji="😀" type="button">😀</button>
+              <button class="pop-item emoji" data-emoji="😂" type="button">😂</button>
+              <button class="pop-item emoji" data-emoji="🤔" type="button">🤔</button>
+              <button class="pop-item emoji" data-emoji="😎" type="button">😎</button>
+              <button class="pop-item emoji" data-emoji="😭" type="button">😭</button>
+              <button class="pop-item emoji" data-emoji="👏" type="button">👏</button>
+              <button class="pop-item emoji" data-emoji="👍" type="button">👍</button>
+              <button class="pop-item emoji" data-emoji="🙏" type="button">🙏</button>
+              <button class="pop-item emoji" data-emoji="🔥" type="button">🔥</button>
+              <button class="pop-item emoji" data-emoji="🀄" type="button">🀄</button>
+            </div>
+            <button class="pop-item wide" id="pop-open-chat" type="button">打字 / 语音聊天…</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bid-bar" id="bid-bar" hidden>
+      <div class="bid-hint" id="bid-hint">轮到你叫地主</div>
+      <button class="btn primary" id="btn-bid-yes" type="button">叫地主</button>
+      <button class="btn ghost" id="btn-bid-no" type="button">不叫</button>
+    </div>
+
+    <div class="turn-timer" id="turn-timer" hidden>
+      <svg viewBox="0 0 44 44" aria-hidden="true">
+        <circle class="ring-bg" cx="22" cy="22" r="19"></circle>
+        <circle class="ring-fg" id="ring-fg" cx="22" cy="22" r="19"></circle>
+      </svg>
+      <span class="turn-timer-text" id="turn-timer-text">30</span>
+    </div>
+
+    <div class="hand-over-tip" id="hand-over-tip" hidden></div>
+  </section>
+
+  <!-- ======================= 小猫钓鱼 ======================= -->
+  <section id="screen-fishing" class="screen">
+    <header class="table-top">
+      <div class="tt-left">
+        <span class="pill" id="fish-title">🐱 小猫钓鱼</span>
+        <span class="pill ghost" id="fish-round">第 1 局</span>
+      </div>
+      <div class="tt-center">
+        <span class="multi-label">鱼篓比分</span>
+        <span class="multi-value" id="fish-score">0 : 0</span>
+        <span class="fish-multi" id="fish-multi">×1</span>
+      </div>
+      <div class="tt-right">
+        <span class="pill ghost" id="fish-beans">💰 0</span>
+        <button class="icon-btn ico-settings" id="btn-fish-settings" title="设置" type="button"></button>
+        <button class="icon-btn ico-quit" id="btn-fish-quit" title="返回大厅" type="button">✕</button>
+      </div>
+    </header>
+
+    <div class="fish-stage">
+      <div class="felt"></div>
+      <!-- 左上角记牌器：每个点数在牌堆里还剩几张 -->
+      <div class="fish-counter" id="fish-counter">
+        <span class="fc-title">记牌器</span>
+        <div class="fc-list" id="fish-counter-list"></div>
+      </div>
+
+      <div class="fish-side fish-side-ai">
+        <div class="seat-avatar">
+          <img id="fish-ai-avatar" alt="" />
+        </div>
+        <div class="seat-name" id="fish-ai-name">对手</div>
+        <div class="fish-piles">
+          <div class="fish-pile hand">
+            <div class="pile-cards" id="fish-ai-hand"></div>
+            <span class="pile-label">牌堆 <b id="fish-ai-count">26</b></span>
+          </div>
+          <div class="fish-pile catch">
+            <div class="pile-cards" id="fish-ai-catch"></div>
+            <span class="pile-label">🐟 鱼篓 <b id="fish-ai-score">0</b></span>
+          </div>
+        </div>
+        <div class="bubble left" id="fish-ai-bubble" hidden></div>
+      </div>
+
+      <div class="fish-center">
+        <div class="fish-table-cards" id="fish-table"></div>
+        <div class="fish-tip" id="fish-tip">点「翻牌」开始，钓到同点数的牌就进你的鱼篓</div>
+      </div>
+
+      <div class="fish-side fish-side-me">
+        <div class="seat-avatar">
+          <img id="fish-me-avatar" alt="" data-static-player-avatar />
+        </div>
+        <div class="seat-name"><span id="fish-me-name">你</span> <span class="title-badge" id="fish-me-title" hidden></span></div>
+        <div class="fish-piles">
+          <div class="fish-pile hand">
+            <div class="pile-cards" id="fish-me-hand"></div>
+            <span class="pile-label">牌堆 <b id="fish-me-count">26</b></span>
+          </div>
+          <div class="fish-pile catch">
+            <div class="pile-cards" id="fish-me-catch"></div>
+            <span class="pile-label">🐟 鱼篓 <b id="fish-me-score">0</b></span>
+          </div>
+        </div>
+        <div class="bubble left" id="fish-me-bubble" hidden></div>
+      </div>
+    </div>
+
+    <div class="fish-catch-bar" id="fish-catch-bar" hidden>
+      <span class="fcb-text" id="fish-catch-text">钓到了！</span>
+      <button class="act-btn go" id="btn-fish-take" type="button">收下</button>
+      <button class="act-btn" id="btn-fish-skip" type="button">先不收</button>
+    </div>
+
+    <div class="fish-actions">
+      <button class="act-btn go" id="btn-fish-play" type="button">翻 牌</button>
+      <button class="act-btn" id="btn-fish-auto" type="button">自动翻牌：关</button>
+      <button class="act-btn" id="btn-fish-again" type="button" hidden>再来一局</button>
+      <button class="act-btn" id="btn-fish-back" type="button">返回大厅</button>
+    </div>
+
+    <div class="chat-quick fish-chat">
+      <input class="quick-input" id="fish-quick-input" type="text" maxlength="30" placeholder="说点什么…（回车发送）" />
+      <button class="icon-btn" id="fish-emoji" title="表情 / 道具" type="button">😀</button>
+      <button class="icon-btn ico-mic mic-btn" id="fish-mic" title="点一下开始语音输入（可以连续说话）" type="button"></button>
+      <div class="emoji-pop" id="fish-emoji-pop" hidden>
+        <div class="pop-row">
+          <button class="pop-item tool" id="fish-tool-btn-flower" data-fish-tool="flower" type="button">🌸 鲜花<b id="fish-tool-left-flower">0</b></button>
+          <button class="pop-item tool" id="fish-tool-btn-tomato" data-fish-tool="tomato" type="button">🍅 番茄<b id="fish-tool-left-tomato">0</b></button>
+          <button class="pop-item tool" id="fish-tool-btn-egg" data-fish-tool="egg" type="button">🥚 鸡蛋<b id="fish-tool-left-egg">0</b></button>
+          <button class="pop-item tool" id="fish-tool-btn-cappuccino" data-fish-tool="cappuccino" type="button">☕ 卡布奇诺<b id="fish-tool-left-cappuccino">0</b></button>
+        </div>
+        <div class="pop-row">
+          <button class="pop-item emoji" data-fish-emoji="😀" type="button">😀</button>
+          <button class="pop-item emoji" data-fish-emoji="😂" type="button">😂</button>
+          <button class="pop-item emoji" data-fish-emoji="🤔" type="button">🤔</button>
+          <button class="pop-item emoji" data-fish-emoji="😎" type="button">😎</button>
+          <button class="pop-item emoji" data-fish-emoji="😭" type="button">😭</button>
+          <button class="pop-item emoji" data-fish-emoji="👏" type="button">👏</button>
+          <button class="pop-item emoji" data-fish-emoji="👍" type="button">👍</button>
+          <button class="pop-item emoji" data-fish-emoji="🐟" type="button">🐟</button>
+        </div>
+        <button class="pop-item wide" id="fish-open-chat" type="button">打字 / 语音聊天…</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 五子棋 ======================= -->
+  <section id="screen-gomoku" class="screen">
+    <header class="table-top">
+      <div class="tt-left">
+        <span class="pill" id="gmk-title">⚫ 五子棋</span>
+        <span class="pill ghost" id="gmk-room">中级场</span>
+      </div>
+      <div class="tt-center">
+        <span class="multi-label">手数</span>
+        <span class="multi-value" id="gmk-moves">0</span>
+      </div>
+      <div class="tt-right">
+        <span class="pill ghost" id="gmk-turn">轮到你</span>
+        <button class="icon-btn ico-settings" id="btn-gmk-settings" title="设置" type="button"></button>
+        <button class="icon-btn ico-quit" id="btn-gmk-quit" title="返回大厅" type="button">✕</button>
+      </div>
+    </header>
+
+    <div class="gmk-stage">
+      <div class="gmk-side gmk-side-ai">
+        <div class="seat-avatar"><img id="gmk-ai-avatar" alt="" /></div>
+        <div class="seat-name" id="gmk-ai-name">对手</div>
+        <div class="gmk-color" id="gmk-ai-color">执白</div>
+        <div class="bubble" id="gmk-ai-bubble" hidden></div>
+      </div>
+
+      <div class="gmk-board-wrap">
+        <div class="gmk-board" id="gmk-board">
+          <div class="gmk-lines" id="gmk-lines"></div>
+          <div class="gmk-cells" id="gmk-cells"></div>
+          <div class="gmk-stones" id="gmk-stones"></div>
+        </div>
+        <div class="gmk-tip" id="gmk-tip">点棋盘落子（横竖斜连成五子就赢）</div>
+      </div>
+
+      <div class="gmk-side gmk-side-me">
+        <div class="seat-avatar" data-player-frame><img id="gmk-me-avatar" alt="" /></div>
+        <div class="seat-name"><span id="gmk-me-name">你</span> <span class="title-badge" id="gmk-me-title" hidden></span></div>
+        <div class="gmk-color" id="gmk-me-color">执黑</div>
+        <div class="bubble" id="gmk-me-bubble" hidden></div>
+      </div>
+    </div>
+
+    <div class="gmk-actions">
+      <button class="act-btn" id="btn-gmk-resign" type="button">认输</button>
+      <button class="act-btn go" id="btn-gmk-again" type="button" hidden>再来一局</button>
+      <button class="act-btn" id="btn-gmk-back" type="button">返回大厅</button>
+    </div>
+
+    <div class="chat-quick gmk-chat">
+      <input class="quick-input" id="gmk-quick-input" type="text" maxlength="30" placeholder="说点什么…（回车发送）" />
+      <button class="icon-btn" id="gmk-emoji" title="表情 / 道具" type="button">😀</button>
+      <button class="icon-btn ico-mic mic-btn" id="gmk-mic" title="点一下开始语音输入（可以连续说话）" type="button"></button>
+      <div class="emoji-pop" id="gmk-emoji-pop" hidden>
+        <div class="pop-row">
+          <button class="pop-item tool" id="gmk-tool-btn-flower" data-gmk-tool="flower" type="button">🌸 鲜花<b id="gmk-tool-left-flower">0</b></button>
+          <button class="pop-item tool" id="gmk-tool-btn-tomato" data-gmk-tool="tomato" type="button">🍅 番茄<b id="gmk-tool-left-tomato">0</b></button>
+          <button class="pop-item tool" id="gmk-tool-btn-egg" data-gmk-tool="egg" type="button">🥚 鸡蛋<b id="gmk-tool-left-egg">0</b></button>
+          <button class="pop-item tool" id="gmk-tool-btn-cappuccino" data-gmk-tool="cappuccino" type="button">☕ 卡布奇诺<b id="gmk-tool-left-cappuccino">0</b></button>
+        </div>
+        <div class="pop-row">
+          <button class="pop-item emoji" data-gmk-emoji="😀" type="button">😀</button>
+          <button class="pop-item emoji" data-gmk-emoji="😂" type="button">😂</button>
+          <button class="pop-item emoji" data-gmk-emoji="🤔" type="button">🤔</button>
+          <button class="pop-item emoji" data-gmk-emoji="😎" type="button">😎</button>
+          <button class="pop-item emoji" data-gmk-emoji="😭" type="button">😭</button>
+          <button class="pop-item emoji" data-gmk-emoji="👏" type="button">👏</button>
+          <button class="pop-item emoji" data-gmk-emoji="👍" type="button">👍</button>
+          <button class="pop-item emoji" data-gmk-emoji="⚫" type="button">⚫</button>
+        </div>
+        <button class="pop-item wide" id="gmk-open-chat" type="button">打字 / 语音聊天…</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="panel-layer" id="panel-layer"></div>
+  <div class="toast-layer" id="toast-layer"></div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

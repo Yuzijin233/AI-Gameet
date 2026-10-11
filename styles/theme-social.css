@@ -1,0 +1,733 @@
+/* 午后会客厅 · 独立主题。只覆写视觉，不改变原有网格、座位和导航布局。
+ * 原版 tokens / theme-light 不修改；移除 data-theme="social" 即完整还原。
+ */
+.logo-social, .social-copy, .social-head-note, .social-profile-tags, .social-discovery-note, .social-empty { display: none; }
+:root[data-theme="social"] .classic-copy { display: none; }
+:root[data-theme="social"] .social-copy { display: inline; }
+:root[data-theme="social"] {
+  color-scheme: light;
+  --bg-1: #dedddd; --bg-2: #e9e6e1; --bg-3: #d9dfdb;
+  --glass: #f4f2ef; --glass-strong: #e9e7e5; --glass-line: #d3d6d0;
+  --ink: #263d37; --ink-soft: #52685f; --ink-faint: #6e7d75;
+  --pink: #36796b; --pink-deep: #236254; --blue: #397689; --blue-deep: #285d70;
+  --gold: #986c2e; --gold-deep: #80551f; --green: #277454; --red: #ba4c48; --purple: #766186;
+  --accent: #24695f; --accent-soft: #dbe9e1;
+  --surface: #f7f5f1; --surface-raised: #fcfbf8; --sunken: #e9e7e6;
+  --radius-panel: 20px; --radius-btn: 12px; --radius-card: 8px;
+  --shadow-1: 0 3px 10px #263d370a, 0 12px 28px #263d3708;
+  --shadow-2: 0 24px 70px #18372e29, 0 2px 6px #18372e0d;
+  --glow-pink: none; --glow-gold: none;
+}
+:root[data-theme="social"] body {
+  background: radial-gradient(ellipse at 85% 0, #dbcce980, transparent 55%),
+    radial-gradient(ellipse at 0 100%, #bfd0c255, transparent 60%),
+    linear-gradient(125deg, #e4e2df, #eae6e1 52%, #dedfe0);
+}
+:root[data-theme="social"] #particles { opacity: 0; }
+:root[data-theme="social"] ::selection { background: #b8d7c8; color: #173c30; }
+:root[data-theme="social"] .bean-mark { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -.24em; object-fit: contain; flex: none; }
+:root[data-theme="social"] * { scrollbar-width: thin; scrollbar-color: #acbdb1 transparent; }
+:root[data-theme="social"] :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid #317c69; outline-offset: 3px;
+}
+:root[data-theme="social"] :is(.btn, .icon-btn, .user-chip, .block, .nav-btn, .drawer, .invite-card, .pill) {
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+
+/* 大厅：保留左玩法、右场次，上身份、下导航的空间关系。 */
+:root[data-theme="social"] .topbar { border-bottom: 1px solid #b9c9be80; }
+:root[data-theme="social"] .user-chip {
+  background: #f4f4ecb8; border-color: #ffffff80; border-radius: 16px; box-shadow: var(--shadow-1);
+}
+:root[data-theme="social"] .user-avatar { border-color: #fdfcf6; }
+:root[data-theme="social"] :is(.brand-text h1, .loading-title) {
+  color: #244d40; background: none; -webkit-text-fill-color: currentColor; letter-spacing: 1px;
+}
+:root[data-theme="social"] .brand-text p { color: #637a6b; }
+:root[data-theme="social"] :is(.logo-dark, .logo-light) { display: none; }
+:root[data-theme="social"] .logo-social { display: inline-block; border-radius: 0; box-shadow: none; }
+:root[data-theme="social"] .brand-text h1 { font-family: 'Segoe UI', system-ui, sans-serif; font-weight: 750; letter-spacing: -.8px; font-size: 26px; }
+:root[data-theme="social"] .loading-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 40px; letter-spacing: -1px; }
+:root[data-theme="social"] :is(.brand-logo, .loading-logo) { box-shadow: 0 4px 16px #254d4014; }
+:root[data-theme="social"] .loading-logo { animation: none; }
+:root[data-theme="social"] .progress { background: #bdcdc2; }
+:root[data-theme="social"] .progress-bar { background: linear-gradient(90deg, #326b58, #87ae96); }
+:root[data-theme="social"] .block {
+  background: #f0efebe8; border-color: #faf9f5; box-shadow: 0 8px 26px #284c3810, inset 0 1px #fff;
+}
+:root[data-theme="social"] .block-title { color: #536c5d; letter-spacing: 1px; }
+:root[data-theme="social"] .block-dot { border-radius: 2px; background: #61816c; box-shadow: none; }
+:root[data-theme="social"] :is(.game-card, .mode-face, .room-card) {
+  background: var(--surface-raised); border-color: #d2dbd0; box-shadow: 0 2px 3px #253d3105;
+}
+:root[data-theme="social"] .game-card:hover { background: #f0f4eb; }
+:root[data-theme="social"] .game-card.is-active {
+  background: linear-gradient(145deg, #e0ecdf, #f1f4e9); border-color: #65937b;
+  box-shadow: inset 0 0 0 1px #65937b30, 0 4px 12px #336d4f10;
+}
+:root[data-theme="social"] .game-emoji {
+  position: relative; width: 48px; height: 48px; font-size: 0; border-radius: 14px;
+  background: #e6eade; box-shadow: inset 0 1px #fff;
+}
+:root[data-theme="social"] #game-ddz .game-emoji::before {
+  content: '♠'; position: absolute; inset: 7px 12px; border: 1px solid #c2cdbf;
+  border-radius: 4px; background: #fffdf5; color: #3b6653; font: 24px/32px Georgia, serif;
+  transform: rotate(-12deg); box-shadow: 4px 2px 0 #7a9c8250;
+}
+:root[data-theme="social"] #game-fishing .game-emoji {
+  background: #e5ebec;
+}
+:root[data-theme="social"] #game-fishing .game-emoji::before {
+  content: ''; position: absolute; width: 25px; height: 17px; top: 17px; left: 9px;
+  border-radius: 65% 45% 45% 65%; background: radial-gradient(circle at 23% 42%, #edf5ee 0 2px, transparent 2.5px), #5a8590;
+}
+:root[data-theme="social"] #game-fishing .game-emoji::after {
+  content: ''; position: absolute; left: 31px; top: 17px; border-right: 8px solid #5a8590;
+  border-top: 8px solid transparent; border-bottom: 8px solid transparent;
+}
+:root[data-theme="social"] #game-gomoku .game-emoji { background: #ebe3d4; }
+:root[data-theme="social"] #game-gomoku .game-emoji::before {
+  content: ''; position: absolute; inset: 9px; background: repeating-linear-gradient(0deg, transparent 0 8px, #b7aa8b80 8px 9px), repeating-linear-gradient(90deg, transparent 0 8px, #b7aa8b80 8px 9px);
+}
+:root[data-theme="social"] #game-gomoku .game-emoji::after {
+  content: ''; position: absolute; width: 15px; height: 15px; left: 11px; top: 12px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #677368, #25372c); box-shadow: 12px 10px 0 #fffdf7, 13px 11px 2px #9e957f;
+}
+:root[data-theme="social"] .game-tag { color: #6c806c; }
+:root[data-theme="social"] .mode-opt input:checked + .mode-face {
+  color: #245b49; background: #e1ebe1; border-color: #83a08b; box-shadow: none;
+}
+:root[data-theme="social"] .mode-opt input:focus-visible + .mode-face { outline: 2px solid var(--accent); outline-offset: 3px; }
+:root[data-theme="social"] .room-card { background: linear-gradient(110deg, #fbfaf3, #eef2e8); }
+:root[data-theme="social"] .room-card:nth-child(2) { background: linear-gradient(110deg, #f9faf5, #e5edf0); }
+:root[data-theme="social"] .room-card:nth-child(3) { background: linear-gradient(110deg, #faf7ef, #eee3cf); }
+:root[data-theme="social"] .room-card::before { background: #729379; box-shadow: none; width: 3px; }
+:root[data-theme="social"] .room-card:nth-child(2)::before { background: #698d9b; }
+:root[data-theme="social"] .room-card:nth-child(3)::before { background: #aa8955; }
+:root[data-theme="social"] .room-card:hover { border-color: #9cb4a0; transform: none; box-shadow: 0 5px 18px #325b4115; }
+:root[data-theme="social"] .room-card.is-locked { opacity: .72; }
+:root[data-theme="social"] .room-stat { background: #dce4d950; border-color: #cbd7c7; color: #64745f; }
+:root[data-theme="social"] .room-stat b { color: #354b3a; }
+:root[data-theme="social"] .room-warn { color: #9a6640; }
+:root[data-theme="social"] .relief-row { color: #84632d; background: #ece6d5; border-color: #d6caa8; }
+:root[data-theme="social"] .relief-row.is-done { background: #e4e9df; color: #687763; border-color: #cbd5c5; }
+:root[data-theme="social"] .bottom-nav { border-top: 1px solid #bdcbbf80; }
+:root[data-theme="social"] .nav-btn { background: #f7f7eebf; border-color: #ffffff90; border-radius: 14px; box-shadow: var(--shadow-1); }
+:root[data-theme="social"] .nav-btn:hover { background: #fffef6; color: #236254; transform: translateY(-2px); }
+:root[data-theme="social"] .nav-ico { font-size: 0; background-image: none; display: inline-grid; place-items: center; }
+:root[data-theme="social"] .nav-ico::before { content: ''; width: 22px; height: 22px; background: currentColor; mask: var(--nav-icon) center / contain no-repeat; }
+:root[data-theme="social"] #nav-friends { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'%3E%3Cpath d='M20 11a8 8 0 0 1-8 8H7l-4 3V11a8 8 0 1 1 17 0Z'/%3E%3Cpath d='M7 10h9M7 14h6'/%3E%3C/svg%3E"); }
+:root[data-theme="social"] #nav-rank { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'%3E%3Cpath d='M7 3h10v7a5 5 0 0 1-10 0ZM7 5H3v3a4 4 0 0 0 4 4m10-7h4v3a4 4 0 0 1-4 4m-5 3v6m-4 0h8'/%3E%3C/svg%3E"); }
+:root[data-theme="social"] #nav-shop { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'%3E%3Cpath d='M5 8h14l2 13H3Zm3 0V6a4 4 0 0 1 8 0v2'/%3E%3C/svg%3E"); }
+:root[data-theme="social"] #nav-activity { --nav-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='round'%3E%3Cpath d='M3 8h18v5H3Zm2 5v8h14v-8M12 8v13M12 8C2 8 5 0 9 3c2 1 3 5 3 5Zm0 0c10 0 7-8 3-5-2 1-3 5-3 5Z'/%3E%3C/svg%3E"); }
+:root[data-theme="social"] :is(.dot, .dot.is-num, .unread-badge, .ani-dot) { background: #c35b50; box-shadow: none; }
+:root[data-theme="social"] .mail-fab { border-radius: 16px; background: #f4f2e9; box-shadow: var(--shadow-1); }
+
+/* 所有浮层、表单与交互状态使用同一套有对比度的表面。 */
+:root[data-theme="social"] :is(.panel-layer, .gc-overlay, .wheel-result) { background: #1e3b314d; backdrop-filter: blur(8px); }
+:root[data-theme="social"] :is(.drawer, .gc-dialog, .setup-box, .invite-card, .wr-card) {
+  background: var(--surface); color: var(--ink); border-color: #fbfbf1; box-shadow: var(--shadow-2);
+}
+:root[data-theme="social"] .drawer-head { border-bottom: 1px solid #dce2d8; padding-bottom: 12px; }
+:root[data-theme="social"] .drawer-title { letter-spacing: 1px; font-weight: 700; }
+:root[data-theme="social"] .drawer-close { color: #536a5b; background: #e4e9df; border-radius: 10px; }
+:root[data-theme="social"] .drawer-close:hover { color: #9c4137; background: #ecd8d0; }
+:root[data-theme="social"] :is(.btn, .btn.ghost, .act-btn, .mini-btn, .pill, .pill.ghost, .pop-item) {
+  background: #f9f9f2; color: #405b4a; border-color: #c4d0c2; box-shadow: 0 1px 2px #2c46200a;
+}
+:root[data-theme="social"] :is(.btn, .act-btn, .mini-btn, .pop-item):hover:not(:disabled) {
+  background: #e4ecdf; color: #254e38; box-shadow: 0 3px 10px #28452d10;
+}
+:root[data-theme="social"] :is(.btn.primary, .act-btn.go, .room-go, .shop-buy) {
+  background: linear-gradient(180deg, #397b68, #28634f); color: #fffef5; border: 1px solid #28634f;
+  box-shadow: inset 0 1px #ffffff26, 0 3px 8px #275b4922; border-radius: 11px;
+}
+:root[data-theme="social"] :is(.btn.primary, .act-btn.go, .room-go, .shop-buy):hover:not(:disabled) {
+  background: linear-gradient(180deg, #438673, #28634f); color: #fffef5; box-shadow: 0 5px 14px #275b492b;
+}
+:root[data-theme="social"] :is(.btn, .act-btn, .room-go, .shop-buy):disabled {
+  color: #6c7c6d; background: #dde3d7; border-color: #c6d0bf; opacity: .72; box-shadow: none;
+}
+:root[data-theme="social"] :is(.btn.danger, .key-status.bad, .mail-state.is-bad) { color: #b04a42; }
+:root[data-theme="social"] :is(.chip, .shop-tab, .panel-tabs, .act-subtabs) { background: #e8ebe1; border-color: #d2dacb; }
+:root[data-theme="social"] :is(.chip.is-active, .shop-tab.is-active, .panel-tab.is-active, .act-subtab.is-active, .setup-gender.is-active, .prof-gender.is-active) {
+  background: #d6e6d7; color: #29553d; border-color: #8faf93; box-shadow: none;
+}
+:root[data-theme="social"] :is(input[type="text"], input[type="password"], select, textarea, .quick-input, .room-chat-row input) {
+  background: #fbfcf6; color: #263d37; border-color: #c7d2c3;
+}
+:root[data-theme="social"] :is(input, textarea)::placeholder { color: #7f8d7d; }
+:root[data-theme="social"] select option { background: #f6f7ee; color: #263d37; }
+:root[data-theme="social"] :is(input, select, textarea):focus { border-color: #6b9881; box-shadow: 0 0 0 3px #327a5c13; }
+:root[data-theme="social"] .set-row { border-color: #d8dfd0; border-bottom-style: solid; }
+:root[data-theme="social"] :is(.toast, .emoji-pop, .gift-pop) { background: #fcfbf4; color: #304936; border-color: #c7d3bf; box-shadow: var(--shadow-2); }
+:root[data-theme="social"] .toast.good { color: #286443; }
+:root[data-theme="social"] .toast.bad { color: #ac483d; }
+:root[data-theme="social"] .toast.gold { color: #8b6024; border-color: #cbb17b; background: #fff2cf; }
+
+/* 社交：联系人列表、纸感气泡、安静的输入区域，拒绝霓虹/客服面板观感。 */
+:root[data-theme="social"] :is(.friend-list, .group-list, .friend-head, .gc-head, .moments-head) { border-color: #d1dacb; }
+:root[data-theme="social"] :is(.friend-list, .group-list) { border-right-style: solid; }
+:root[data-theme="social"] :is(.friend-head, .gc-head) { border-bottom-style: solid; }
+:root[data-theme="social"] :is(.friend-item, .group-item) { background: transparent; border-radius: 12px; }
+:root[data-theme="social"] :is(.friend-item, .group-item, .picker-item):hover { background: #e8eee1; }
+:root[data-theme="social"] :is(.friend-item.is-active, .group-item.is-active) {
+  background: #dde8da; border-color: #c8d9c4; box-shadow: inset 3px 0 #5f8c70;
+}
+:root[data-theme="social"] :is(.friend-search, .gc-quote, .gc-replying, .gi-emoji, .room-empty) { background: #e5eade; border-color: #d2dacc; }
+:root[data-theme="social"] .friend-search input { background: transparent; border: none; box-shadow: none; }
+:root[data-theme="social"] :is(.chat-log, .friend-log, .gc-log) { background: #eeece9; border-radius: 12px; }
+:root[data-theme="social"] :is(.friend-log, .gc-log) { padding: 12px 10px; }
+:root[data-theme="social"] :is(.chat-msg, .gc-bubble) { border-radius: 12px; box-shadow: 0 1px 3px #2647320b; line-height: 1.65; }
+:root[data-theme="social"] :is(.chat-msg.other, .gc-bubble, .typing-bubble) {
+  position: relative; color: #2d4435; background: #fffef8; border: 1px solid #d6dfcd; border-top-left-radius: 3px;
+}
+:root[data-theme="social"] :is(.chat-msg.self, .gc-msg.is-me .gc-bubble) {
+  color: #f8fff1; background: #3b7861; border: 1px solid #367257; border-top-right-radius: 3px; border-top-left-radius: 12px;
+}
+:root[data-theme="social"] .gc-msg.is-ai:hover .gc-bubble { background: #f9fbf2; }
+:root[data-theme="social"] :is(.chat-time, .chat-sys, .gc-sys, .gc-time) { background: transparent; color: #7a8078; }
+:root[data-theme="social"] .chat-msg.sys { background: #e5dfc9; color: #796538; }
+:root[data-theme="social"] .friend-input-wrap { border-top: 1px solid #dbe2d2; padding-top: 8px; }
+:root[data-theme="social"] :is(.chat-face, .friend-avatar, .gc-avatar) { border-radius: 11px; border-color: #c8d4bf; }
+:root[data-theme="social"] .gender-tag.is-m { color: #436c91; background: #e1eaf0; border-color: transparent; }
+:root[data-theme="social"] .gender-tag.is-f { color: #aa626b; background: #f0e1df; border-color: transparent; }
+:root[data-theme="social"] :is(.lover-badge, .lover-hint) { color: #aa626b; background: #efdfd8; border-color: #e5cec4; }
+:root[data-theme="social"] :is(.gc-member:hover, .gc-member[data-at]:hover, .gc-title:hover, .gc-pick:hover, .pop-item:hover) { background: #e3ebd9; }
+:root[data-theme="social"] :is(.picker-item, .gc-pick, .gift-opt, .room-seat, .room-friend) { background: #f9faf2; border-color: #d2dcc7; }
+:root[data-theme="social"] :is(.room-friend.is-in, .room-seat.is-filled) { background: #e0ebdb; border-color: #9bb68c; }
+:root[data-theme="social"] .room-friends { background: #e7ecdf; }
+:root[data-theme="social"] .room-danmaku {
+  background: linear-gradient(135deg, #304b3f, #223b33); --ink-faint: #c0d3c4;
+}
+:root[data-theme="social"] .moment { background: #fafbf3; border-color: #d7dfcd; box-shadow: 0 2px 6px #2b46220a; }
+:root[data-theme="social"] .moment-comments { background: #e8eddf; }
+:root[data-theme="social"] :is(.mc-name, .mc-name.is-me, .moment-name) { color: #3a7058; }
+:root[data-theme="social"] :is(.mm-btn, .mc-reply):hover { background: #dbe8cf; color: #2f633f; }
+:root[data-theme="social"] .moment-input { background: #fdfef8; }
+:root[data-theme="social"] .chat-msg.is-gift { color: #775321; background: linear-gradient(125deg, #f8edcf, #f1e0b1); border-color: #dbc697; }
+:root[data-theme="social"] .chat-gift { color: #896327; background: #e7d2a1; }
+
+/* 电脑端会话工作区：保留左联系人/右聊天，不套用手机式竖屏结构。 */
+:root[data-theme="social"] .friends-drawer { width: min(1040px, 94vw); }
+:root[data-theme="social"] .act-drawer { width: min(960px, 95vw); }
+:root[data-theme="social"] .social-head-note { display: inline; font-size: 11px; font-weight: 400; color: #81807d; margin-left: 14px; letter-spacing: 0; }
+:root[data-theme="social"] .friends-drawer > .panel-tabs { background: #e8e4ea; border-color: transparent; border-radius: 10px; }
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab { border-radius: 7px; font-weight: 600; letter-spacing: 0; }
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab.is-active { background: #fdfbf8; color: #355c46; box-shadow: 0 1px 4px #41413612; }
+:root[data-theme="social"] .friend-name { font-weight: 600; }
+:root[data-theme="social"] .friend-sub { color: #80847c; }
+:root[data-theme="social"] .friend-search { background: #eae8e4; }
+:root[data-theme="social"] .friend-head .friend-name { font-size: 15px; }
+:root[data-theme="social"] .friend-head .mini-btn { font-size: 11px; border-color: #deded5; background: transparent; }
+:root[data-theme="social"] #btn-drop-friend { color: #86847e; }
+:root[data-theme="social"] .social-discovery-note { display: block; color: #53614f; font-size: 12px; padding: 2px 0 8px; }
+:root[data-theme="social"] .social-discovery-note > span { display: block; font-size: 10px; color: #96948a; margin-top: 5px; }
+:root[data-theme="social"] .friend-picker .picker-item { position: relative; padding: 15px 12px; gap: 12px; align-items: flex-start; background: #fcfbf7; border-color: #e0ddd6; }
+:root[data-theme="social"] .friend-picker .friend-avatar { width: 62px; height: 76px; border-radius: 10px; }
+:root[data-theme="social"] .friend-picker .friend-name { margin-top: 4px; }
+:root[data-theme="social"] .friend-picker .friend-sub { white-space: normal; margin-top: 5px; line-height: 1.7; }
+:root[data-theme="social"] .friend-picker .picker-add { font-size: 10px; align-self: flex-end; padding: 5px 8px; border-radius: 6px; color: #6d5979; background: #eee7f1; }
+:root[data-theme="social"] .social-profile-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+:root[data-theme="social"] .social-profile-tags span { color: #7f7558; background: #efebda; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+:root[data-theme="social"] .social-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto; text-align: center; padding: 25px; }
+:root[data-theme="social"] .social-empty img { width: 84px; margin-bottom: 14px; opacity: .85; }
+:root[data-theme="social"] .social-empty h3 { font-size: 19px; font-weight: 600; color: #415e49; margin: 8px 0; }
+:root[data-theme="social"] .social-empty p { font-size: 12px; line-height: 1.9; color: #7d8376; }
+:root[data-theme="social"] .social-empty small { font-size: 10px; color: #989a8d; margin-top: 24px; }
+
+/* 社交工作区：四个页面共享同一张电脑端画布。导航是紧凑分段控制，不占聊天空间。 */
+:root[data-theme="social"] .friends-drawer {
+  width: min(1040px, 94vw);
+  min-height: min(680px, 78vh);
+  max-height: min(760px, 82vh);
+}
+:root[data-theme="social"] .friends-drawer > .panel-tabs {
+  display: inline-grid;
+  grid-template-columns: repeat(4, minmax(86px, 1fr));
+  align-self: flex-start;
+  gap: 2px;
+  margin: 0 0 14px;
+  padding: 3px;
+  background: #e8e4ea;
+  border: 1px solid #ded9e1;
+  border-radius: 9px;
+  box-shadow: inset 0 1px #ffffffa8;
+}
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab {
+  min-height: 32px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .1px;
+  color: #667069;
+}
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab:hover { background: #f4f2f1; color: #365c48; }
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab.is-active {
+  background: #fffdfa;
+  color: #28634f;
+  box-shadow: 0 1px 4px #41413618;
+}
+:root[data-theme="social"] .friends-drawer > :is(.friends-body, .groups-body, .moments-body) {
+  min-height: 0;
+  /* ★ 字放大之后内容区也要跟着长高（原 590/82vh → 640/84vh → 700/86vh，与两轮放大同步） */
+  height: min(700px, calc(86vh - 124px));
+}
+:root[data-theme="social"] .friends-body { grid-template-columns: 278px minmax(0, 1fr); gap: 16px; }
+:root[data-theme="social"] .groups-body { grid-template-columns: 236px minmax(0, 1fr); gap: 16px; }
+:root[data-theme="social"] :is(.friend-col, .friend-main, .group-main, .moments-wrap) { min-height: 0; }
+:root[data-theme="social"] :is(.friend-list, .group-list, .moments-list) { max-height: none; min-height: 0; }
+:root[data-theme="social"] .friend-list, :root[data-theme="social"] .group-list { flex: 1; padding: 4px 7px 4px 0; }
+:root[data-theme="social"] .friend-main, :root[data-theme="social"] .group-main { gap: 10px; }
+:root[data-theme="social"] :is(.friend-head, .gc-head, .moments-head) { flex: 0 0 auto; min-height: 52px; }
+:root[data-theme="social"] .friend-log, :root[data-theme="social"] .gc-log { max-height: none; min-height: 0; }
+:root[data-theme="social"] .friend-log { padding: 15px 14px; }
+:root[data-theme="social"] .gc-log { padding: 14px 12px; }
+:root[data-theme="social"] .friend-input-wrap { flex: 0 0 auto; }
+
+/* 消息列表采用会话条目密度：头像、摘要、时间各自有稳定位置。 */
+:root[data-theme="social"] .friend-search { min-height: 38px; padding: 0 11px; border: 1px solid #d7ddd3; border-radius: 8px; }
+:root[data-theme="social"] .friend-search:focus-within {
+  border-color: #317c69; box-shadow: 0 0 0 2px #317c6933;
+}
+:root[data-theme="social"] .friend-search input:focus-visible {
+  outline: none; box-shadow: none;
+}
+:root[data-theme="social"] .friend-item { min-height: 58px; padding: 9px 10px; border-radius: 8px; }
+:root[data-theme="social"] .friend-avatar { border-radius: 9px; }
+:root[data-theme="social"] .friend-item .friend-avatar { width: 38px; height: 38px; }
+:root[data-theme="social"] .friend-side { align-self: stretch; padding: 2px 0; justify-content: space-between; }
+:root[data-theme="social"] .friend-name { font-size: 13px; }
+:root[data-theme="social"] .friend-sub { margin-top: 3px; font-size: 11px; }
+:root[data-theme="social"] .friend-time { font-size: 10px; color: #899189; }
+:root[data-theme="social"] .friend-head .friend-avatar { width: 42px; height: 42px; }
+:root[data-theme="social"] .friend-head .friend-meta { display: flex; flex-direction: column; gap: 3px; }
+/* 关系档不是在线状态；沿用旧主题 DOM 兼容，社交主题不展示这个非实时圆点。 */
+:root[data-theme="social"] .friend-head .online-dot { display: none; }
+
+/* 群聊：左边是紧凑群目录，右边让成员条和消息区各归其位。 */
+:root[data-theme="social"] .group-list { gap: 3px; }
+:root[data-theme="social"] .gc-new { min-height: 34px; margin: 0 0 7px; border-style: dashed; }
+:root[data-theme="social"] .group-item { min-height: 56px; padding: 8px 9px; border-radius: 8px; }
+:root[data-theme="social"] .gi-emoji { width: 34px; height: 34px; border-radius: 8px; }
+:root[data-theme="social"] .gi-sub { margin-top: 3px; }
+:root[data-theme="social"] .gc-head { min-height: 43px; padding-bottom: 7px; }
+:root[data-theme="social"] .gc-members { flex: 0 0 auto; min-height: 49px; padding: 0 2px 5px; overflow-x: auto; flex-wrap: nowrap; }
+:root[data-theme="social"] .gc-member { width: 42px; flex: 0 0 42px; }
+:root[data-theme="social"] .gc-member img { width: 30px; height: 30px; border-radius: 8px; }
+:root[data-theme="social"] .gc-member i { max-width: 42px; }
+:root[data-theme="social"] .gc-body { max-width: 72%; }
+
+/* 朋友圈是发布头 + 独立信息流卡片；无数据时只保留中性说明。 */
+:root[data-theme="social"] .moments-wrap { gap: 12px; }
+:root[data-theme="social"] .moments-head { min-height: 44px; padding: 0 0 9px; }
+:root[data-theme="social"] .moments-title { font-size: 14px; color: #405b4a; letter-spacing: .4px; }
+:root[data-theme="social"] .moments-list { flex: 1; max-height: none; min-height: 0; gap: 10px; padding: 1px 6px 3px 0; }
+:root[data-theme="social"] .moment { padding: 14px; border-radius: 10px; }
+:root[data-theme="social"] .moment-avatar { width: 38px; height: 38px; flex-basis: 38px; border-radius: 8px; }
+:root[data-theme="social"] .moment-name { color: #316d56; }
+:root[data-theme="social"] .moment-text { font-size: 13px; line-height: 1.7; }
+:root[data-theme="social"] .moment-comments { border-radius: 7px; }
+:root[data-theme="social"] .moment-input { border-radius: 8px; }
+
+/* 发现好友沿用同一左右栅格，候选人压成电脑端资料卡，不再像大尺寸手机瀑布流。 */
+:root[data-theme="social"] .friends-body:has(.friend-picker) { grid-template-columns: minmax(0, 1fr); }
+:root[data-theme="social"] .friends-body:has(.friend-picker) .friend-col { display: none; }
+:root[data-theme="social"] .social-discovery-note { margin: -2px 0 2px; padding: 0; color: #68756b; }
+:root[data-theme="social"] .social-discovery-note > span { display: none; }
+/* ★ 「换一批」和说明同一行（原来上面那条标题被删了，见 friends.js 的 renderPicker） */
+:root[data-theme="social"] .discovery-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+:root[data-theme="social"] .discovery-actions .social-discovery-note { margin: 0; }
+:root[data-theme="social"] .discovery-actions .mini-btn { flex: none; padding: 8px 14px; font-size: 14px; }
+/* ★ 用户拍板：一次只推 8 个人，**固定 2 列 × 4 行**（一屏看完，不用滚） */
+:root[data-theme="social"] .friend-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-height: none; flex: 1; min-height: 0; padding: 2px 2px 2px 0; }
+:root[data-theme="social"] .friend-picker .picker-item { min-height: 116px; padding: 16px; gap: 15px; align-items: center; border-radius: 10px; }
+/* ★ 用户要求：头像再大一点（字号统一由文件末尾那一块"整体放大"说了算，这里只管尺寸） */
+:root[data-theme="social"] .friend-picker .friend-avatar { width: 86px; height: 86px; border-radius: 16px; }
+:root[data-theme="social"] .friend-picker .friend-name { margin-top: 0; font-weight: 750; gap: 6px; }
+:root[data-theme="social"] .friend-picker .friend-sub { margin-top: 6px; line-height: 1.5; }
+:root[data-theme="social"] .social-profile-tags { display: none; }
+:root[data-theme="social"] .friend-picker .picker-add { align-self: center; margin-left: auto; min-width: 84px; padding: 10px 15px; border-radius: 9px; white-space: nowrap; text-align: center; font-size: 14px; }
+:root[data-theme="social"] .social-empty { padding: 22px; background: #f6f5f1; border: 1px dashed #cbd5c6; border-radius: 10px; }
+:root[data-theme="social"] .social-empty h3 { margin: 0 0 5px; font-size: 15px; }
+:root[data-theme="social"] .social-empty p { margin: 0; line-height: 1.65; }
+:root[data-theme="social"] .discover-tabs { gap: 30px; border-bottom-color: #dde3da; }
+:root[data-theme="social"] .discover-tabs button { padding: 11px 3px 13px; color: #8a9289; font-size: 14px; }
+:root[data-theme="social"] .discover-tabs button.is-active { color: #315f4b; border-bottom-color: #47735e; }
+:root[data-theme="social"] .encounter-page { padding: 14px 8px 0; }
+:root[data-theme="social"] .encounter-mark { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: #fff; background: linear-gradient(145deg, #547a66, #8e7ba0); font-size: 30px; }
+:root[data-theme="social"] .encounter-intro h2 { color: #34513f; font-size: 23px; }
+:root[data-theme="social"] .encounter-quota { padding: 7px 11px; border-radius: 7px; color: #65745f; background: #eef1e9; font-size: 12px; }
+:root[data-theme="social"] .encounter-setting-row { border-bottom-color: #e1e6dc; }
+:root[data-theme="social"] .encounter-genders button { color: #718070; border-color: #d6ded1; background: #fafbf6; }
+:root[data-theme="social"] .encounter-genders button.is-active { color: #315f49; border-color: #7e9f82; background: #e4ede0; }
+:root[data-theme="social"] .encounter-age-control input { accent-color: #4d755d; }
+:root[data-theme="social"] .encounter-age-control output { color: #355b44; }
+:root[data-theme="social"] .encounter-notice, :root[data-theme="social"] .encounter-unlock { background: #eff2ea; }
+:root[data-theme="social"] .encounter-matching h2 { color: #3b5b46; font-size: 20px; }
+:root[data-theme="social"] .encounter-radar { border-color: #cfd9cd; background: radial-gradient(circle, #f9fbf3, #e7eee3); }
+:root[data-theme="social"] .encounter-chat { padding-top: 6px; }
+:root[data-theme="social"] .encounter-person { border-bottom-color: #dfe5da; }
+:root[data-theme="social"] .encounter-person h2 { color: #36513f; font-size: 18px; }
+:root[data-theme="social"] .encounter-log { background: #f1f2ed; }
+/* ★ 「遇见」聊天已改用私聊那套 `.chat-row / .chat-msg`（用户要求头像气泡与私聊一致），
+   旧的 `.encounter-message` 规则随之删掉，只保留容器与输入条配色。 */
+:root[data-theme="social"] .encounter-chat .chat-msg.other { color: #435246; border-color: #d6ddd1; background: #fffef9; }
+:root[data-theme="social"] .encounter-chat .chat-msg.self { color: #fff; background: #3e755f; }
+:root[data-theme="social"] .encounter-input input { color: #354a3c; border-color: #d5ddd0; background: #fffef9; }
+
+@media (max-width: 720px) {
+  :root[data-theme="social"] .friends-drawer { min-height: 0; max-height: none; }
+  :root[data-theme="social"] .friends-drawer > .panel-tabs { width: 100%; }
+  :root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab { min-width: 0; padding-inline: 6px; }
+  :root[data-theme="social"] .friends-drawer > :is(.friends-body, .groups-body, .moments-body) { height: min(620px, 72vh); }
+  :root[data-theme="social"] :is(.friends-body, .groups-body) { grid-template-columns: 170px minmax(0, 1fr); gap: 10px; }
+  :root[data-theme="social"] .friend-picker { grid-template-columns: 1fr; }
+}
+
+/* 商城、形象、排行与结算：不是表格 demo，而是有份量的资产卡。 */
+:root[data-theme="social"] :is(.shop-item, .title-card, .signin-day, .mail-item, .rank-row, .prof-frame, .prof-back, .prof-theme) {
+  background: linear-gradient(145deg, #fffef7, #ecefe2); border-color: #d3dcc9; box-shadow: 0 2px 6px #34472309;
+}
+:root[data-theme="social"] .shop-item::after { background: radial-gradient(circle, #d2b2712e, transparent 70%); }
+:root[data-theme="social"] :is(.shop-wallet, .prof-preview, .mail-hero) { background: #e5ecdd; border-color: #cbd8be; }
+:root[data-theme="social"] .prof-tabs { background: #e8ebe3; border-color: #d2d9cd; }
+:root[data-theme="social"] .prof-tabs button.is-active { color: #315a45; background: #fffdf8; box-shadow: 0 1px 4px #35483518; }
+:root[data-theme="social"] .prof-title-current { background: #f0f3eb; border: none; }
+:root[data-theme="social"] .prof-title { background: transparent; border-bottom-color: #e3e6df; }
+/* ★ 用户拍板：「我的主页」里性别与每个称号的字都要大一点 */
+:root[data-theme="social"] .prof-gender { font-size: 15px; padding: 8px 18px; }
+:root[data-theme="social"] .prof-title b { font-size: 16.5px; }
+:root[data-theme="social"] .prof-title small { font-size: 14px; }
+:root[data-theme="social"] .prof-title-condition { font-size: 13px; }
+:root[data-theme="social"] .prof-title .mini-btn { font-size: 13.5px; padding: 7px 12px; }
+:root[data-theme="social"] .prof-preview-name { font-size: 20px; }
+:root[data-theme="social"] .prof-preview-sub { font-size: 14px; }
+:root[data-theme="social"] .prof-preview-row .mini-btn { font-size: 13.5px; }
+/* ★ 用户拍板：新增「背包」——商城里买到的道具 / 礼物 / 改名卡都摆在这里 */
+:root[data-theme="social"] .bag-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+:root[data-theme="social"] .bag-item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px 12px;
+  border-radius: 12px; background: linear-gradient(145deg, #fffef7, #ecefe2); border: 1px solid #d3dcc9;
+}
+:root[data-theme="social"] .bag-item.is-empty { opacity: .55; }
+:root[data-theme="social"] .bag-face { width: 54px; height: 54px; line-height: 0; }
+:root[data-theme="social"] .bag-face .asset-art { width: 54px; height: 54px; }
+:root[data-theme="social"] .bag-item b { font-size: 15px; font-weight: 700; color: #35513f; }
+:root[data-theme="social"] .bag-item i { font-style: normal; font-size: 13px; color: #7d8a7a; }
+:root[data-theme="social"] .prof-title.is-active { background: #edf3e8; }
+:root[data-theme="social"] #profile-body { max-width: 1080px; margin-inline: auto; }
+:root[data-theme="social"] #profile-body .prof-tabs { display: flex; gap: 32px; padding: 0; margin-bottom: 26px; background: none; border: 0; border-bottom: 1px solid #dce2d6; border-radius: 0; }
+:root[data-theme="social"] #profile-body .prof-tabs button { min-width: 0; padding: 13px 4px; border-radius: 0; background: none; box-shadow: none; font-size: 16px; border-bottom: 2px solid transparent; }
+:root[data-theme="social"] #profile-body .prof-tabs button.is-active { border-bottom-color: #426951; color: #294e39; }
+:root[data-theme="social"] #profile-body .prof-preview { padding: 4px 0 24px; gap: 22px; background: none; border: 0; border-bottom: 1px solid #e0e5db; border-radius: 0; }
+:root[data-theme="social"] #profile-body .prof-preview-face img { width: 84px; height: 84px; }
+:root[data-theme="social"] #profile-body .shop-sec { margin: 24px 0 14px; }
+:root[data-theme="social"] #profile-body .prof-themes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:root[data-theme="social"] #profile-body .prof-frames { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+:root[data-theme="social"] .title-badge { height: auto; min-height: 24px; padding: 3px 9px 3px 5px; border-radius: 7px; box-shadow: 0 1px 3px #1c382324; text-shadow: none; }
+:root[data-theme="social"] .prof-title { grid-template-columns: 190px minmax(0, 1fr) 150px 74px; }
+:root[data-theme="social"] .prof-title small { white-space: normal; }
+:root[data-theme="social"] #social-lobby-title { margin-top: 5px; width: fit-content; font-size: 10px; }
+:root[data-theme="social"] #profile-body .prof-preview-sub { margin-top: 8px; }
+:root[data-theme="social"] :is(.fish-side-me, .gmk-side-me) > .seat-name { display: flex; flex-direction: column; align-items: center; gap: 6px; overflow: visible; }
+:root[data-theme="social"] .shop-tag { background: #e9d5a6; color: #74531f; }
+:root[data-theme="social"] .shop-item-emoji { filter: saturate(.7); }
+:root[data-theme="social"] #shop-body .shop-item-emoji { display: grid; place-items: center; height: 112px; border-radius: 10px; background: radial-gradient(ellipse, #e7ebdf80, transparent 72%); filter: none; }
+:root[data-theme="social"] #shop-body .shop-item-emoji .asset-art { width: 94px; height: 94px; }
+:root[data-theme="social"] :is(.prof-upload-box, .look-ring, .rank-list.is-out .rank-row) { background: #e0e7d6; }
+:root[data-theme="social"] :is(.prof-theme, .prof-frame, .prof-back).is-active { border-color: #7b9e6b; background: #e0ebd6; }
+:root[data-theme="social"] .prof-hint { line-height: 1.7; }
+.prof-theme-face.is-social .ptf-bg { background: linear-gradient(135deg, #e7e9dc, #c6d4c0); }
+.prof-theme-face.is-social .ptf-chip { background: #367860; }
+:root[data-theme="social"] .rank-hero-title { color: #85652d; background: none; filter: none; letter-spacing: 2px; }
+:root[data-theme="social"] :is(.rank-cut::before, .rank-cut::after) { background: #cbd6c1; }
+:root[data-theme="social"] .pay-box { background: radial-gradient(ellipse at 50% 20%, #ebd8a54d, transparent 65%); }
+:root[data-theme="social"] .pay-box::before { content: '模拟订单 · 不会产生真实扣费'; display: block; color: #7e846f; font-size: 11px; margin-bottom: 14px; }
+:root[data-theme="social"] .pay-amount { color: #916622; text-shadow: 0 2px #fff; }
+:root[data-theme="social"] .pay-spinner { border-color: #dce2d0; border-top-color: #6a8e59; }
+:root[data-theme="social"] .signin-day.is-today { background: #f1e3be; border-color: #c2a15f; box-shadow: 0 3px 10px #97702b12; }
+:root[data-theme="social"] .signin-day.is-done { background: #dce8d2; border-color: #aec69c; }
+:root[data-theme="social"] .result-banner.lose { background: linear-gradient(92deg, #697666, #8b947e); background-clip: text; }
+:root[data-theme="social"] :is(.result-factors span, .multi-factors span) { color: #526e45; background: #dbe6ce; border-color: #c4d4b1; }
+:root[data-theme="social"] .fr-friend { background: #f8faf0; }
+:root[data-theme="social"] .fr-money.is-win { color: #347b47; }
+:root[data-theme="social"] .fr-money.is-lose { color: #b05245; }
+:root[data-theme="social"] .result-drawer { background:linear-gradient(145deg,#fffdf7,#eef2e8); border-color:#d2dccd; box-shadow:0 18px 50px #304d321c; color:#294534; }
+:root[data-theme="social"] .result-topline { border-bottom:1px solid #dce4d6; padding-bottom:12px; }
+:root[data-theme="social"] .result-mode { color:#6d7d6d; }
+:root[data-theme="social"] .result-core > div { background:#f5f7ef; border-color:#d6e0d0; }
+:root[data-theme="social"] .result-section { border-top:1px solid #e0e7db; padding-top:11px; }
+:root[data-theme="social"] .result-section h4 { color:#668069; }
+:root[data-theme="social"] .result-multi--legacy { color:#738171; }
+:root[data-theme="social"] .result-no-beans { color:#778177; }
+:root[data-theme="social"] .result-row { background:#f8faf3; border-color:#dbe4d5; }
+:root[data-theme="social"] .result-row.is-me { background:#edf3e6; border-color:#b9cda9; }
+:root[data-theme="social"] .result-drawer .result-actions { border-top:1px solid #dce4d6; padding-top:14px; }
+:root[data-theme="social"] .drawer.result-drawer { width: min(740px, 94vw); max-height: 90dvh; padding: 26px 30px; border-radius: 18px; text-align: left; background: #fafaf5; }
+:root[data-theme="social"] .result-drawer .drawer-head { margin-bottom: 22px; }
+:root[data-theme="social"] .result-drawer .result-banner { font-size: 30px; font-weight: 750; letter-spacing: 3px; color: #477452; background: none; }
+:root[data-theme="social"] .result-drawer .result-banner.lose { color: #7e877c; background: none; }
+:root[data-theme="social"] .result-drawer .result-sub { text-align: left; padding-top: 8px; font-size: 12px; }
+:root[data-theme="social"] .result-drawer .result-core { gap: 18px; margin: 22px 0 14px; }
+:root[data-theme="social"] .result-drawer .result-core > div { min-height: 88px; flex-direction: column; align-items: flex-start; justify-content: center; padding: 16px 20px; border: none; background: #eef3e8; border-radius: 10px; }
+:root[data-theme="social"] .result-drawer .result-core .rm-value { font-size: 28px; font-weight: 700; }
+:root[data-theme="social"] .result-drawer .result-core .rr-delta { font-size: 24px; }
+:root[data-theme="social"] .result-drawer .result-factors { justify-content: flex-start; }
+:root[data-theme="social"] .result-drawer .result-row { grid-template-columns: minmax(160px,1fr) 85px 85px 74px; gap: 10px; padding: 14px 10px; border-radius: 8px; }
+:root[data-theme="social"] .result-drawer .rr-who { min-width: 0; }
+:root[data-theme="social"] .result-drawer .rr-who > span:not(.result-avatar) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.result-avatar { width: 30px; height: 30px; }
+:root[data-theme="social"] .result-drawer .result-section { margin-top: 16px; padding-top: 14px; }
+:root[data-theme="social"] .result-drawer .result-cap { margin-top: 8px; font-size: 12px; line-height: 1.8; }
+:root[data-theme="social"] .result-drawer .fr-money-row { justify-content: space-between; align-items: center; }
+:root[data-theme="social"] .result-opponent { font-size: 14px; color: #506447; }
+:root[data-theme="social"] .result-drawer .result-actions { margin-top: 24px; padding-top: 20px; justify-content: flex-end; gap: 12px; }
+:root[data-theme="social"] .result-drawer .result-actions .btn { min-width: 148px; padding: 11px 22px; border-radius: 9px; font-size: 14px; }
+:root[data-theme="social"] .result-drawer .result-beans { text-align: right; font-size: 12px; }
+:root[data-theme="social"] .result-drawer .result-beans b { font-size: 17px; }
+:root[data-theme="social"] .result-drawer .result-multi--legacy .rm-value { font-size: 20px; text-shadow: none; }
+
+/* 三种桌游：保留所有卡牌/棋盘坐标与尺寸，仅换材质。 */
+:root[data-theme="social"] .felt {
+  background: radial-gradient(ellipse at 50% 35%, #e2e9d9, #c4d4be 80%);
+  border: 1px solid #aebfa8; box-shadow: inset 0 0 70px #4c745a16, inset 0 0 0 6px #f6f5e630, 0 16px 36px #304d3212;
+}
+:root[data-theme="social"] :is(.status-bar, .bid-bar, .fish-counter, .fish-tip, .fish-catch-bar) {
+  background: #304e40; color: #f5f6e6; border-color: #638269;
+  --ink: #f6f9ec; --ink-soft: #dae4cc; --ink-faint: #bacbb0;
+  --gold: #ebcd88; --blue: #b9d8de; --green: #a9d992;
+}
+:root[data-theme="social"] .status-bar.is-turn { color: #ffedc2; border-color: #b8a26a; box-shadow: 0 0 0 3px #b8a26a20; }
+:root[data-theme="social"] .bid-bar .btn { color: #294632; background: #f2f2dd; }
+:root[data-theme="social"] .bid-bar .btn.primary { color: #3f361c; background: linear-gradient(#f5e0a7, #dfbb71); border-color: #c4a25e; }
+:root[data-theme="social"] .turn-timer::before { background: #36533e; }
+:root[data-theme="social"] :is(.multi-value, .pass-tip, .seat-name) { text-shadow: none; }
+:root[data-theme="social"] .pass-tip { color: #53694d; }
+:root[data-theme="social"] :is(.seat-think, .seat-tag) { color: #366759; background: #dce9d4; border-color: #adc6a5; }
+:root[data-theme="social"] .seat-think i { background: #517b5c; }
+:root[data-theme="social"] .bubble {
+  min-width: 0; max-width: 270px; padding: 10px 15px;
+  color: #294437; background: #fffdf8; border: 1px solid #cfd7c9;
+  border-radius: 13px; font-size: 13px; font-weight: 500; line-height: 1.55;
+  box-shadow: 0 5px 16px #273c3120, 0 1px 2px #273c3114;
+  animation: social-bubble-in 160ms ease-out both;
+}
+:root[data-theme="social"] .bubble::before,
+:root[data-theme="social"] .bubble::after { content: ''; position: absolute; width: 0; height: 0; background: none; transform: none; }
+:root[data-theme="social"] .bubble.left::before { left: -9px; top: 17px; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-right: 9px solid #cfd7c9; }
+:root[data-theme="social"] .bubble.left::after { left: -7px; top: 18px; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-right: 8px solid #fffdf8; }
+:root[data-theme="social"] .bubble.right::before { right: -9px; top: 17px; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-left: 9px solid #cfd7c9; }
+:root[data-theme="social"] .bubble.right::after { right: -7px; top: 18px; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 8px solid #fffdf8; }
+:root[data-theme="social"] .bubble.self::before { bottom: -9px; left: 24px; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 9px solid #cfd7c9; }
+:root[data-theme="social"] .bubble.self::after { bottom: -7px; left: 25px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #fffdf8; }
+@keyframes social-bubble-in { from { opacity: 0; transform: translateY(4px) scale(.98); } }
+:root[data-theme="social"] .card { background: linear-gradient(165deg, #fffef9, #f5f2e5); box-shadow: 0 3px 8px #2c482c24; }
+:root[data-theme="social"] .gmk-board { border-color: #b59a6f; box-shadow: 0 12px 32px #594c2929, inset 0 0 28px #ad874326; }
+:root[data-theme="social"] .fish-pile.catch .pile-label { color: #8e6b2b; }
+:root[data-theme="social"] .pile-cards:empty::after { border-color: #99af8d; }
+:root[data-theme="social"] .match-seat-face { background: #e9efde; border-color: #afc09f; }
+:root[data-theme="social"] .match-seat.is-in .match-seat-face { background: #dce9cf; border-color: #799a65; }
+:root[data-theme="social"] .hand-over-tip { background: #345439; color: #f5f7e9; }
+
+/* =====================================================================
+ * ★ 社交面板整体放大（用户拍板："字号太小了，整个面板一起放大"）
+ * ---------------------------------------------------------------------
+ * 口径：**只在社交主题里放大**，经典 / 浅色主题一个字都不动
+ *   （浅色那条"只换颜色、绝不改字号"的红线仍然由 tools/test-static.mjs 钉着）。
+ *
+ * 做法有两个关键点，缺一个就会把排版弄崩：
+ *   ① 字符型元素逐个显式给字号 —— 因为本文件前面那批规则用的是 `font-size` 绝对值，
+ *      且本文件在 friends.css / panels.css **之后**加载，所以这里的覆盖是生效的那一份；
+ *   ② 可滚动区的高度**跟着字号一起抬**（`--soc-type`）——
+ *      `.drawer` 是 `max-height: 86vh; overflow: auto` 的盒子，字放大而滚动区不动，
+ *      底部输入条就会被挤出可视区、或者面板内部冒出双滚动条。
+ *
+ * 整体视觉放大约 1.3 倍：正文 13→**17px**、群聊气泡 12.5→17px（与私聊对齐）、
+ * 好友列表 / 群目录 / 时间戳 / 签名等 10~11.5px 的小字统一抬到 13~14px。
+ *   · 第一版只放到 15px，用户反馈"还是有点小"，所以又提了一档
+ *     （正文 15→17、小字 12→13、`--soc-type` 1.16→1.24）
+ * ===================================================================== */
+:root[data-theme="social"] {
+  --soc-type: 1.24; /* 字号放大的比例（滚动区高度按它换算） */
+}
+
+/* ---------- 聊天正文：私聊 / 群聊 / 遇见共用同一档 ---------- */
+/**
+ * ★ 用户拍板："字体略微大一点，气泡也要高一些，气泡间距略微大一点点"
+ *   —— 私聊 / 群聊 / 遇见三处气泡**共用这一条**，所以改这里三边一起变：
+ *     正文 17 → 18px、行高 1.6 → 1.7、内边距更松（气泡变高）、
+ *     气泡之间的间距（.chat-log / .gc-log 的 gap）也放宽一点。
+ */
+:root[data-theme="social"] .chat-msg,
+:root[data-theme="social"] .gc-bubble,
+:root[data-theme="social"] .typing-bubble {
+  font-size: 18px;
+  line-height: 1.7;
+  padding: 11px 15px;
+  /**
+   * ★ 用户报的问题："气泡被截断，只能有一行，应该允许换行"
+   *   这里把换行**显式**写死：正常换行 + 长英文/网址也强制断行 + 气泡不参与收缩（不挤压内容）。
+   *   （原来只靠默认值，一旦外层出现 `white-space: nowrap` 就会变成一行被切掉）
+   */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  flex: 0 1 auto;
+}
+/* 气泡所在的那一行也不许把内容挤没 */
+:root[data-theme="social"] .chat-row { min-width: 0; }
+:root[data-theme="social"] :is(.chat-log, .friend-log, .gc-log) { gap: 12px; }
+/* 头像也略微大一点（不然气泡高了、头像显小） */
+:root[data-theme="social"] .chat-face { width: 37px; height: 37px; flex-basis: 37px; }
+/* 时间分隔与系统小灰字跟着一起抬（原来是 11 / 11.5px，放大后显得太"跳"） */
+:root[data-theme="social"] .chat-time,
+:root[data-theme="social"] .chat-sys,
+:root[data-theme="social"] .gc-sys,
+:root[data-theme="social"] .gc-time { font-size: 13.5px; }
+:root[data-theme="social"] .chat-gift { font-size: 13.5px; }
+/**
+ * ★ 性别小标（♂ 蓝 / ♀ 粉）放大一点（用户要求）：
+ *   列表 / 聊天标题 / 房间座位 / 牌桌座位 / 群成员都在用同一个 `.gender-tag`。
+ */
+:root[data-theme="social"] .gender-tag { width: 18px; height: 18px; font-size: 12.5px; margin-left: 6px; }
+:root[data-theme="social"] .friend-picker .gender-tag,
+:root[data-theme="social"] .friend-head .gender-tag { width: 19px; height: 19px; font-size: 13px; }
+/* 聊天区 / 会话列表这些滚动区：跟着字号一起变高，别把输入条挤出去 */
+:root[data-theme="social"] .friend-log,
+:root[data-theme="social"] .gc-log { min-height: calc(280px * var(--soc-type)); }
+:root[data-theme="social"] .friend-list { max-height: calc(54vh * var(--soc-type)); }
+:root[data-theme="social"] .chat-log { min-height: calc(220px * var(--soc-type)); }
+
+/* ---------- 左栏会话列表 ---------- */
+:root[data-theme="social"] .friend-item { min-height: calc(58px * var(--soc-type)); padding: 11px 12px; }
+:root[data-theme="social"] .friend-item .friend-avatar { width: 46px; height: 46px; }
+:root[data-theme="social"] .friend-name { font-size: 16.5px; }
+:root[data-theme="social"] .friend-sub { font-size: 14px; line-height: 1.45; }
+:root[data-theme="social"] .friend-time { font-size: 13px; }
+/* 推荐卡片：字再抬一档（用户要求"字体略微大一点"） */
+:root[data-theme="social"] .friend-picker .friend-name { font-size: 20px; }
+:root[data-theme="social"] .friend-picker .friend-sub { font-size: 15.5px; }
+:root[data-theme="social"] .friend-picker .picker-add { font-size: 15px; }
+/* ★ "你们在遇见聊过"贴在「加好友」**左边**（同一行、靠右），不再占签名下面那一行 */
+:root[data-theme="social"] .friend-picker .picker-side {
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+  gap: 7px; margin-left: auto; flex: none; text-align: right;
+}
+:root[data-theme="social"] .friend-picker .picker-met { font-size: 13px; color: #7d8a7a; white-space: nowrap; }
+:root[data-theme="social"] .friend-picker .picker-item { padding: 18px 15px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .friend-item { padding: 16px 13px; }
+
+/* ---------- 会话标题、面板标签、搜索框 ---------- */
+:root[data-theme="social"] .friend-head .friend-name { font-size: 19px; }
+:root[data-theme="social"] .friend-head .friend-sub { font-size: 14px; }
+:root[data-theme="social"] .friend-head .mini-btn { font-size: 14px; padding: 7px 12px; }
+:root[data-theme="social"] .friend-search input { font-size: 15.5px; }
+:root[data-theme="social"] .friend-search { min-height: calc(40px * var(--soc-type)); }
+:root[data-theme="social"] .friends-drawer > .panel-tabs .panel-tab { font-size: 15.5px; }
+:root[data-theme="social"] .social-head-note { font-size: 14px; }
+:root[data-theme="social"] .lover-hint { font-size: 14.5px; }
+
+/* ---------- 群聊：目录、成员条、引用回复 ---------- */
+:root[data-theme="social"] .group-item { min-height: calc(56px * var(--soc-type)); padding: 10px 11px; }
+:root[data-theme="social"] .gi-emoji { width: 42px; height: 42px; font-size: 20px; }
+:root[data-theme="social"] .gi-name { font-size: 16px; }
+:root[data-theme="social"] .gi-sub { font-size: 13.5px; }
+:root[data-theme="social"] .gc-title { font-size: 17px; }
+:root[data-theme="social"] .gc-member { width: 54px; flex: 0 0 54px; }
+:root[data-theme="social"] .gc-member img { width: 38px; height: 38px; }
+:root[data-theme="social"] .gc-member i { font-size: 13px; max-width: 54px; }
+:root[data-theme="social"] .gc-who { font-size: 13px; }
+:root[data-theme="social"] .gc-quote { font-size: 13.5px; }
+:root[data-theme="social"] .gc-replying { font-size: 14px; }
+:root[data-theme="social"] .gc-hint { font-size: 14px; }
+
+/* ---------- 输入条 ---------- */
+:root[data-theme="social"] .friend-input-wrap input,
+:root[data-theme="social"] .chat-input-row input,
+:root[data-theme="social"] .quick-input { font-size: 15.5px; }
+:root[data-theme="social"] .friend-input-wrap .pop-item,
+:root[data-theme="social"] .chat-input-row .pop-item { font-size: 14px; }
+
+/* ---------- 友圈 ---------- */
+:root[data-theme="social"] .moments-title { font-size: 17px; }
+:root[data-theme="social"] .moment-text { font-size: 17px; line-height: 1.75; }
+:root[data-theme="social"] .moment-name { font-size: 16px; }
+:root[data-theme="social"] .mm-time { font-size: 13px; }
+:root[data-theme="social"] .mm-btn { font-size: 14px; }
+:root[data-theme="social"] .mc-row,
+:root[data-theme="social"] .mc-name { font-size: 15px; }
+:root[data-theme="social"] .mc-reply { font-size: 13px; }
+:root[data-theme="social"] .moment-input { font-size: 15.5px; }
+:root[data-theme="social"] .moment-avatar { width: 48px; height: 48px; flex-basis: 48px; }
+
+/* ---------- 发现好友 / 遇见 ---------- */
+:root[data-theme="social"] .social-discovery-note { font-size: 15px; }
+:root[data-theme="social"] .discover-tabs button { font-size: 16px; }
+:root[data-theme="social"] .encounter-intro h2 { font-size: 25px; }
+:root[data-theme="social"] .encounter-intro p,
+:root[data-theme="social"] .encounter-person p { font-size: 15px; }
+:root[data-theme="social"] .encounter-quota { font-size: 14px; }
+:root[data-theme="social"] .encounter-setting-row b { font-size: 16px; }
+:root[data-theme="social"] .encounter-setting-row small { font-size: 14px; }
+:root[data-theme="social"] .encounter-genders button { font-size: 15px; }
+:root[data-theme="social"] .encounter-unlock { font-size: 14px; }
+:root[data-theme="social"] .encounter-input input { font-size: 15.5px; }
+:root[data-theme="social"] .encounter-chat .chat-msg { font-size: 17px; }
+:root[data-theme="social"] .encounter-log { min-height: 260px; }
+:root[data-theme="social"] .encounter-empty,
+:root[data-theme="social"] .social-empty p { font-size: 14.5px; }
+
+/* ---------- 面板内的小浮层（赠送礼物 / 建群 / 改名） ---------- */
+:root[data-theme="social"] .gift-pop-head { font-size: 15px; }
+:root[data-theme="social"] .gift-name { font-size: 15px; }
+:root[data-theme="social"] .gift-aff,
+:root[data-theme="social"] .gift-stock,
+:root[data-theme="social"] .gift-pop-tip,
+:root[data-theme="social"] .gift-pop-left { font-size: 13.5px; }
+:root[data-theme="social"] .gc-dialog-title { font-size: 17px; }
+:root[data-theme="social"] .gc-dialog input[type="text"] { font-size: 15.5px; }
+
+/* =====================================================================
+ * ★ 排行榜整体放大（用户拍板："排行榜字号也小"）
+ * ---------------------------------------------------------------------
+ * 规则都在 activity.css（经典主题也用同一份），所以这里只在社交主题里覆盖字号 +
+ * 行高，**不动排序与"玩家与 AI 平等"那套结构**（tools/test-static.mjs 钉着它）。
+ * 顺带把社交主题下 2 列布局的行距放松一点，免得放大的字挤在一起。
+ * ===================================================================== */
+:root[data-theme="social"] .rank-hero-sub { font-size: 13.5px; }
+:root[data-theme="social"] .rank-row { gap: 13px; padding: 12px 15px; border-radius: 12px; }
+:root[data-theme="social"] .rank-no { width: 38px; font-size: 19px; }
+:root[data-theme="social"] .rank-avatar { width: 46px; height: 46px; }
+:root[data-theme="social"] .rank-name { font-size: 16.5px; gap: 8px; }
+:root[data-theme="social"] .rank-name .title-badge { height: 21px; font-size: 12px; padding: 0 9px; }
+:root[data-theme="social"] .rank-beans { margin-top: 3px; font-size: 15px; }
+:root[data-theme="social"] .rank-cut { margin: 20px 0 10px; font-size: 13.5px; }
+:root[data-theme="social"] .rank-foot { font-size: 13.5px; }
+:root[data-theme="social"] .rank-list { gap: 9px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .rank-list { gap: 11px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .rank-row { padding: 14px 17px; }
+
+/* ---------- ★ 充值购买按钮（霓虹脉冲 ¥18 / 霓虹夜 ¥188 / 斗地主之王 ¥128）---------- */
+:root[data-theme="social"] .shop-buy.is-cash {
+  color: #fffdf4;
+  background: linear-gradient(180deg, #d9a94a, #b8822a);
+  box-shadow: 0 6px 16px rgba(184, 130, 42, 0.34);
+}
+:root[data-theme="social"] .shop-buy.is-cash .shop-price { font-size: 16px; letter-spacing: .5px; }
+
+/* 窄窗口（手机式竖屏）收一档，避免一屏只剩两三行 */
+@media (max-width: 720px) {
+  :root[data-theme="social"] { --soc-type: 1; }
+  :root[data-theme="social"] .chat-msg,
+  :root[data-theme="social"] .gc-bubble,
+  :root[data-theme="social"] .typing-bubble { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="social"] *, :root[data-theme="social"] *::before, :root[data-theme="social"] *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+}

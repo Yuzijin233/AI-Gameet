@@ -1,0 +1,246 @@
+/* 桌面外壳仅属于 social；经典主题保留原 DOM、布局和浮层。 */
+.social-sidebar, .social-lobby-head, .social-home-hero, .social-game-desc,
+.desktop-profile-tools, .social-discover-tab, #desktop-page-host { display: none; }
+/* 统一头像层：图片节点不更换，框作为独立矢量覆盖层，尺寸跟随头像。 */
+[data-player-frame] { position: relative; }
+.avatar-frame-host { display: inline-flex; position: relative; border-radius: 50%; flex: none; overflow: visible; vertical-align: middle; }
+:root[data-theme] .avatar-frame-host.has-avatar-frame { border-radius: 50%; }
+.avatar-frame-host.avatar-frame-host > img { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+.avatar-frame-art { display: block; position: absolute; inset: -12%; width: 124%; height: 124%; pointer-events: none; z-index: 2; }
+.avatar-frame-art > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+:root[data-theme] [data-player-frame] .avatar-frame-art > svg { width: 100%; height: 100%; fill: initial; stroke: none; stroke-width: 1; }
+.match-seat.is-me .match-seat-face { overflow: visible; }
+.match-player-avatar { width: 100%; height: 100%; }
+.room-player-avatar { width: 48px; height: 48px; }
+.prof-preview-face[data-player-frame] { display: inline-flex; width: 68px; height: 68px; }
+.prof-preview-face[data-player-frame] > img { width: 100%; height: 100%; }
+.chat-row.is-cont .chat-face { visibility: visible; }
+:root[data-theme="light"] .chat-row.is-cont .chat-face { visibility: visible; }
+
+/* 1920×1080 逻辑桌面；留出呼吸空间，不把卡片拉伸到整个屏幕。 */
+:root[data-theme="social"] #screen-lobby.is-active {
+  zoom: var(--desktop-scale, 1);
+  width: calc(100vw / var(--desktop-scale, 1));
+  height: calc(100dvh / var(--desktop-scale, 1));
+  inset: 0 auto auto 0; padding: 0;
+  display: grid; grid-template-columns: 256px minmax(0, 1fr);
+  grid-template-rows: 72px minmax(0, 1fr); gap: 0;
+  background: #eeeee9; animation: none;
+}
+:root[data-theme="social"] #screen-lobby > :is(.topbar, .bottom-nav, .mail-fab) { display: none; }
+:root[data-theme="social"] .social-sidebar {
+  grid-area: 1 / 1 / 3 / 2; display: flex; flex-direction: column; gap: 20px;
+  min-height: 0; overflow: auto; padding: 28px 20px 20px;
+  background: #f8f7f2; border-right: 1px solid #dadfd5;
+}
+:root[data-theme="social"] .social-account {
+  display: flex; align-items: center; gap: 14px; padding: 4px; width: 100%;
+  border: none; background: none; text-align: left; color: #314b3c; font-family: var(--font); cursor: pointer;
+}
+:root[data-theme="social"] .social-account img { width: 62px; height: 62px; object-fit: cover; border-radius: 17px; flex: none; }
+:root[data-theme="social"] .social-account > span { min-width: 0; flex: 1; }
+:root[data-theme="social"] .social-account > .social-account-face { display: inline-flex; flex: 0 0 62px; width: 62px; height: 62px; }
+:root[data-theme="social"] .social-account-face.has-avatar-frame > img { border-radius: 50%; }
+:root[data-theme="social"] .prof-preview-face[data-player-frame] { width: 84px; height: 84px; }
+:root[data-theme="social"] .social-account b { display: block; font-size: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-theme="social"] .social-account small { display: flex; justify-content: space-between; font-size: 14px; color: #778474; margin-top: 7px; }
+:root[data-theme="social"] .social-account i { font-style: normal; }
+:root[data-theme="social"] .social-wallet { display: flex; align-items: center; gap: 8px; border: 1px solid #e4decb; border-radius: 10px; padding: 12px; color: #8a7039; background: #f1eddf; font: 13px var(--font); cursor: pointer; }
+:root[data-theme="social"] .social-wallet .bean-mark { width: 22px; height: 22px; }
+:root[data-theme="social"] .social-wallet b { margin-left: auto; font-size: 17px; }
+:root[data-theme="social"] .social-wallet i { font-style: normal; font-size: 18px; }
+:root[data-theme="social"] :is(.social-side-nav, .social-side-bottom) { display: flex; flex-direction: column; gap: 7px; }
+:root[data-theme="social"] :is(.social-side-nav, .social-side-bottom) > button {
+  display: flex; align-items: center; gap: 16px; min-height: 50px; padding: 12px 16px;
+  border: none; border-radius: 10px; color: #6b796b; background: none;
+  font: 500 18px var(--font); text-align: left; cursor: pointer;
+}
+:root[data-theme="social"] :is(.social-side-nav, .social-side-bottom) > button:hover { background: #e9eee4; color: #325b43; }
+:root[data-theme="social"] :is(.social-side-nav, .social-side-bottom) > button.is-active { color: #294e38; background: #dfe8d7; font-weight: 700; }
+:root[data-theme="social"] .social-account.is-active { border-radius: 10px; background: #e9eee4; }
+:root[data-theme="social"] .social-sidebar svg { width: 23px; height: 23px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+:root[data-theme="social"] .social-sidebar em { margin-left: auto; font: 600 12px var(--font); color: #fff; background: #b96359; border-radius: 6px; min-width: 20px; padding: 2px 5px; text-align: center; }
+:root[data-theme="social"] .social-sidebar em[hidden] { display: none; }
+:root[data-theme="social"] .social-side-bottom { margin-top: auto; padding-top: 15px; border-top: 1px solid #dfe3d7; }
+:root[data-theme="social"] .social-side-brand { display: flex; align-items: center; gap: 9px; padding: 12px 15px 0; color: #66806a; font: 600 22px 'Segoe UI', sans-serif; letter-spacing: -.5px; }
+:root[data-theme="social"] .social-side-brand img { width: 30px; height: 30px; }
+:root[data-theme="social"] .social-lobby-head { grid-area: 1 / 2 / 2 / 3; display: flex; align-items: center; gap: 22px; padding: 0 34px; border-bottom: 1px solid #dadfd2; background: #f7f6f0; }
+:root[data-theme="social"] .social-lobby-head h2 { margin: 0; font-size: 24px; color: #314e3b; font-weight: 650; }
+:root[data-theme="social"] .social-header-brand { margin-left: auto; font: 650 20px 'Segoe UI', sans-serif; letter-spacing: -.4px; color: #899782; }
+:root[data-theme="social"] #screen-lobby:is([data-page="profile"], [data-page="titles"], [data-page="rename"]) .desktop-profile-tools { display: flex; gap: 12px; }
+:root[data-theme="social"] .desktop-profile-tools button { border: 1px solid #cbd5c4; background: #f8faf3; border-radius: 8px; padding: 8px 16px; color: #536f51; font: 14px var(--font); cursor: pointer; }
+
+/* 首页只保留：邀请入口、选择游戏、模式与场次。卡片随着内容区高度分配空间。 */
+:root[data-theme="social"] .lobby-main {
+  grid-area: 2 / 2 / 3 / 3; display: grid; grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 200px 244px 340px; align-items: stretch; align-content: start;
+  gap: 28px; padding: 32px 40px; width: 100%; max-width: 1440px; justify-self: center;
+  min-width: 0; min-height: 0; overflow: auto;
+}
+:root[data-theme="social"] .social-home-hero {
+  display: flex; position: relative; align-items: center; min-height: 0;
+  padding: 28px 36px; border-radius: 18px; overflow: hidden;
+  background: radial-gradient(ellipse at 0 100%, #f1eadf, transparent 75%), linear-gradient(120deg, #e7dfeb, #d9cfe2);
+  border: 1px solid #d5ccdc;
+}
+:root[data-theme="social"] .social-hero-copy { position: relative; z-index: 3; width: 48%; }
+:root[data-theme="social"] .social-hero-copy h1 { font-size: 32px; margin: 0 0 12px; line-height: 1.3; color: #354e3a; }
+:root[data-theme="social"] .social-hero-copy p { font-size: 14px; color: #6f7869; margin: 0; }
+:root[data-theme="social"] .social-hero-actions { display: flex; gap: 22px; align-items: center; margin-top: 24px; }
+:root[data-theme="social"] .social-hero-actions button { border: none; border-radius: 9px; padding: 12px 24px; background: #365c43; color: #f9f7ed; font: 600 15px var(--font); cursor: pointer; }
+:root[data-theme="social"] .social-hero-actions button + button { color: #586b50; background: none; padding-inline: 0; }
+:root[data-theme="social"] .social-hero-art { position: absolute; right: 5%; width: 370px; height: 180px; pointer-events: none; }
+:root[data-theme="social"] .lobby-main > .block { align-self: stretch; height: 100%; flex: none; width: 100%; padding: 0; border: none; border-radius: 0; background: none; box-shadow: none; }
+:root[data-theme="social"] .lobby-main > .block:nth-child(2) { position: relative; display: grid; grid-template-rows: 24px 90px 66px 34px; gap: 10px; }
+:root[data-theme="social"] .lobby-main > .block:last-child { display: flex; flex-direction: column; min-height: 0; }
+:root[data-theme="social"] .lobby-main .block-title { font-size: 18px; margin: 0 0 12px; color: #465c40; letter-spacing: 0; font-weight: 650; }
+:root[data-theme="social"] .lobby-main .block-dot { display: none; }
+:root[data-theme="social"] .game-list { gap: 16px; }
+:root[data-theme="social"] .game-card { display: grid; grid-template-columns: 48px minmax(0, 1fr); grid-template-rows: auto auto; gap: 5px 16px; text-align: left; align-items: center; padding: 18px 22px; border-radius: 12px; }
+:root[data-theme="social"] .game-emoji { grid-row: 1 / 3; }
+:root[data-theme="social"] .game-name { font-size: 18px; }
+:root[data-theme="social"] .game-tag { display: none; }
+:root[data-theme="social"] .social-game-desc { display: block; font-size: 13px; color: #77816e; }
+:root[data-theme="social"] .mode-switch { gap: 12px; margin-top: 0; }
+:root[data-theme="social"] .mode-face { padding: 10px 16px; border-radius: 9px; background: #f6f7f0; }
+:root[data-theme="social"] .mode-face b { font-size: 15px; }
+:root[data-theme="social"] .mode-face small { font-size: 12px; }
+:root[data-theme="social"] .deal-row { margin-top: 0; }
+:root[data-theme="social"] .deal-row[hidden] { display: flex; visibility: hidden; }
+:root[data-theme="social"] .deal-row .chip { padding: 5px 16px; font-size: 13px; border-radius: 7px; }
+:root[data-theme="social"] .relief-row { position: absolute; right: 0; bottom: 0; max-width: 75%; margin: 0; padding: 8px 12px; font-size: 13px; border-radius: 8px; }
+:root[data-theme="social"] .relief-row.is-done { display: none; }
+:root[data-theme="social"] .room-list { position: relative; padding-top: 22px; flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+:root[data-theme="social"] .room-note { position: absolute; top: 0; left: 0; margin: 0; font-size: 12px; }
+:root[data-theme="social"] .room-card { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; gap: 12px; min-width: 0; min-height: 0; padding: 20px; border-radius: 12px; }
+:root[data-theme="social"] .room-card > div { min-height: 0; overflow: auto; }
+:root[data-theme="social"] .room-card > button { flex: none; }
+:root[data-theme="social"] .room-name { font-size: 17px; }
+:root[data-theme="social"] .room-desc { font-size: 13px; line-height: 1.7; }
+:root[data-theme="social"] .room-stats { gap: 6px; margin-top: 12px; }
+:root[data-theme="social"] .room-stat { font-size: 12px; border-radius: 6px; padding: 4px 7px; }
+:root[data-theme="social"] .room-go { font-size: 16px; padding: 11px; border-radius: 8px; box-shadow: none; }
+:root[data-theme="social"] .room-warn { font-size: 12px; }
+
+/* 页面宿主：同一占位区域，无遮罩、无弹窗动画、无每页不同的高度。 */
+:root[data-theme="social"] #desktop-page-host:not([hidden]) { display: block; grid-area: 2 / 2 / 3 / 3; min-width: 0; min-height: 0; padding: 32px 40px; width: 100%; max-width: 1520px; justify-self: center; }
+:root[data-theme="social"] #screen-lobby.has-desktop-page > .lobby-main { display: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page { position: relative; inset: auto; width: 100%; height: 100%; min-height: 0; z-index: 1; background: none; backdrop-filter: none; animation: none; align-items: stretch; justify-content: stretch; }
+:root[data-theme="social"] #panel-layer.is-desktop-page > .drawer { display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; max-height: none; padding: 26px; border-radius: 14px; border: 1px solid #dadfd4; background: #faf9f4; box-shadow: none; overflow: hidden; animation: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page > .drawer > .drawer-head { display: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page > .friends-drawer > .drawer-head { display: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .friends-drawer > .drawer-head :is(.drawer-title, .drawer-close) { display: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page > .drawer > .drawer-body { flex: 1; min-height: 0; overflow: auto; padding: 0 8px 0 0; }
+:root[data-theme="social"] #panel-layer.is-desktop-page :is(.act-body, .friends-body, .groups-body, .moments-body) { flex: 1; min-height: 0; }
+:root[data-theme="social"] #panel-layer.is-desktop-page :is(.act-nav, .act-main, .friend-list) { min-height: 0; max-height: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .act-body { grid-template-columns: 240px minmax(0, 1fr); gap: 26px; overflow: hidden; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .act-nav-item { padding: 15px 12px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .ani-name { font-size: 15px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .ani-badge { font-size: 12px; }
+/* ★ 左栏 280 → 300px：会话行的名字 / 签名 / 时间一起放大后，280 会把签名挤断（见 theme-social.css 的放大一节） */
+:root[data-theme="social"] #panel-layer.is-desktop-page .friends-body { grid-template-columns: 300px minmax(0, 1fr); gap: 24px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page #friend-tabs { display: flex; width: max-content; max-width: 100%; gap: 8px; margin-bottom: 22px; flex: none; }
+:root[data-theme="social"] .social-discover-tab { display: block; }
+:root[data-theme="social"] #panel-layer.is-desktop-page #friend-tabs button { flex: none; min-width: 120px; white-space: nowrap; font-size: 15px; padding: 12px 22px; }
+:root[data-theme="social"] #screen-lobby[data-page="discover"] .friends-body { grid-template-columns: minmax(0, 1fr); }
+:root[data-theme="social"] #screen-lobby[data-page="discover"] .friend-col { display: none; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .friend-item { padding: 14px 10px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-item { padding: 24px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-beans { font-size: 21px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-name { font-size: 13px; line-height: 1.8; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-tabs { gap: 12px; margin-bottom: 20px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .shop-tab { flex: 0 1 170px; font-size: 16px; padding: 13px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .set-row { padding: 18px 10px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .rank-row { padding: 15px 20px; }
+:root[data-theme="social"] #panel-layer.is-desktop-page .rank-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* 非标准窄窗口保持可用，不改变经典主题。 */
+/* 好友房间：座位在中央，邀请列表在右，聊天与输入在下方，不再用弹窗堆叠。 */
+:root[data-theme="social"] #screen-lobby[data-page="room"] .room-drawer {
+  display: grid; grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-rows: 84px 350px minmax(130px, 1fr) 46px; gap: 20px 24px;
+  padding: 24px; background: #f9faf5;
+}
+:root[data-theme="social"] .room-drawer .room-classic-hint { display: none; }
+:root[data-theme="social"] .room-drawer .room-summary { grid-column: 1 / -1; display: flex; align-items: center; gap: 24px; border-bottom: 1px solid #dfe4d8; padding-bottom: 18px; }
+:root[data-theme="social"] .room-summary small { font-size: 12px; color: #8b9684; }
+:root[data-theme="social"] .room-summary h2 { margin: 6px 0 0; font-size: 24px; color: #365641; }
+:root[data-theme="social"] .room-summary h2 span { margin-left: 16px; font-size: 14px; font-weight: 500; color: #86917f; }
+:root[data-theme="social"] .room-summary .room-rule-summary { margin-left: auto; color: #7b8872; font-size: 13px; }
+:root[data-theme="social"] .room-drawer .room-body { display: contents; }
+:root[data-theme="social"] .room-drawer .room-friends { grid-column: 2; grid-row: 2 / 5; display: flex; flex-direction: column; min-height: 0; border-radius: 12px; background: #f0f3eb; border-color: #dce2d4; }
+:root[data-theme="social"] .room-drawer .room-friends-head { padding: 16px; font-weight: 650; font-size: 14px; }
+:root[data-theme="social"] .room-drawer .room-friend-search { display: block; width: calc(100% - 24px); margin: 12px; padding: 10px 12px; border: 1px solid #d6dfcd; background: #fffef9; border-radius: 8px; font: 13px var(--font); color: #455e45; }
+:root[data-theme="social"] .room-drawer .room-friends-list { flex: 1; max-height: none; min-height: 0; padding: 0 10px 12px; overflow-y: auto; gap: 8px; }
+:root[data-theme="social"] .room-drawer .room-friend { padding: 12px 8px; gap: 10px; border-radius: 9px; }
+:root[data-theme="social"] .room-drawer .room-friend .friend-avatar { width: 46px; height: 46px; border-radius: 12px; }
+:root[data-theme="social"] .room-drawer .rf-meta { gap: 5px; align-items: flex-start; }
+:root[data-theme="social"] .room-drawer .rf-name { display: block; width: 100%; font-size: 13px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+:root[data-theme="social"] .room-drawer .rf-act { padding: 7px 9px; background: #e5ecdd; border-radius: 7px; color: #557247; font-size: 12px; }
+:root[data-theme="social"] .room-drawer .room-side { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+:root[data-theme="social"] .room-seats-heading { display: flex; justify-content: space-between; align-items: center; color: #7b8b74; font-size: 13px; }
+:root[data-theme="social"] .room-seats-heading h3 { margin: 0; color: #4d6647; font-size: 15px; }
+:root[data-theme="social"] .room-drawer .room-seats { flex: 1; display: grid; grid-template-columns: repeat(var(--room-seats, 3), minmax(0, 1fr)); gap: 14px; }
+:root[data-theme="social"] .room-drawer .room-seat { position: relative; flex-direction: column; justify-content: center; text-align: center; padding: 22px 12px 12px; gap: 10px; border-radius: 12px; background: #fffefa; border: 1px solid #dce4d5; min-width: 0; }
+:root[data-theme="social"] .room-drawer .room-seat.is-me { background: #edf3e7; border-color: #b3c5a7; }
+:root[data-theme="social"] .room-drawer .room-seat > img { width: 76px; height: 76px; border-radius: 18px; }
+:root[data-theme="social"] .room-drawer .room-player-avatar { width: 76px; height: 76px; border-radius: 50%; }
+:root[data-theme="social"] .room-drawer .room-seat-main { flex: none; align-items: center; width: 100%; gap: 8px; }
+:root[data-theme="social"] .room-drawer .room-seat .friend-name { justify-content: center; font-size: 15px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:root[data-theme="social"] .room-drawer .seat-row { flex-direction: column; gap: 8px; max-width: 100%; }
+:root[data-theme="social"] .room-drawer .room-empty { width: 76px; height: 76px; border-radius: 18px; background: #f1f4ed; border: 1px dashed #c7d2bc; font-size: 30px; font-weight: 300; color: #bcc8b0; }
+:root[data-theme="social"] .room-drawer .room-host-label { display: block; position: absolute; top: 9px; left: 10px; font-size: 10px; color: #789065; }
+:root[data-theme="social"] .room-drawer [data-kick] { position: absolute; top: 8px; right: 8px; padding: 4px 7px; font-size: 10px; }
+:root[data-theme="social"] .room-drawer .room-actions { align-items: center; justify-content: space-between; margin: 0; }
+:root[data-theme="social"] .room-drawer .room-start-hint { display: block; color: #8a957f; font-size: 12px; }
+:root[data-theme="social"] .room-drawer #room-start { min-width: 188px; height: 44px; padding: 10px 24px; font-size: 15px; border-radius: 9px; }
+:root[data-theme="social"] .room-drawer #room-start:disabled { background: #e6ecdf; color: #99a68b; border-color: #dbe3d3; box-shadow: none; }
+:root[data-theme="social"] .room-drawer .room-danmaku { grid-column: 1; grid-row: 3; height: auto; min-height: 0; display: flex; flex-direction: column; margin: 0; padding: 0; border-color: #dee4d5; border-radius: 12px; background: #f4f6ee; }
+:root[data-theme="social"] .room-drawer .room-chat-heading { display: flex; flex: 0 0 52px; align-items: center; gap: 14px; padding: 13px 16px; border-bottom: 1px solid #e1e6d8; font-size: 13px; color: #4a6645; }
+:root[data-theme="social"] .room-chat-heading small { color: #9aa48c; font-size: 11px; }
+:root[data-theme="social"] .room-drawer #danmaku-room { position: static; display: block; flex: 1; min-height: 0; height: auto; margin-top: 0; padding: 22px 16px 14px; overflow: auto; pointer-events: auto; }
+:root[data-theme="social"] .room-chat-item { display: grid; grid-template-columns: 105px minmax(0, 1fr) 42px; gap: 12px; padding: 9px 0; line-height: 1.5; font-size: 13px; color: #52634a; }
+:root[data-theme="social"] .room-chat-item .dm-name { color: #849278; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+:root[data-theme="social"] .room-chat-item .dm-text { overflow-wrap: anywhere; }
+:root[data-theme="social"] .room-chat-item.is-self .dm-name { color: #3f7651; }
+:root[data-theme="social"] .room-chat-time { color: #a3ac97; font-size: 10px; }
+:root[data-theme="social"] .room-drawer .room-dm-tip { pointer-events: none; top: 40px; font-size: 12px; color: #9da78f; }
+:root[data-theme="social"] .room-drawer .room-chat-row { grid-column: 1; grid-row: 4; margin: 0; gap: 10px; }
+:root[data-theme="social"] .room-drawer .room-chat-row input { height: 44px; background: #fffefa; border-color: #d9e1ce; border-radius: 9px; font: 13px var(--font); }
+:root[data-theme="social"] .room-drawer .room-chat-row .btn { padding: 10px 22px; border-radius: 9px; }
+/* 商城统一目录：所有分类共享相同四列、商品封面、标题、说明和购买按钮槽位。 */
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .drawer { background: #f7f8f3; padding: 28px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-tabs { display: flex; gap: 30px; padding: 0; margin-bottom: 18px; border-bottom: 1px solid #d9dfd3; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-tab { flex: none; padding: 12px 3px 15px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; color: #7b8778; background: none; box-shadow: none; font-size: 16px; font-weight: 500; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-tab.is-active { color: #335c43; border-bottom-color: #426d4d; background: none; font-weight: 700; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-wallet { padding: 12px 0; margin-bottom: 10px; border: none; background: none; color: #74816d; font-size: 13px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-wallet b { color: #6b603d; font-size: 17px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] #shop-body > .center-note { min-height: 46px; display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-start; text-align: left; line-height: 1.6; margin: 0 0 18px; color: #7a8675; font-size: 13px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 282px; gap: 18px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item { display: grid; grid-template-rows: 110px 24px 40px 40px; gap: 8px; height: 282px; min-height: 0; padding: 20px; background: #fffefa; border: 1px solid #dde2d6; border-radius: 14px; box-shadow: 0 2px 5px #3a513306; text-align: left; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item:hover { border-color: #b7c5ad; transform: none; box-shadow: 0 5px 16px #3a51330c; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item > :is(.shop-item-emoji, .shop-title-badge, .look-face, .look-back-face, .look-theme-face) { grid-row: 1; place-self: center; display: flex; align-items: center; justify-content: center; width: 100%; height: 110px; margin: 0; background: radial-gradient(ellipse, #eaf0e266, transparent 75%); border: 0; box-shadow: none; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item .shop-coin-art .bean-mark { width: 78px; height: 78px; filter: drop-shadow(0 4px 2px #9c7b2524); }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item .asset-art { width: 84px; height: 84px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item > .look-back-face { width: 64px; height: 92px; background-size: 100% 100%; border-radius: 7px; box-shadow: 0 2px 6px #34472f20; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item > .look-theme-face { width: 90px; height: 60px; border-radius: 9px; background: #dce5d3; box-shadow: 0 2px 6px #34472f14; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item > .look-theme-face.is-dark { background: #2a193e; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-item > .look-theme-face.is-light { background: #f3f2fc; border: 1px solid #e0dae8; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-beans { grid-row: 2; color: #384e3b; font-size: 17px; line-height: 24px; font-weight: 650; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-name { grid-row: 3; color: #85907c; font-size: 12px; line-height: 19px; overflow: hidden; min-height: 0; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-buy { grid-row: 4; height: 40px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; background: #edf2e8; color: #36543b; border-color: #d4dfcb; box-shadow: none; font-size: 13px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-buy:hover:not(:disabled) { background: #dfead7; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] :is(.shop-buy:disabled, .look-only) { background: #f0f1ed; color: #99a190; border-color: #e2e6dc; filter: none; opacity: 1; box-shadow: none; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .look-only { grid-row: 4; display: flex; align-items: center; justify-content: center; margin: 0; height: 40px; border: 1px solid #e2e6dc; border-radius: 8px; font-size: 12px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-tag { top: 12px; right: 12px; border-radius: 5px; background: #efe6cc; padding: 3px 7px; font-size: 10px; }
+:root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-sec { margin: 22px 0 14px; }
+
+@media (max-aspect-ratio: 4/3) {
+  :root[data-theme="social"] #screen-lobby.is-active { grid-template-columns: 220px minmax(0, 1fr); }
+  :root[data-theme="social"] .social-hero-art { right: 2%; width: 32%; }
+  :root[data-theme="social"] .game-card { padding: 14px; gap: 8px; }
+  :root[data-theme="social"] .game-name { font-size: 17px; }
+  :root[data-theme="social"] #panel-layer.is-desktop-page .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :root[data-theme="social"] #screen-lobby[data-page="shop"] .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

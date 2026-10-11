@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="AI-Gameet">
+  <defs>
+    <radialGradient id="lgDarkBadge" cx="44%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#3b2869" />
+      <stop offset="55%" stop-color="#251847" />
+      <stop offset="100%" stop-color="#150b2b" />
+    </radialGradient>
+    <linearGradient id="lgDarkCard" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#4a3678" />
+      <stop offset="100%" stop-color="#2b1c50" />
+    </linearGradient>
+    <radialGradient id="lgDarkPip" cx="36%" cy="32%" r="76%">
+      <stop offset="0%" stop-color="#ffe7b4" />
+      <stop offset="52%" stop-color="#f6cf7c" />
+      <stop offset="100%" stop-color="#d59f3c" />
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="80" r="80" fill="url(#lgDarkBadge)" />
+  <circle cx="80" cy="80" r="76.5" fill="none" stroke="#ff7bac" stroke-opacity="0.38" stroke-width="1.6" />
+  <rect x="25" y="34" width="96" height="74" rx="21" fill="#1d1138" fill-opacity="0.74" stroke="#ff7bac" stroke-opacity="0.55" stroke-width="2.4" />
+  <path d="M39 104 C39 116 38 124 31 134 C45 130 53 126 58 120 Z" fill="#1d1138" fill-opacity="0.9" stroke="#ff7bac" stroke-opacity="0.5" stroke-width="2.2" stroke-linejoin="round" />
+  <rect x="51" y="42" width="48" height="66" rx="9" fill="url(#lgDarkCard)" stroke="#f6cf7c" stroke-opacity="0.92" stroke-width="3" />
+  <circle cx="75" cy="64" r="5.4" fill="url(#lgDarkPip)" />
+  <circle cx="75" cy="86" r="5.4" fill="url(#lgDarkPip)" />
+</svg>

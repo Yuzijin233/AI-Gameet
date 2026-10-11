@@ -1,0 +1,592 @@
+/* =====================================================================
+ * 浅色风格「奶油晴空」（商城在售；**默认仍然是深色**）
+ * ---------------------------------------------------------------------
+ * 这一版做了两件事：
+ *   1) **只换颜色**：灰白底（不是纯白）、实心卡、1px 细线、去掉霓虹光与玻璃模糊。
+ *      ★ **字号 / 字距 / 网格一律不动** —— 跟深色版逐字一样，否则商城这类
+ *        按固定字号排的界面会被挤崩（用户报过）。
+ *   2) 社交那几屏按"真的聊天软件"重排：会话行（时间 + 红点 + 搜索框）、
+ *      每条消息带头像、扁平气泡 + 小尖角、连发合并、居中时间。
+ *
+ * 用法：佩戴后 <html data-theme="light">，本文件放**最后**加载。
+ * 牌桌 / 钓鱼桌整屏翻回深色（见第 9 节）；五子棋不翻（自带木色棋盘）。
+ * ===================================================================== */
+
+/* =====================================================================
+ * 1) 设计令牌：浅色（灰白，不刺眼，也不是纯白）
+ * ===================================================================== */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* 底色：真实聊天软件的那层"灰" —— 不是白，带一点点蓝 */
+  --bg-1: #e7eaf2;
+  --bg-2: #f2f4f9;
+  --bg-3: #dfe3ee;
+
+  /* 表面：灰白实心，不再半透明 */
+  --glass: #f7f8fc;
+  --glass-strong: #f2f4f9;
+  --glass-line: #d8dce7;
+
+  /* 文字：中性墨色 */
+  --ink: #23262e;
+  --ink-soft: #5b6070;
+  --ink-faint: #949aa8;
+
+  /* 投影：一层极淡的"纸边"（圆角与深色版保持一致，只在令牌上收一点点） */
+  --radius-panel: 16px;
+  --radius-btn: 12px;
+  --radius-card: 10px;
+  --shadow-1: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-2: 0 6px 24px rgba(16, 24, 40, 0.1);
+  --glow-pink: none;
+  --glow-gold: none;
+
+  /* 浅色自己的三档"面"（牌桌那一屏会被整块翻回深色，见第 9 节） */
+  --lt-surface: #f7f8fc;
+  --lt-surface-2: #f2f4f9;
+  --lt-sunken: #e9ecf4;
+  --lt-sunken-2: #dde1ec;
+  --lt-line: #d8dce7;
+  --lt-line-soft: #e6e9f1;
+
+  /* 气泡与强调色：品牌玫红降一点饱和，白字看得清也不刺眼 */
+  --me-bubble: #e9548a;
+  --me-bubble-ink: #fff;
+  --other-bubble: #f7f8fc;
+  --accent: #e9548a;
+  --accent-soft: rgba(233, 84, 138, 0.12);
+  /* 彩色文字在灰白底上必须压深，否则读不出来 */
+  --gold-ink: #b8801a;
+  --blue-ink: #1f7fd0;
+  --red-ink: #d03050;
+  --green-ink: #1d9a4e;
+}
+
+
+/* 背景：浅色版的粉/蓝柔光，代替原来的紫黑渐变 */
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(1100px 640px at 12% -8%, rgba(255, 123, 172, 0.18), transparent 62%),
+    radial-gradient(900px 560px at 100% 0%, rgba(111, 214, 255, 0.2), transparent 58%),
+    linear-gradient(165deg, var(--bg-1), var(--bg-2) 58%, var(--bg-3));
+}
+
+/* 加载页标题原来是"白→金→粉"渐变文字，浅底上白字会消失，换成深色渐变 */
+:root[data-theme="light"] .loading-title {
+  background: linear-gradient(92deg, var(--pink-deep), var(--gold-deep) 45%, var(--blue-deep));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="light"] .progress { background: rgba(38, 28, 72, 0.14); }
+
+/* ---------------- 2) 深色场景：牌桌 / 钓鱼桌保持原样 ---------------- */
+/* ---------------- 3) 面板、浮层、提示 ---------------- */
+/* 遮罩：浅色主题下不要糊成一片黑 */
+:root[data-theme="light"] .panel-layer { background: rgba(36, 26, 56, 0.34); }
+:root[data-theme="light"] .drawer {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.98), rgba(243, 244, 253, 0.98));
+  border-color: var(--lt-line);
+}
+:root[data-theme="light"] .drawer-close { background: var(--lt-sunken-2); color: var(--ink); }
+:root[data-theme="light"] .drawer-close:hover { background: rgba(255, 92, 92, 0.28); }
+:root[data-theme="light"] .toast {
+  background: rgba(255, 255, 255, 0.96); color: var(--ink);
+  border-color: var(--lt-line); box-shadow: var(--shadow-1);
+}
+:root[data-theme="light"] .toast.good { color: #1d7a37; border-color: rgba(76, 217, 100, 0.6); }
+:root[data-theme="light"] .toast.bad { color: #c02b2b; border-color: rgba(255, 92, 92, 0.6); }
+:root[data-theme="light"] .toast.gold { color: #9a6a00; border-color: rgba(255, 209, 102, 0.8); }
+
+/* 会话/活动里的小浮层（好友面板内的对话框） */
+:root[data-theme="light"] .gc-overlay { background: rgba(36, 26, 56, 0.4); }
+:root[data-theme="light"] .gc-dialog {
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.99), rgba(240, 242, 253, 0.99));
+  border-color: var(--lt-line);
+}
+
+/* ---------------- 4) 表面 / 下陷 / 描边 三类写死的颜色 ---------------- */
+/* 4.1 「表面」：原来是白透明（贴在半透明深底上当卡片）→ 浅色下改成白卡片 */
+:root[data-theme="light"] .game-card,
+:root[data-theme="light"] .mode-face,
+:root[data-theme="light"] .relief-row.is-done,
+:root[data-theme="light"] .signin-day,
+:root[data-theme="light"] .chip,
+:root[data-theme="light"] .title-card,
+:root[data-theme="light"] .friend-item,
+:root[data-theme="light"] .group-item,
+:root[data-theme="light"] .picker-item,
+:root[data-theme="light"] .gc-pick,
+:root[data-theme="light"] .room-seat,
+:root[data-theme="light"] .rank-row,
+:root[data-theme="light"] .mail-item,
+:root[data-theme="light"] .act-reward,
+:root[data-theme="light"] .act-nav-item:hover,
+:root[data-theme="light"] .friend-item:hover,
+:root[data-theme="light"] .group-item:hover,
+:root[data-theme="light"] .picker-item:hover,
+:root[data-theme="light"] .prof-frame:hover,
+:root[data-theme="light"] .prof-back:hover,
+:root[data-theme="light"] .gc-title:hover,
+:root[data-theme="light"] .gc-pick:hover,
+:root[data-theme="light"] .gc-member[data-at]:hover,
+:root[data-theme="light"] .btn.ghost,
+:root[data-theme="light"] .mini-btn,
+:root[data-theme="light"] .pill.ghost,
+:root[data-theme="light"] .title-card .tc-btn.ghost {
+  background: var(--lt-surface);
+}
+:root[data-theme="light"] .shop-item,
+:root[data-theme="light"] .fr-friend {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(246, 247, 254, 0.92));
+}
+/* 群/私聊里 AI 的气泡与"点一下回复"的悬停态 */
+:root[data-theme="light"] .gc-bubble,
+:root[data-theme="light"] .chat-msg.other { background: var(--lt-surface-2); color: var(--ink); }
+:root[data-theme="light"] .gc-msg.is-ai:hover .gc-bubble { background: #fff; }
+
+/* 4.2 「下陷」：原来是黑透明（凹进去的槽）→ 浅色下改成淡淡灰 */
+:root[data-theme="light"] .act-tier,
+:root[data-theme="light"] .act-pack,
+:root[data-theme="light"] .gc-quote,
+:root[data-theme="light"] .gc-replying,
+:root[data-theme="light"] .panel-tabs,
+:root[data-theme="light"] .act-subtabs,
+:root[data-theme="light"] .room-friends,
+:root[data-theme="light"] .prof-upload-box,
+:root[data-theme="light"] .rank-list.is-out .rank-row,
+:root[data-theme="light"] .match-seat-face,
+:root[data-theme="light"] .chat-time,
+:root[data-theme="light"] .room-stat,
+:root[data-theme="light"] .look-ring,
+:root[data-theme="light"] .act-frame-dot,
+:root[data-theme="light"] .act-card-emoji,
+:root[data-theme="light"] .ani-emoji,
+:root[data-theme="light"] .adh-emoji,
+:root[data-theme="light"] .gi-emoji,
+:root[data-theme="light"] .room-empty {
+  background: var(--lt-sunken);
+}
+
+/* 4.3 输入框：浅底上要深字，不然"白字白底"看不见 */
+:root[data-theme="light"] input[type="text"],
+:root[data-theme="light"] input[type="password"],
+:root[data-theme="light"] select,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] .gc-dialog input[type="text"],
+:root[data-theme="light"] .room-chat-row input {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--lt-line);
+}
+
+/* 4.4 虚线分隔线 */
+:root[data-theme="light"] .friend-list,
+:root[data-theme="light"] .group-list,
+:root[data-theme="light"] .act-nav,
+:root[data-theme="light"] .friend-head,
+:root[data-theme="light"] .gc-head,
+:root[data-theme="light"] .set-row { border-color: var(--lt-line); }
+:root[data-theme="light"] .rank-cut::before,
+:root[data-theme="light"] .rank-cut::after { background: var(--lt-line); }
+
+/* ---------------- 5) 文字与按钮在浅底上的可读性 ---------------- */
+:root[data-theme="light"] .mini-btn { color: var(--ink-soft); border-color: var(--lt-line); }
+:root[data-theme="light"] .mini-btn:hover { color: var(--ink); background: var(--lt-surface-2); }
+:root[data-theme="light"] .gc-time { color: rgba(36, 26, 56, 0.42); }
+:root[data-theme="light"] .quick-input::placeholder { color: rgba(36, 26, 56, 0.42); }
+:root[data-theme="light"] .pass-tip { color: rgba(36, 26, 56, 0.75); text-shadow: none; }
+/* 面板里的 .act-btn（活动 / 我的形象 / 房间）：默认那版是深底白字，浅色下改成浅底深字 */
+:root[data-theme="light"] .act-btn { color: var(--ink); background: var(--lt-sunken-2); }
+:root[data-theme="light"] .act-btn:hover:not(:disabled) { background: rgba(38, 28, 72, 0.16); }
+:root[data-theme="light"] .act-btn.go:disabled {
+  background: rgba(38, 28, 72, 0.1); color: rgba(36, 26, 56, 0.45); border-color: var(--lt-line);
+}
+/* 称号徽章自带底色（见 titles.css），浅底上文字保持深紫即可，只把投影收一点 */
+:root[data-theme="light"] .title-badge { box-shadow: 0 2px 8px rgba(64, 54, 116, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+:root[data-theme="light"] .title-entry-empty { border-color: var(--lt-line); }
+/* 友圈评论里的名字：浅底上用深一点的蓝，保证看得清、也知道能点 */
+:root[data-theme="light"] .mc-name { color: #1f7fd0; }
+:root[data-theme="light"] .moment-del { color: rgba(36, 26, 56, 0.5); }
+:root[data-theme="light"] .moment-del:hover { color: #fff; background: rgba(220, 60, 60, 0.9); }
+
+/* ---------------- 6) 首次进入的"设置性别 + 姓名"那一屏 ---------------- */
+.setup-box {
+  width: min(520px, 92vw); margin: auto; padding: 26px 28px 24px;
+  border-radius: var(--radius-panel); text-align: center;
+  background: var(--glass); border: 1px solid var(--glass-line);
+  box-shadow: var(--shadow-2); backdrop-filter: blur(10px);
+  animation: float-in var(--t-base) ease both;
+}
+.setup-title { margin: 0 0 6px; font-size: 24px; letter-spacing: 3px; }
+.setup-sub { margin: 0 0 20px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.7; }
+.setup-label {
+  display: flex; align-items: baseline; gap: 8px; margin: 16px 0 8px;
+  font-size: 13px; font-weight: 800; letter-spacing: 1px; text-align: left;
+}
+.setup-label small { font-size: 11px; font-weight: 500; color: var(--ink-faint); }
+.setup-genders { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.setup-gender {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px;
+  border-radius: 14px; cursor: pointer; font-family: inherit; color: var(--ink);
+  background: var(--glass); border: 1px solid var(--glass-line);
+  transition: all var(--t-base) ease;
+}
+.setup-gender:hover { transform: translateY(-2px); background: var(--glass-strong); }
+.setup-gender.is-active { border-color: var(--gold); box-shadow: var(--glow-gold); background: rgba(255, 209, 102, 0.16); }
+.setup-gender .sg-emoji { font-size: 24px; }
+.setup-gender b { font-size: 14px; letter-spacing: 1px; }
+.setup-gender i { font-style: normal; font-size: 11px; color: var(--ink-faint); }
+.setup-name-row { display: flex; align-items: center; gap: 8px; }
+.setup-name-row input {
+  flex: 1; min-width: 0; height: 44px; padding: 0 14px; border-radius: 12px;
+  font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: 1px;
+  color: var(--ink); background: rgba(0, 0, 0, 0.22); border: 1px solid var(--glass-line);
+}
+:root[data-theme="light"] .setup-name-row input { background: rgba(255, 255, 255, 0.96); }
+.setup-name-row input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 209, 102, 0.25); }
+.setup-box .act-btn.go.big { width: 100%; margin-top: 20px; }
+.setup-tip { margin: 12px 0 0; font-size: 11.5px; color: var(--ink-faint); }
+
+/* ---------------- 7) 形象面板里的「风格」预览卡 ---------------- */
+.prof-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.prof-theme {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 8px;
+  border-radius: 14px; cursor: pointer; font-family: inherit; color: var(--ink);
+  background: var(--glass); border: 1px solid var(--glass-line);
+}
+.prof-theme:hover { background: var(--glass-strong); }
+.prof-theme.is-active { border-color: var(--gold); box-shadow: var(--glow-gold); }
+.prof-theme.is-locked { opacity: 0.62; cursor: not-allowed; }
+.prof-theme b { font-size: 12.5px; }
+.prof-theme i { font-style: normal; font-size: 10.5px; color: var(--ink-faint); }
+/* 两个小色块当"风格预览"：不用截图，换皮也不会过期 */
+.prof-theme-face {
+  position: relative; width: 68px; height: 42px; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--glass-line);
+}
+.prof-theme-face .ptf-bg { position: absolute; inset: 0; }
+.prof-theme-face .ptf-chip {
+  position: absolute; left: 7px; bottom: 7px; width: 26px; height: 9px; border-radius: 99px;
+}
+.prof-theme-face.is-dark .ptf-bg { background: linear-gradient(160deg, #3a1f5e, #1b1035); }
+.prof-theme-face.is-dark .ptf-chip { background: linear-gradient(90deg, #ffd166, #ff7bac); }
+.prof-theme-face.is-light .ptf-bg { background: linear-gradient(160deg, #ffffff, #e6ecff); }
+.prof-theme-face.is-light .ptf-chip { background: linear-gradient(90deg, #ff9ec4, #6fd6ff); }
+.prof-lock-badge {
+  position: absolute; right: 4px; top: 3px; font-size: 11px;
+}
+
+/* 玩家性别的一行小按钮（我的形象里，随时能改） */
+.prof-genders { display: flex; gap: 8px; }
+.prof-gender {
+  padding: 6px 14px; border-radius: 99px; cursor: pointer; font-family: inherit; font-size: 12.5px;
+  color: var(--ink-soft); background: var(--glass); border: 1px solid var(--glass-line);
+}
+.prof-gender.is-active { color: #3a1030; font-weight: 800; border-color: transparent; background: linear-gradient(180deg, #ffe6a8, #ffb03a); }
+
+/* =====================================================================
+ * 7) ★ 像真聊天的那些地方（**只改颜色与聊天区的小结构，字号一律不动**）
+ * ===================================================================== */
+/* 左栏顶上那一条搜索框（真聊天软件都有） */
+:root[data-theme="light"] .friend-search {
+  background: var(--lt-sunken); border-color: transparent; border-radius: 10px;
+}
+:root[data-theme="light"] .friend-search .fs-ico { opacity: 0.5; }
+:root[data-theme="light"] .friend-search input { background: transparent; border: none; color: var(--ink); box-shadow: none; }
+:root[data-theme="light"] .friend-search input:focus { background: transparent; border: none; box-shadow: none; }
+/* 会话行：选中态用浅灰（真实软件都这样），行尾是时间 + 红点 */
+:root[data-theme="light"] .friend-item,
+:root[data-theme="light"] .group-item { border-color: transparent; border-radius: 10px; }
+:root[data-theme="light"] .friend-item.is-active,
+:root[data-theme="light"] .group-item.is-active { background: var(--lt-sunken-2); }
+:root[data-theme="light"] .friend-side { gap: 5px; }
+:root[data-theme="light"] .friend-time { color: var(--ink-faint); }
+:root[data-theme="light"] .unread-badge {
+  background: var(--red-ink); color: #fff; box-shadow: none; border: 2px solid var(--lt-surface-2);
+}
+:root[data-theme="light"] .gender-tag.is-m { color: var(--blue-ink); background: rgba(31, 127, 208, 0.12); }
+:root[data-theme="light"] .gender-tag.is-f { color: var(--accent); background: var(--accent-soft); }
+:root[data-theme="light"] .lover-badge { background: var(--accent-soft); color: var(--accent); }
+:root[data-theme="light"] .lover-hint { color: var(--accent); background: var(--accent-soft); border: none; }
+/* 聊天标题下那一个小点：在线是绿的、正在输入是呼吸的粉 */
+:root[data-theme="light"] .friend-head .online-dot { background: var(--green-ink); }
+:root[data-theme="light"] .friend-head .online-dot.is-typing { background: var(--accent); }
+/* 聊天区：灰底 + 扁平气泡 + 小尖角 + 连发合并 */
+:root[data-theme="light"] .chat-log,
+:root[data-theme="light"] .friend-log,
+:root[data-theme="light"] .gc-log { background: var(--bg-1); }
+:root[data-theme="light"] .chat-time {
+  align-self: center; background: transparent; color: var(--ink-faint); padding: 2px 0; margin: 4px 0;
+}
+:root[data-theme="light"] .chat-msg {
+  position: relative; max-width: min(250px, 72%);
+  border-radius: 14px; box-shadow: 0 1px 1px rgba(16, 24, 40, 0.04);
+}
+:root[data-theme="light"] .chat-face { border: none; box-shadow: 0 0 0 1px var(--lt-line-soft); }
+:root[data-theme="light"] .chat-row.is-cont { margin-top: -4px; }
+:root[data-theme="light"] .chat-row.is-cont .chat-face { visibility: hidden; }
+:root[data-theme="light"] .chat-row.is-cont .chat-msg.other { border-top-left-radius: 6px; }
+:root[data-theme="light"] .chat-row.is-cont .chat-msg.self { border-top-right-radius: 6px; }
+:root[data-theme="light"] .chat-msg.other,
+:root[data-theme="light"] .gc-bubble {
+  background: var(--other-bubble); color: var(--ink); border: 1px solid var(--lt-line);
+}
+:root[data-theme="light"] .chat-msg.other::after {
+  content: ''; position: absolute; left: -4.5px; top: 12px; width: 8px; height: 8px;
+  background: var(--other-bubble); border-left: 1px solid var(--lt-line); border-bottom: 1px solid var(--lt-line);
+  transform: rotate(45deg); border-bottom-left-radius: 2px;
+}
+:root[data-theme="light"] .chat-msg.self {
+  background: var(--me-bubble); color: var(--me-bubble-ink); border: 1px solid var(--me-bubble);
+}
+:root[data-theme="light"] .chat-msg.self::after {
+  content: ''; position: absolute; right: -4.5px; top: 12px; width: 8px; height: 8px;
+  background: var(--me-bubble); border-right: 1px solid var(--me-bubble); border-top: 1px solid var(--me-bubble);
+  transform: rotate(45deg); border-top-right-radius: 2px;
+}
+:root[data-theme="light"] .chat-msg.sys { background: rgba(35, 38, 46, 0.07); color: var(--ink-soft); }
+:root[data-theme="light"] .chat-sys { background: rgba(35, 38, 46, 0.06); color: var(--ink-faint); }
+/* ★ 群聊的系统行（拍一拍）在浅色下同样只换颜色，别跟着深色底变成一块黑 */
+:root[data-theme="light"] .gc-sys { background: rgba(35, 38, 46, 0.06); color: var(--ink-faint); }
+:root[data-theme="light"] .chat-msg .cm-who { color: var(--ink-faint); }
+:root[data-theme="light"] .chat-msg.is-gift { background: #f6efdc; color: var(--ink); border: 1px solid #e3d3a8; }
+:root[data-theme="light"] .chat-msg.is-gift::after { display: none; }
+:root[data-theme="light"] .chat-gift { background: rgba(184, 128, 26, 0.16); color: var(--gold-ink); border: none; }
+/* 输入条：灰白底 + 上细线 + 灰槽 */
+:root[data-theme="light"] .friend-input-wrap { background: var(--lt-surface); border-top: 1px solid var(--lt-line); }
+:root[data-theme="light"] .chat-input-row input,
+:root[data-theme="light"] .quick-input { background: var(--lt-sunken); border: 1px solid transparent; }
+:root[data-theme="light"] .chat-input-row input:focus,
+:root[data-theme="light"] .quick-input:focus { background: var(--lt-surface); border-color: var(--accent); }
+:root[data-theme="light"] .emoji-pop,
+:root[data-theme="light"] .gift-pop { background: var(--lt-surface); border: 1px solid var(--lt-line); box-shadow: var(--shadow-2); }
+:root[data-theme="light"] .pop-item:hover { background: var(--lt-sunken); }
+:root[data-theme="light"] .gift-pop-head { border-bottom: 1px solid var(--lt-line-soft); }
+:root[data-theme="light"] .gift-pop-left,
+:root[data-theme="light"] .gift-pop-tip,
+:root[data-theme="light"] .gift-stock { color: var(--ink-faint); }
+:root[data-theme="light"] .gift-opt { background: var(--lt-surface); border: 1px solid var(--lt-line-soft); }
+:root[data-theme="light"] .gift-aff,
+:root[data-theme="light"] .picker-add { color: var(--accent); }
+:root[data-theme="light"] .picker-item.is-added .picker-add { color: var(--ink-faint); }
+:root[data-theme="light"] .picker-item { border-bottom: 1px solid var(--lt-line-soft); }
+:root[data-theme="light"] .picker-item:hover { background: var(--lt-sunken); }
+/* 群聊：成员栏像联系人列表，气泡沿用私聊那一套 */
+:root[data-theme="light"] .gc-head { background: var(--lt-surface); border-bottom: 1px solid var(--lt-line); }
+:root[data-theme="light"] .gc-members { background: var(--lt-surface-2); border-left: 1px solid var(--lt-line); }
+:root[data-theme="light"] .gc-member:hover,
+:root[data-theme="light"] .gc-member[data-at]:hover { background: var(--lt-sunken); }
+:root[data-theme="light"] .gc-member.is-me { color: var(--accent); }
+:root[data-theme="light"] .gc-msg.is-ai:hover .gc-bubble { background: var(--lt-surface-2); }
+:root[data-theme="light"] .gc-msg.is-me .gc-bubble {
+  background: var(--me-bubble); color: var(--me-bubble-ink); border-color: var(--me-bubble);
+}
+:root[data-theme="light"] .gc-time,
+:root[data-theme="light"] .gc-who,
+:root[data-theme="light"] .gc-count,
+:root[data-theme="light"] .gc-hint { color: var(--ink-faint); }
+:root[data-theme="light"] .gc-quote,
+:root[data-theme="light"] .gc-replying {
+  background: var(--lt-sunken); border-left: 2px solid var(--lt-line); color: var(--ink-soft);
+}
+:root[data-theme="light"] .gc-new { background: var(--accent-soft); color: var(--accent); }
+:root[data-theme="light"] .typing-bubble { background: var(--lt-surface); border: 1px solid var(--lt-line); }
+:root[data-theme="light"] .typing-bubble i,
+:root[data-theme="light"] .typing-dot { background: #b9bfcb; }
+/* 友圈：无边框信息流 + 灰评论块 */
+:root[data-theme="light"] .moments-body,
+:root[data-theme="light"] .moments-list { background: transparent; }
+:root[data-theme="light"] .moments-head { border-bottom: 1px solid var(--lt-line); }
+:root[data-theme="light"] .moment { background: transparent; border-bottom: 1px solid var(--lt-line-soft); }
+:root[data-theme="light"] .moment-name { color: #3b5b8c; }
+:root[data-theme="light"] .moment-comments { background: var(--lt-sunken); }
+:root[data-theme="light"] .mm-btn.is-on { color: var(--accent); }
+:root[data-theme="light"] .moment-input { background: var(--lt-sunken); border: 1px solid transparent; }
+:root[data-theme="light"] .moment-input:focus { background: var(--lt-surface); border-color: var(--accent); }
+
+/* 浅色下不要玻璃模糊：实心卡才是真 App 的观感 */
+:root[data-theme="light"] .drawer,
+:root[data-theme="light"] .toast,
+:root[data-theme="light"] .setup-box,
+:root[data-theme="light"] .gc-dialog,
+:root[data-theme="light"] .invite-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* 下拉框展开后的选项：原来是深紫底配深字，看不见 */
+:root[data-theme="light"] select option { background: var(--lt-surface); color: var(--ink); }
+/* 金色数字在灰白底上压深（原来那版读不清） */
+:root[data-theme="light"] .user-beans,
+:root[data-theme="light"] .shop-beans,
+:root[data-theme="light"] .shop-wallet b,
+:root[data-theme="light"] .result-beans b,
+:root[data-theme="light"] .result-multi .rm-value,
+:root[data-theme="light"] .pay-amount,
+:root[data-theme="light"] .invite-line b,
+:root[data-theme="light"] .invite-sub span { color: var(--gold-ink); }
+:root[data-theme="light"] .result-banner.lose { background: linear-gradient(92deg, #7c828c, #a9aeb8); }
+:root[data-theme="light"] .result-factors span {
+  background: var(--accent-soft); border-color: transparent; color: var(--accent);
+}
+:root[data-theme="light"] .result-row.is-me { border-color: var(--gold-ink); background: rgba(184, 128, 26, 0.08); }
+:root[data-theme="light"] .fr-money.is-win { color: var(--green-ink); }
+:root[data-theme="light"] .fr-money.is-lose { color: var(--red-ink); }
+:root[data-theme="light"] .toast.good { color: var(--green-ink); }
+:root[data-theme="light"] .toast.bad { color: var(--red-ink); }
+:root[data-theme="light"] .toast.gold { color: var(--gold-ink); }
+:root[data-theme="light"] .mic-btn.is-live { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="light"] .mic-bars i { background: var(--accent); }
+:root[data-theme="light"] .prof-genders .prof-gender.is-active { background: var(--accent-soft); border-color: var(--accent); }
+:root[data-theme="light"] .prof-theme.is-active { border-color: var(--accent); box-shadow: none; }
+:root[data-theme="light"] .prof-preview-face img { box-shadow: 0 0 0 1px var(--lt-line); }
+:root[data-theme="light"] .prof-preview-sub { color: var(--ink-faint); }
+:root[data-theme="light"] .shop-sec { color: var(--ink-soft); }
+:root[data-theme="light"] .prof-hint { color: var(--ink-faint); }
+:root[data-theme="light"] input[type="text"]:focus,
+:root[data-theme="light"] input[type="password"]:focus,
+:root[data-theme="light"] select:focus,
+:root[data-theme="light"] textarea:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+/* =====================================================================
+ * 8) 牌桌 / 钓鱼桌：**页面底色也跟着变浅**（用户要求：进游戏后别再是一片紫）
+ *    ① 原来盖在这两屏上的紫色渐变已经去掉 → 直接露 body 的浅灰底；
+ *    ② 毛毡从深紫换成"浅灰蓝桌垫"（**不是纯白**），牌仍压在它上面；
+ *    ③ 自带深色底的小片子（状态条 / 叫地主条 / 记牌器 / 倒计时环）保持深色，
+ *       所以把它们**内部**的文字令牌翻回浅色 —— 否则就是深底配深字。
+ * ===================================================================== */
+:root[data-theme="light"] #screen-table .felt,
+:root[data-theme="light"] #screen-fishing .felt {
+  background:
+    radial-gradient(ellipse at 50% 40%, #ffffff, transparent 62%),
+    radial-gradient(ellipse at 50% 50%, #dfe4ee, #eef1f7);
+  border: 1px solid var(--lt-line);
+  box-shadow: inset 0 0 60px rgba(35, 38, 46, 0.05), 0 12px 30px rgba(16, 24, 40, 0.08);
+}
+/* 深底片子里：文字令牌翻回浅色 */
+:root[data-theme="light"] #screen-table .status-bar,
+:root[data-theme="light"] #screen-table .bid-bar,
+:root[data-theme="light"] #screen-table .turn-timer,
+:root[data-theme="light"] #screen-fishing .fish-counter,
+:root[data-theme="light"] #screen-fishing .fish-tip,
+:root[data-theme="light"] #screen-fishing .fish-catch-bar {
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.78);
+  --ink-faint: rgba(255, 255, 255, 0.52);
+  --glass-line: rgba(255, 255, 255, 0.25);
+}
+/* 浅色桌垫上的字：金色 / 蓝色 / 白色一律压深 */
+:root[data-theme="light"] #screen-table .multi-value { color: var(--gold-ink); text-shadow: none; }
+:root[data-theme="light"] #screen-table .seat-beans,
+:root[data-theme="light"] #screen-table .me-beans { color: var(--gold-ink); }
+:root[data-theme="light"] #screen-table .seat-tag { color: var(--blue-ink); background: rgba(31, 127, 208, 0.12); }
+:root[data-theme="light"] #screen-table .multi-factors span {
+  color: var(--accent); background: var(--accent-soft); border-color: transparent;
+}
+:root[data-theme="light"] #screen-table .quick-input { color: var(--ink); }
+:root[data-theme="light"] #screen-table .quick-input:focus { border-color: var(--accent); }
+:root[data-theme="light"] #screen-table .pop-item { color: var(--ink); background: var(--lt-surface); }
+:root[data-theme="light"] #screen-table .seat-avatar,
+:root[data-theme="light"] #screen-fishing .seat-avatar {
+  border-color: #fff; box-shadow: 0 0 0 1px var(--lt-line);
+}
+:root[data-theme="light"] #screen-table .card,
+:root[data-theme="light"] #screen-fishing .card { box-shadow: 0 3px 10px rgba(16, 24, 40, 0.14); }
+/* 钓鱼桌：牌堆 / 鱼篓的小标签与新牌位的虚线框也改成深色字 */
+:root[data-theme="light"] #screen-fishing .pile-label { color: var(--ink-soft); }
+:root[data-theme="light"] #screen-fishing .pile-label b { color: var(--ink); }
+:root[data-theme="light"] #screen-fishing .fish-pile.catch .pile-label,
+:root[data-theme="light"] #screen-fishing .fish-pile.catch .pile-label b { color: var(--gold-ink); }
+:root[data-theme="light"] #screen-fishing .pile-cards:empty::after { border-color: rgba(35, 38, 46, 0.22); }
+/* 桌上飘过的"不要 / 要不起"：浅色桌垫上要用深字 */
+:root[data-theme="light"] #screen-table .pass-tip,
+:root[data-theme="light"] #screen-fishing .pass-tip { color: var(--ink-soft); text-shadow: none; }
+/* 特效飘字（+100 / 春天）保留金色，但换成浅底上看得清的那种金 */
+:root[data-theme="light"] #screen-table .float-text,
+:root[data-theme="light"] #screen-fishing .float-text {
+  color: var(--gold-ink); text-shadow: 0 2px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* 品牌标志：浅色下换成浅色版（深色版藏起来）。只管 display，不碰任何排布 / 字号 */
+:root[data-theme="light"] .logo-light { display: inline-block; }
+:root[data-theme="light"] .logo-dark { display: none; }
+
+/* =====================================================================
+ * 11) 浅色桌面上的按钮与状态（用户报：不叫 / 不出跟底色几乎一样、"正在出牌"看不清）
+ *     全部只改颜色/描边/投影，不动字号与布局。
+ * ===================================================================== */
+/* 灰底按钮压在灰底页面上 = 看不见：给它一张"按得下去"的脸
+   ★ 但 **.primary 要排除**（用户报的 bug："叫地主"字和底都是白的，看不见）：
+     这条的权重是 (0,4,0)，会**盖过** base.css 里的 `.btn.primary`(0,2,0)，
+     把金色主按钮一起刷成 `--lt-surface`(#f7f8fc) 的白底；
+     再撞上 .bid-bar 内部被翻成白色的 `--ink`（见上面"深底片子"那条），
+     就正好是"白字 + 白底"。排除掉 .primary，金色主按钮就回到自己那套渐变。
+     （.ghost 不用单独写：它本来就不是 .primary，已经被 :not(.primary) 覆盖。） */
+:root[data-theme="light"] .btn:not(.primary),
+:root[data-theme="light"] .act-btn {
+  color: var(--ink); background: var(--lt-surface);
+  border: 1px solid #c9cfdc; box-shadow: 0 1px 2px rgba(16, 24, 40, 0.1);
+}
+:root[data-theme="light"] .btn:not(.primary):hover:not(:disabled),
+:root[data-theme="light"] .act-btn:hover:not(:disabled) {
+  background: #eef1f7; transform: none; box-shadow: 0 3px 8px rgba(16, 24, 40, 0.14);
+}
+/**
+ * ★ .bid-bar 是那块**深色浮条**（内部 --ink 被翻成白色，见第 10 节），
+ *   所以它里面的按钮不能按"浅色桌面"那套来 —— 否则白底白字（用户报的正是这里）。
+ *   这条比上面那条更具体（多了 #screen-table 等），一定生效。
+ *   口径：主按钮保持金色渐变 + 深色字；"不叫/不抢"是白色玻璃片 + 白字。
+ */
+:root[data-theme="light"] #screen-table .bid-bar .btn {
+  color: #fff; background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.42); box-shadow: none;
+}
+:root[data-theme="light"] #screen-table .bid-bar .btn:not(.primary):hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.28); transform: none;
+}
+:root[data-theme="light"] #screen-table .bid-bar .btn.primary {
+  color: #3a1030; border: none;
+  background: linear-gradient(180deg, #ffd9a0, var(--gold) 45%, var(--pink));
+  box-shadow: var(--shadow-1), var(--glow-gold);
+}
+:root[data-theme="light"] .btn:disabled,
+:root[data-theme="light"] .act-btn:disabled { opacity: 0.55; box-shadow: none; }
+/* 深底状态条里的字必须显式写白：它的 color 是从 body 继承的，
+   不会跟着这一屏的 --ink 走（用户报"XXXX 正在出牌"是黑色看不见） */
+:root[data-theme="light"] #screen-table .status-bar,
+:root[data-theme="light"] #screen-fishing .status-bar { color: #fff; }
+:root[data-theme="light"] #screen-table .status-bar.is-turn,
+:root[data-theme="light"] #screen-fishing .status-bar.is-turn { color: #fff6dd; }
+/* "思考中"那种淡蓝小片：浅底上要压深 */
+:root[data-theme="light"] #screen-table .seat-think,
+:root[data-theme="light"] #screen-fishing .seat-think {
+  color: var(--blue-ink); background: rgba(31, 127, 208, 0.12); border-color: rgba(31, 127, 208, 0.32);
+}
+:root[data-theme="light"] #screen-table .seat-think i,
+:root[data-theme="light"] #screen-fishing .seat-think i { background: var(--blue-ink); }
+/* 顶栏那几枚小片子（场次 / 倍数 / 身家）也补一层描边，免得太糊 */
+:root[data-theme="light"] #screen-table .pill,
+:root[data-theme="light"] #screen-fishing .pill,
+:root[data-theme="light"] #screen-gomoku .pill {
+  background: var(--lt-surface); border-color: #ccd2de;
+}
+
+/* =====================================================================
+ * 12) 浅色也要有泡泡 + 大厅两块框深一点（用户拍板）
+ * ===================================================================== */
+/* 浅色的泡泡由 ui/fx.js 画成"描边泡泡"（浅底上淡粉/淡蓝实心点是看不见的），这里保证它真的开着 */
+:root[data-theme="light"] #particles { display: block; opacity: 0.9; }
+
+/* ★ 「玩法与模式」「选择场次」这两块原来跟页面底色几乎一样白，
+   现在给它们一层**更深一点的灰蓝框**，里面的卡片反而更亮 → 层次出来了 */
+:root[data-theme="light"] .block {
+  background: #eef1f8; border: 1px solid #dee3ef; border-radius: 14px;
+  padding: 12px 14px;
+}
+:root[data-theme="light"] .block-title { color: var(--ink); }
+:root[data-theme="light"] .game-card,
+:root[data-theme="light"] .mode-face,
+:root[data-theme="light"] .room-card { background: #fbfcfe; border-color: #d7dce8; }
+:root[data-theme="light"] .game-card.is-active,
+:root[data-theme="light"] .mode-opt input:checked + .mode-face {
+  background: #fff; border-color: var(--accent);
+}
+:root[data-theme="light"] .room-stat { background: #e3e7f2; }
+:root[data-theme="light"] .room-card:hover { background: #fff; }

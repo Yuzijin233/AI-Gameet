@@ -1,0 +1,54 @@
+/* 设计令牌（PRD §7.1） */
+:root {
+  --pink: #ff7bac;
+  --pink-deep: #ff4f8b;
+  --blue: #6fd6ff;
+  --blue-deep: #3fb6e8;
+  --gold: #ffd166;
+  --gold-deep: #f5a623;
+  --green: #4cd964;
+  --red: #ff5c5c;
+  --purple: #a98bff;
+
+  --bg-1: #1b1035;
+  --bg-2: #2a1b4d;
+  --bg-3: #3a1f5e;
+
+  --glass: rgba(255, 255, 255, 0.12);
+  --glass-strong: rgba(255, 255, 255, 0.2);
+  --glass-line: rgba(255, 255, 255, 0.25);
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.72);
+  --ink-faint: rgba(255, 255, 255, 0.45);
+
+  --radius-panel: 20px;
+  --radius-btn: 14px;
+  --radius-card: 8px;
+
+  --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 12px 28px rgba(0, 0, 0, 0.5);
+  --glow-pink: 0 0 18px rgba(255, 123, 172, 0.55);
+  --glow-gold: 0 0 18px rgba(255, 209, 102, 0.6);
+
+  --card-w: 92px;
+  --card-h: 129px;
+  --card-w-sm: 64px;
+  --card-h-sm: 90px;
+
+  --font: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
+
+  /* 动画速度由设置项写入：1 = 标准，1.5 = 慢，0.6 = 快，0 = 关闭 */
+  --anim: 1;
+  --t-fast: calc(0.12s * var(--anim));
+  --t-base: calc(0.26s * var(--anim));
+  --t-slow: calc(0.6s * var(--anim));
+}
+
+/* 动画关闭：停掉所有非必要动效（PRD §7.7-5） */
+:root[data-anim="off"] *,
+:root[data-anim="off"] *::before,
+:root[data-anim="off"] *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+}

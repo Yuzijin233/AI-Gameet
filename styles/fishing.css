@@ -1,0 +1,123 @@
+/* 小猫钓鱼 */
+#screen-fishing { padding: 14px 20px 14px; }
+
+.fish-stage { position: relative; flex: 1; margin-top: 6px; }
+.fish-stage .felt { opacity: 0.9; }
+
+.fish-side {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px; width: 340px;
+  z-index: 10;
+}
+.fish-side-ai { top: 0; }
+.fish-side-me { bottom: 0; }
+.fish-side .seat-avatar { position: relative; width: 62px; height: 62px; }
+.fish-side .seat-name { display: flex; align-items: center; gap: 6px; }
+
+/* 左上角记牌器：每个点数在牌堆里还剩几张（0 张变暗，只剩 1 张高亮） */
+.fish-counter {
+  position: absolute; left: 10px; top: 8px; z-index: 12;
+  padding: 7px 10px 8px; border-radius: 12px; max-width: 62%;
+  background: rgba(20, 10, 40, 0.62); border: 1px solid var(--glass-line);
+  backdrop-filter: blur(8px);
+}
+.fc-title { display: block; font-size: 11px; color: var(--ink-faint); letter-spacing: 1px; margin-bottom: 5px; }
+.fc-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.fc-item {
+  display: inline-flex; align-items: baseline; gap: 2px;
+  min-width: 30px; padding: 2px 6px; border-radius: 8px;
+  font-size: 11.5px; font-weight: 700; color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.fc-item b { font-size: 12.5px; color: #fff; }
+.fc-item.is-last { border-color: var(--gold); color: var(--gold); }
+.fc-item.is-last b { color: var(--gold); }
+.fc-item.is-empty { opacity: 0.32; }
+.fc-item.is-empty b { color: var(--ink-faint); }
+
+/* 牌堆 + 鱼篓：都用真实的牌堆展示 */
+.fish-piles { display: flex; align-items: flex-start; gap: 22px; }
+.fish-pile { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.pile-cards { position: relative; width: 52px; height: 56px; }
+.pile-cards .card { position: absolute; left: calc(var(--pile-i, 0) * 5px); top: calc(var(--pile-i, 0) * -3px); }
+.pile-cards:empty::after {
+  content: ""; position: absolute; left: 0; top: 0; width: 38px; height: 53px;
+  border: 1px dashed rgba(255, 255, 255, 0.28); border-radius: 6px;
+}
+.pile-label { font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
+.pile-label b { font-size: 13px; color: #fff; }
+.fish-pile.catch .pile-label { color: var(--gold); }
+.fish-pile.catch .pile-label b { color: var(--gold); }
+.pile-label.danger b { color: var(--red); }
+.pile-label.bump { animation: bump 0.4s cubic-bezier(0.2, 1.6, 0.4, 1); }
+
+/* 小鱼篓用的迷你牌 */
+.card.tiny { width: 38px; height: 53px; border-radius: 5px; }
+.card.tiny .corner.tl { left: 3px; top: 2px; }
+.card.tiny .corner.br { display: none; }
+.card.tiny .corner b { font-size: 14px; letter-spacing: 0; }
+.card.tiny .corner i { font-size: 10px; margin-top: 0; }
+.card.tiny .joker-center { font-size: 19px; }
+
+/* 气泡都挂在头像右侧 → 箭头统一用 .left（尾巴在左边，指回头像）
+   竖直方向气泡是相对整块 .fish-side 定位的：
+   - 对手那块（top: 0）头像就在容器顶部，-6px 正好贴着头像
+   - 我方那块（bottom: 0）容器整体在下半屏，用 8px 才对得上头像，不能再用负值（会飘到牌堆上面去） */
+.fish-side .bubble { top: -6px; }.fish-side-ai .bubble { left: calc(50% + 46px); }
+.fish-side-me .bubble { left: calc(50% + 46px); top: 8px; }
+
+.fish-center {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(74%, 760px); min-height: 200px; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+}
+.fish-table-cards {
+  display: flex; align-items: center; justify-content: center; min-height: 104px;
+  padding: 6px 10px; border-radius: 16px;
+}
+.fish-table-cards .card { margin-left: -34px; will-change: transform, opacity; }
+.fish-table-cards .card:first-child { margin-left: 0; }
+.fish-table-cards .card.is-top { box-shadow: 0 0 0 2px var(--gold), 0 10px 22px rgba(255, 209, 102, 0.45); }
+/* 可以收走的那一段牌 */
+.fish-table-cards .card.is-catch {
+  box-shadow: 0 0 0 2px var(--green), 0 8px 18px rgba(76, 217, 100, 0.45);
+  transform: translateY(-8px);
+}
+.fish-table-cards .card.is-top.is-catch { box-shadow: 0 0 0 2px var(--gold), 0 10px 22px rgba(255, 209, 102, 0.45); }
+.fish-tip {
+  font-size: 12.5px; color: var(--ink-faint); text-align: center;
+  padding: 7px 18px; border-radius: 99px; max-width: 100%;
+  background: rgba(20, 10, 40, 0.7); border: 1px solid var(--glass-line);
+}
+
+.fish-actions { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 10px 0 4px; }
+.fish-actions .act-btn[hidden] { display: none; }
+
+/* 钓到之后的选择条 */
+.fish-catch-bar {
+  display: flex; justify-content: center; align-items: center; gap: 12px;
+  margin: 2px auto 0; padding: 10px 18px; width: fit-content; max-width: 92%;
+  border-radius: 99px; background: rgba(20, 10, 40, 0.9);
+  border: 1px solid rgba(255, 209, 102, 0.6); box-shadow: var(--shadow-2), var(--glow-gold);
+  animation: float-in var(--t-base) ease both;
+}
+.fish-catch-bar[hidden] { display: none; }
+.fcb-text { font-size: 13.5px; font-weight: 700; color: var(--gold); }
+
+/* 本局倍数 */
+.fish-multi {
+  display: inline-block; margin-top: 3px; padding: 2px 12px;
+  border-radius: 99px; font-size: 12.5px; font-weight: 800; letter-spacing: 1px;
+  color: #ffe0ee; background: rgba(255, 123, 172, 0.22);
+  border: 1px solid rgba(255, 123, 172, 0.55);
+}
+.fish-multi.is-hot {
+  color: #3a1030; background: linear-gradient(90deg, var(--gold), var(--pink));
+  border-color: rgba(255, 255, 255, 0.6); box-shadow: var(--glow-gold);
+}
+
+/* 右下角发言区（复用牌桌那套输入框/表情/麦克风样式） */
+.fish-chat {
+  position: absolute; right: 22px; bottom: 66px; width: 296px; z-index: 30;
+}
+.fish-chat .emoji-pop { bottom: 56px; }

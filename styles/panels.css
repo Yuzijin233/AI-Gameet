@@ -1,0 +1,370 @@
+/* 面板：商城 / 签到 / 设置 / 聊天 / 结算 */
+/*
+ * ★ 用户拍板：结算里「加好友」不再单独占一行，和"收益变动"并排 ——
+ *   所以它是收益行里的一个小按钮，不是一整块卡片。
+ */
+.mini-add { flex: none; margin-left: 8px; padding: 6px 12px; font-size: 12.5px; border-radius: 10px; }
+.fr-money-row { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.result-row .mini-add { margin-left: 4px; }
+.shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.shop-item {
+  position: relative; padding: 16px 16px 14px; border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--glass-line); overflow: hidden;
+}
+/*
+ * ★ 商城的底线（用户报过两次"描述被挤成一行一个字"）：
+ *   卡片必须是**块**——描述上下排；一旦被排成 flex 行，
+ *   `.shop-buy { width: 100% }` 会把描述挤到只剩一个字的宽度。
+ *   这里连同"描述至少放得下几个字"一起钉死，任何风格都翻不了车。
+ */
+.shop-item { display: block; }
+.shop-name { display: block; min-width: 6em; overflow-wrap: break-word; }
+.shop-item::after {
+  content: ""; position: absolute; right: -30px; top: -30px; width: 90px; height: 90px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(255, 209, 102, 0.35), transparent 70%);
+}
+.shop-beans { font-size: 20px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 6px; }
+.shop-name { font-size: 12px; color: var(--ink-faint); margin: 4px 0 12px; }
+.shop-tag {
+  position: absolute; right: 0; top: 10px; padding: 3px 10px; font-size: 11px; font-weight: 800;
+  color: #3a1030; background: linear-gradient(90deg, var(--gold), var(--pink)); border-radius: 8px 0 0 8px;
+}
+.shop-buy {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 11px 0; border: none; border-radius: 12px; cursor: pointer; font-family: inherit;
+  font-size: 14px; font-weight: 800; color: #fff;
+  background: linear-gradient(180deg, #ff9ec4, var(--pink-deep));
+  box-shadow: 0 6px 16px rgba(255, 79, 139, 0.4);
+  transition: transform var(--t-fast) ease, filter var(--t-base) ease;
+}
+.shop-buy:hover:not(:disabled) { transform: translateY(-2px); }
+.shop-buy:disabled { filter: saturate(0.3) brightness(0.8); cursor: not-allowed; }
+.shop-price { font-size: 15px; }
+
+/* 商城三个分类：开心豆 / 称号 / 道具 */
+.shop-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.shop-tab {
+  flex: 1; padding: 9px 6px; border-radius: 12px; cursor: pointer; font-family: inherit;
+  font-size: 13px; font-weight: 700; color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line);
+  transition: all var(--t-fast) ease;
+}
+.shop-tab:hover { transform: translateY(-2px); }
+.shop-tab.is-active {
+  color: #241033; border-color: transparent;
+  background: linear-gradient(180deg, #ffe6a8, var(--gold));
+  box-shadow: 0 4px 14px rgba(255, 209, 102, 0.35);
+}
+.shop-wallet {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  padding: 9px 12px; margin-bottom: 12px; border-radius: 12px;
+  font-size: 13px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-line);
+}
+.shop-wallet b { color: var(--gold); font-size: 15px; }
+.shop-wallet-tip { font-size: 11.5px; color: var(--ink-faint); margin-left: auto; }
+.shop-title-badge { display: flex; justify-content: center; margin-bottom: 6px; }
+.shop-item-emoji { font-size: 30px; text-align: center; line-height: 1.1; }
+.bean-mark { display: inline-block; width: 1.25em; height: 1.25em; vertical-align: -.24em; object-fit: contain; flex: none; }
+.asset-art { display: inline-block; width: 52px; height: 52px; flex: none; vertical-align: middle; }
+.shop-item-emoji .asset-art { width: 64px; height: 64px; }
+.shop-title-badge { align-items: center; gap: 10px; }
+.shop-title-badge .asset-art { width: 58px; height: 58px; }
+.look-face .asset-art { width: 62px; height: 62px; }
+.shop-stock { font-size: 11.5px; font-weight: 600; color: var(--ink-faint); margin-left: 4px; }
+
+/* 模拟支付流程 */
+.pay-box { text-align: center; }
+.pay-item { font-size: 15px; color: var(--ink-soft); margin-bottom: 6px; }
+.pay-amount { font-size: 40px; font-weight: 900; color: var(--gold); margin: 2px 0 6px; }
+.pay-steps { list-style: none; margin: 18px auto 6px; padding: 0; width: 260px; text-align: left; }
+.pay-steps li {
+  display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  font-size: 13px; color: var(--ink-faint); transition: color var(--t-base) ease;
+}
+.pay-steps li .step-dot {
+  width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor;
+  display: flex; align-items: center; justify-content: center; font-size: 10px;
+}
+.pay-steps li.is-active { color: var(--gold); font-weight: 700; }
+.pay-steps li.is-done { color: var(--green); }
+.pay-spinner {
+  width: 40px; height: 40px; margin: 14px auto 0; border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.18); border-top-color: var(--gold);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.pay-done-emoji { font-size: 44px; margin: 6px 0; animation: bump 0.5s ease; }
+.mock-pay-overlay { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(8, 14, 24, .58); }
+.mock-pay-dialog { width: min(620px, 100%); max-height: calc(100dvh - 40px); padding: 26px 30px; overflow: auto; border: 1px solid var(--glass-line); border-radius: 18px; background: #251b3c; box-shadow: 0 24px 80px rgba(0,0,0,.25); }
+:root[data-theme="social"] .mock-pay-dialog { background: #faf9f4; }
+:root[data-theme="light"] .mock-pay-dialog { background: #f8f6ff; }
+.mock-pay-dialog .pay-steps { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0; }
+.mock-pay-dialog .pay-steps li { flex-direction: column; text-align: center; font-size: 12px; gap: 8px; }
+.mock-pay-dialog .pay-steps .step-dot { width: 24px; height: 24px; }
+.mock-pay-dialog [data-pay-stage] { min-height: 195px; }
+.pay-summary { padding: 12px 16px; background: var(--glass); border-radius: 9px; margin: 16px 0 0; }
+.pay-summary > div { display: flex; justify-content: space-between; gap: 16px; padding: 5px 0; font-size: 13px; text-align: left; }
+.pay-summary dt { color: var(--ink-faint); flex: none; }
+.pay-summary dd { margin: 0; text-align: right; }
+.mock-pay-dialog .drawer-head { position: sticky; top: 0; z-index: 1; background: inherit; }
+.pay-sim-note { margin: 12px 0; padding: 9px 11px; border: 1px dashed rgba(255, 209, 102, .65); border-radius: 10px; color: var(--ink-faint); font-size: 11.5px; line-height: 1.5; }
+.pay-methods, .pay-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+.pay-methods .chip { min-width: 145px; }
+.pay-processing { padding-top: 4px; }
+.pay-processing b, .pay-fail-emoji { display: block; margin-top: 10px; }
+.pay-fail-emoji { font-size: 38px; }
+.pay-result { margin-top: 6px; color: var(--gold); font-size: 30px; font-weight: 900; }
+.pay-order { overflow-wrap: anywhere; }
+.mock-pay-dialog .pay-box::before { display: none; }
+.pay-method-label { text-align: left; margin: 8px 0 12px; font-size: 14px; font-weight: 600; }
+.mock-pay-dialog .pay-methods { display: grid; grid-template-columns: 1fr 1fr; margin: 0; gap: 12px; }
+.mock-pay-dialog .pay-methods .chip { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 17px 14px; text-align: left; border-radius: 10px; font-size: 14px; }
+.pay-methods small { display: block; font-size: 11px; font-weight: 400; color: var(--ink-faint); margin-top: 5px; }
+.pay-method-icon { font-size: 28px; color: var(--blue); }
+.pay-methods i { width: 14px; height: 14px; margin-left: auto; border: 1px solid var(--ink-faint); border-radius: 50%; flex: none; }
+.pay-methods .is-active i { background: var(--green); border-color: var(--green); box-shadow: inset 0 0 0 3px var(--glass); }
+.mock-pay-dialog .pay-actions { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--glass-line); flex-wrap: nowrap; }
+.mock-pay-dialog .pay-actions .primary { flex: 1; }
+.mock-pay-dialog .pay-actions .ghost { min-width: 110px; }
+:root[data-theme="social"] .mock-pay-dialog .pay-box::before { display: none; }
+:root[data-theme="social"] .mock-pay-dialog { color: #2e4439; background: #faf9f4; border-color: #cbd3c7; }
+:root[data-theme="social"] .mock-pay-dialog .pay-amount { font-size: 36px; color: #355b45; }
+:root[data-theme="social"] .mock-pay-dialog .pay-sim-note { color: #748170; border: none; background: #f0f0e9; font-size: 12px; }
+:root[data-theme="social"] .mock-pay-dialog .pay-methods .chip { background: #f8f9f3; border: 1px solid #d4dccf; color: #415840; box-shadow: none; }
+:root[data-theme="social"] .mock-pay-dialog .pay-methods .chip.is-active { background: #e8efe3; border-color: #5b8364; }
+
+/* ---------------- 签到 ---------------- */
+.signin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.signin-day {
+  position: relative; padding: 12px 6px 10px; border-radius: 14px; text-align: center;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line);
+  transition: all var(--t-base) ease;
+}
+.signin-day .sd-title { font-size: 11.5px; color: var(--ink-faint); }
+.signin-day .sd-beans { font-size: 14px; font-weight: 800; color: var(--gold); margin-top: 5px; }
+.signin-day.is-done { background: rgba(76, 217, 100, 0.14); border-color: rgba(76, 217, 100, 0.45); }
+.signin-day.is-done .sd-beans { color: var(--green); }
+.signin-day.is-today {
+  background: linear-gradient(180deg, rgba(255, 209, 102, 0.28), rgba(255, 123, 172, 0.14));
+  border-color: var(--gold); box-shadow: var(--glow-gold); transform: translateY(-3px);
+}
+.signin-day .sd-check { position: absolute; right: 6px; top: 5px; font-size: 12px; color: var(--green); }
+/* 连续签到 8 天的额外奖励：劳模称号 */
+.signin-labor {
+  margin-top: 14px; padding: 11px 14px; border-radius: 14px;
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(92deg, rgba(255, 214, 165, 0.16), rgba(255, 143, 63, 0.1));
+  border: 1px dashed rgba(255, 143, 63, 0.55);
+}
+.signin-labor.is-owned { border-style: solid; border-color: rgba(255, 209, 102, 0.7); }
+.signin-labor .sl-text { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+.signin-foot { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* ---------------- 设置 ---------------- */
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.12); }
+.set-row:last-child { border-bottom: none; }
+.set-label { font-size: 14px; font-weight: 600; }
+.set-label small { display: block; font-size: 11.5px; color: var(--ink-faint); font-weight: 400; margin-top: 3px; }
+.set-control { display: flex; align-items: center; gap: 8px; flex: none; }
+input[type="range"] { width: 150px; accent-color: var(--pink); }
+input[type="text"], input[type="password"], select, textarea {
+  font-family: inherit; font-size: 13px; color: #fff; padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-line);
+  border-radius: 10px; outline: none; min-width: 190px;
+}
+input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255, 123, 172, 0.18); }
+select option { background: #2a1b4d; }
+.chip-group { display: flex; gap: 6px; }
+.chip {
+  padding: 7px 12px; border-radius: 10px; cursor: pointer; font-size: 12.5px; font-family: inherit;
+  background: rgba(255, 255, 255, 0.07); border: 1px solid var(--glass-line); color: var(--ink-soft);
+}
+.chip.is-active { background: linear-gradient(180deg, #ffd9a0, var(--pink)); color: #3a1030; font-weight: 800; border-color: transparent; }
+.key-status { margin-top: 10px; font-size: 12px; }
+.key-status.ok { color: var(--green); }
+.key-status.bad { color: #ffb3b3; }
+/* API Key 的"打码显示"一行：中间用 ** 藏住 */
+.key-now { font-size: 11.5px; color: var(--ink-faint); }
+.key-now b { color: var(--ink-soft); font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.5px; }
+.key-now small { margin-left: 4px; }
+:root[data-theme="light"] .key-status.bad { color: #c02b2b; }
+.avatar-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 10px; }
+.avatar-picker img { width: 100%; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+.avatar-picker img:hover { border-color: var(--glass-line); }
+.avatar-picker img.is-active { border-color: var(--gold); box-shadow: var(--glow-gold); }
+
+/* ---------------- 聊天 ---------------- */
+/* ★ 注册这一屏的头像（用户拍板）：点一下即可上传替换；没上传时显示 image/001.png
+   —— 放这里（所有主题共用）而不是 theme-light.css：浅色那份有"只换颜色"的硬约束。 */
+.setup-avatar-row { display: flex; align-items: center; gap: 14px; margin: 0 0 18px; }
+.setup-avatar {
+  position: relative; flex: none; width: 84px; height: 84px; padding: 0;
+  border: 2px solid var(--glass-line); border-radius: 50%; background: var(--glass);
+  cursor: pointer; transition: transform var(--t-fast) ease, border-color var(--t-fast) ease;
+}
+.setup-avatar:hover { transform: translateY(-2px); border-color: var(--gold); }
+.setup-avatar > img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.setup-avatar-cam {
+  position: absolute; right: -2px; bottom: -2px; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; color: #3a1030;
+  background: linear-gradient(145deg, #ffd9a0, var(--pink)); border: 2px solid rgba(0, 0, 0, 0.35);
+}
+.setup-avatar-meta { min-width: 0; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.setup-avatar-meta b { font-size: 15px; letter-spacing: 1px; }
+.setup-avatar-meta small { font-size: 11.5px; color: var(--ink-faint); line-height: 1.6; }
+
+.chat-drawer { display: flex; flex-direction: column; height: min(72vh, 560px); }
+.chat-log { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 6px 2px 10px; }
+/* ★ 系统小灰字（"对方已经同意了你的好友申请"）：不带气泡、居中一行（用户要求） */
+.chat-sys {
+  align-self: center; margin: 2px 0; padding: 2px 10px; border-radius: 99px;
+  font-size: 11.5px; color: var(--ink-faint); background: rgba(0, 0, 0, 0.22);
+  text-align: center; max-width: 92%;
+}
+/* 一行一条消息 = 头像 + 气泡（真聊天软件的结构；私聊在用） */
+.chat-row { display: flex; align-items: flex-start; gap: 8px; max-width: 100%; }
+.chat-row.self { flex-direction: row-reverse; }
+.chat-row .chat-msg { align-self: auto; }
+/* ★ 真聊天的合并显示：同一个人连着发的后几条，头像留位但不重复画，间距也收紧 */
+.chat-row.is-cont { margin-top: -4px; }
+.chat-row.is-cont .chat-face { visibility: hidden; }
+.chat-face {
+  width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--glass-line);
+}
+.chat-msg { max-width: 78%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45; animation: fade-in var(--t-fast) ease both; }
+.chat-msg .cm-who { display: block; font-size: 11px; color: var(--ink-faint); margin-bottom: 3px; }
+.chat-msg.self { align-self: flex-end; background: linear-gradient(180deg, #ffd9a0, var(--pink)); color: #3a1030; }
+.chat-msg.other { align-self: flex-start; background: rgba(255, 255, 255, 0.12); }
+.chat-msg.sys { align-self: center; background: rgba(255, 209, 102, 0.16); color: #ffe9b8; font-size: 12px; }
+/* 聊天气泡上方的时间分隔：只在"隔了 5 分钟以上"或"第一条消息"时出现 */
+.chat-time {
+  align-self: center; margin: 4px 0 0; padding: 2px 10px; border-radius: 99px;
+  font-size: 11px; color: var(--ink-faint); background: rgba(0, 0, 0, 0.28);
+}
+.quick-phrases { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
+.chat-input-row { display: flex; gap: 8px; align-items: center; }
+.chat-input-row input { flex: 1; min-width: 0; }
+.mic-btn.is-live { background: rgba(255, 92, 92, 0.4); box-shadow: 0 0 16px rgba(255, 92, 92, 0.6); }
+
+/* 收音时麦克风按钮里长出音量柱（跟着说话声音上下起伏） */
+.mic-btn { position: relative; }
+.mic-btn.is-live { background-image: none; }
+.mic-bars {
+  position: absolute; inset: 0; margin: auto; width: 18px; height: 16px;
+  display: flex; align-items: flex-end; justify-content: center; gap: 2px;
+}
+.mic-bars i {
+  width: 3px; height: 20%; border-radius: 2px; background: #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.75);
+  transition: height 0.1s linear;
+}
+
+/* 屏幕下方的"正在听…"提示：只闪 3~5 秒就消失，不常驻 */
+.voice-hint {
+  position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+  padding: 8px 18px; border-radius: 99px; z-index: 300; pointer-events: none;
+  font-size: 12.5px; font-weight: 700; color: #fff;
+  background: rgba(255, 92, 92, 0.86); box-shadow: 0 6px 20px rgba(255, 92, 92, 0.45);
+  animation: voice-hint-in 0.24s ease both;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+.voice-hint.is-out { opacity: 0; transform: translateX(-50%) translateY(8px); }
+@keyframes voice-hint-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.tool-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; padding-top: 8px; font-size: 12px; color: var(--ink-faint); }
+
+/* ---------------- 结算 ---------------- */
+.result-drawer { text-align: center; }
+.result-topline { display:flex; align-items:end; justify-content:space-between; gap:16px; margin:4px 0 2px; }
+.result-topline .result-banner { margin:0; }
+.result-mode { color:var(--ink-faint); font-size:12px; text-align:right; line-height:1.5; }
+.result-core { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 8px; }
+.result-core > div { display:flex; align-items:center; justify-content:center; gap:9px; min-height:64px; padding:9px 12px; border:1px solid var(--glass-line); border-radius:12px; background:rgba(255,255,255,.05); }
+.result-label { color:var(--ink-faint); font-size:11px; }
+.result-core strong { font-size:19px; }
+.result-core .rm-value { font-size:28px; }
+.result-core-money .fr-money { font-size:22px; }
+.result-multi--legacy { margin:4px 0 6px; opacity:.72; }
+.result-section { margin-top:12px; text-align:left; }
+.result-section h4 { margin:0 0 7px; color:var(--ink-faint); font-size:11px; font-weight:700; letter-spacing:.08em; }
+.result-section--extra { padding-top:2px; }
+.result-section--extra .fr-money-row { margin:0; justify-content:flex-start; }
+.result-section--stats .result-rows { margin-top:0; }
+.result-no-beans { font-size:13px !important; letter-spacing:0; }
+.result-banner {
+  font-size: 34px; font-weight: 900; letter-spacing: 6px; margin: 4px 0 2px;
+  background: linear-gradient(92deg, #fff, var(--gold) 55%, var(--pink));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.result-banner.lose { background: linear-gradient(92deg, #fff, #9fb4ff 55%, #6fd6ff); -webkit-background-clip: text; background-clip: text; }
+.result-sub { font-size: 12.5px; color: var(--ink-faint); }
+.result-multi { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px 0 6px; }
+.result-multi .rm-value { font-size: 34px; font-weight: 900; color: var(--gold); text-shadow: 0 0 18px rgba(255, 209, 102, 0.6); }
+.result-factors { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+.result-factors span { font-size: 11.5px; padding: 3px 9px; border-radius: 8px; background: rgba(255, 123, 172, 0.22); border: 1px solid rgba(255, 123, 172, 0.45); color: #ffe0ee; }
+.result-rows { margin: 10px auto 4px; width: 100%; }
+.result-row {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center;
+  padding: 9px 12px; border-radius: 12px; font-size: 13px; margin-bottom: 6px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.result-row.is-me { border-color: var(--gold); background: rgba(255, 209, 102, 0.12); }
+.result-row .rr-who { text-align: left; display: flex; align-items: center; gap: 8px; }
+.result-row .rr-who img { width: 30px; height: 30px; border-radius: 50%; }
+.result-row .rr-delta { font-weight: 800; font-size: 15px; }
+.rr-delta.plus { color: var(--green); }
+.rr-delta.minus { color: #ff9b9b; }
+.result-beans { margin: 12px 0 4px; font-size: 13px; color: var(--ink-soft); }
+.result-beans b { font-size: 20px; color: var(--gold); }
+.result-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.result-cap { font-size: 11.5px; color: var(--ink-faint); margin-top: 10px; line-height: 1.6; }
+
+/* 小猫钓鱼结算页 */
+.fr-money-row { display: flex; justify-content: center; margin: 10px 0 2px; }
+.fr-money { font-size: 32px; font-weight: 900; letter-spacing: 1px; }
+.fr-money.is-win { color: var(--green); text-shadow: 0 0 18px rgba(76, 217, 100, 0.45); }
+.fr-money.is-lose { color: var(--red); text-shadow: 0 0 18px rgba(255, 92, 92, 0.4); }
+.fr-money.is-draw { color: var(--ink-soft); font-size: 24px; }
+.fr-friend {
+  display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 10px 12px;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-line);
+}
+.fr-friend img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; }
+.fr-friend-meta { flex: 1; min-width: 0; }
+.fr-friend-name { font-size: 14px; font-weight: 700; }
+.fr-friend-sub { font-size: 11.5px; color: var(--ink-faint); margin-top: 2px; }
+.fr-added { font-size: 12px; font-weight: 700; color: var(--ink-faint); flex: none; }
+@media (min-width: 760px) {
+  .result-drawer { width:min(680px, calc(100vw - 48px)); }
+  .result-drawer--ddz .result-rows { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:7px; }
+  .result-drawer--ddz .result-row { margin:0; display:flex; flex-direction:column; align-items:stretch; gap:5px; }
+  .result-drawer--ddz .result-row .rr-who { justify-content:flex-start; }
+}
+@media (max-width: 560px) {
+  .result-topline { align-items:flex-start; flex-direction:column; gap:2px; }
+  .result-mode { text-align:left; }
+  .result-core { grid-template-columns:1fr; }
+}
+
+/* =====================================================================
+ * 10) 固定高度的面板（用户要求：社交 / 商城切标签时高度不跳）
+ *     · 面板本身高度固定，内部滚轮；内容不够就留白
+ * ===================================================================== */
+.drawer.is-fixed,
+.friends-drawer {
+  height: min(80vh, 640px);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.drawer.is-fixed .drawer-body { flex: 1; min-height: 0; overflow: auto; }
+.friends-drawer .friends-body,
+.friends-drawer .groups-body,
+.friends-drawer .moments-body { flex: 1; min-height: 0; overflow: hidden; }
+.friends-drawer .friend-list { max-height: none; height: 100%; }
+.friends-drawer .chat-log,
+.friends-drawer .friend-log,
+.friends-drawer .gc-log,
+.friends-drawer .moments-list { flex: 1; min-height: 0; max-height: none; }
